@@ -51,7 +51,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   const [isLoadContract, toggleIsLoad] = useToggle();
   // set to true to test contracts
   const isTest: boolean = false;
-  const contractAddress: string = '5CnxbVYzDfNEEYdXoMcCT63eH2CnEavVjbq7XEC1k5tWgVBP';
+  const contractAddress: string = '5HGAgq3H7HVx1PEpkmnjDmEUNyGeNJZGZFueUsHqLW1GGuLE';
 
   const headerRef = useRef<[string?, string?, number?][]>([
     [t('Add claims for Life and Work'), 'start'],

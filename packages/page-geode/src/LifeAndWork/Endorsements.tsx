@@ -59,6 +59,8 @@ function Endorsements ({ className = '', onClear, outcome: { from, message, outp
     const { t } = useTranslation();
     const [isModalOpen, toggleModal] = useToggle();
     const [isIndex, setIsIndex] = useState(0);
+    // todo placeholder functionality -- remove console.log
+    console.log(isIndex);
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
     const claimIdRef: string[] = [' ', 'work history', 'education', 'expertise', 'good deeds', 'intellectual property', '', '', ' - Get Resume', '', '', '', ' - Search', '', '', '', '', '', ''];

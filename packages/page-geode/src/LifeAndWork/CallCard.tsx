@@ -197,7 +197,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             <>
             <Dropdown
               defaultValue={messageIndex}
-              help={t<string>('The message to send to this contract. Parameters are adjusted based on the ABI provided.')}
+              //help={t<string>('The message to send to this contract. Parameters are adjusted based on the ABI provided.')}
               isError={message === null}
               label={t<string>('claim type')}
               onChange={onChangeMessage}
@@ -290,6 +290,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <Details
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
+                isAccount={messageIndex===10 ? true: false}
                 outcome={outcome}
               />
             ))}

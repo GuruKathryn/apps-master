@@ -20,6 +20,7 @@ import { Button, LabelHelp, IdentityIcon, Card } from '@polkadot/react-component
 interface Props {
   className?: string;
   onClear?: () => void;
+  isAccount: boolean;
   outcome: CallResult;
   //onClose: () => void;
 }
@@ -44,7 +45,7 @@ type ClaimList = {
   noClaims: string
 }
 
-function Details ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function Details ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const [isModalOpen, toggleModal] = useToggle();
   const claimIdRef: string[] = [' ', 'work history', 'education', 'expertise', 'good deeds', 'ip', '', '', ' - Get Resume', '', '', '', ' - Search', '', '', '', '', '', ''];
@@ -65,6 +66,7 @@ function ListClaims(props:ClaimList): JSX.Element {
       <List divided inverted relaxed >
         {claimDetail.ok.filter(_type => _type.claimtype===props.claimIndex && _type.show).map((_out, index: number) => 
         <List.Item> 
+        {isAccount && (<IdentityIcon value={_out.claimant} />)}
         <Label  as='a' 
                 color='grey'
               
@@ -110,8 +112,11 @@ try {
           {' '}{when.toLocaleTimeString()} 
           </Table.Cell>
           <Table.Cell>
-          <IdentityIcon value={claimDetail.ok[0].claimant} />  
+          {!isAccount && (
+          <><IdentityIcon value={claimDetail.ok[0].claimant} />  
           {t<string>(' Claim AccountId: ')}{claimDetail.ok[0].claimant}
+          </>
+          )}
           </Table.Cell>
           <Table.Cell>
           <strong>{t<string>(' Key: ')}</strong>
@@ -209,8 +214,12 @@ try {
             <Table>
               <Table.Row>
                 <Table.Cell>
-                <IdentityIcon value={claimDetail.ok[0].claimant} />
-                {' Claim AccountID: '}<strong>{claimDetail.ok[0].claimant}</strong>
+                {!isAccount ? (
+                    <>
+                    <IdentityIcon value={claimDetail.ok[0].claimant} />
+                    {' Claim AccountID: '}<strong>{claimDetail.ok[0].claimant}</strong>
+                    </>
+                ) : 'Details of Search Results:'}          
                 </Table.Cell>
                 <Table.Cell>
                 {'Date/Time: '}
@@ -225,8 +234,10 @@ try {
                 <List divided inverted relaxed >
                 {claimDetail.ok.filter(_type => _type.show).map((_out, index: number) => 
                 <List.Item> 
+                {isAccount && (<IdentityIcon value={_out.claimant} />)}
                 <Label color='teal' circular>{'No.'}{index+1}</Label>
                 <Label color='grey'>{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> {' '}<br />
+                {isAccount && (<>{' accountId: '}{_out.claimant}<br /></>)}
                 {hexToString(_out.link)!='' && (<>
                 {' claim Link: '}{isHex(_out.link) ? hexToString(_out.link) : ' '}<br /></>)}
                 {' claim Type: '}{claimIdRef[_out.claimtype]}<br />
