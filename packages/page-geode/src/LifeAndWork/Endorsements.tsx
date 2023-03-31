@@ -23,20 +23,12 @@ import ContractsTable from './ContractsTable';
 //import Output from '@polkadot/app-js/Output';
 //import CopyToClipboard from 'react-copy-to-clipboard';
 
-//import CallModal from './Call';
-//import valueToText from '@polkadot/react-params/valueToText';
-
-//import Codes from '@polkadot/app-contracts/src/Codes';
-//import { useContracts } from '@polkadot/app-contracts/src/useContracts';
-//import { useCodes } from '@polkadot/app-contracts/src/useCodes';
-//import { useToggle } from '@polkadot/react-hooks';
-//import ContractsTable from '@polkadot/app-contracts/src/Contracts/ContractsTable';
-//import { formatNumber } from '@polkadot/util';
 import { useTranslation } from '../translate';
 
 interface Props {
   className?: string;
   onClear?: () => void;
+  isAccount: boolean;
   outcome: CallResult;
 }
 
@@ -55,7 +47,7 @@ ok: ClaimObj[]
 }
 
 
-function Endorsements ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function Endorsements ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     const { t } = useTranslation();
     const [isModalOpen, toggleModal] = useToggle();
     const [isIndex, setIsIndex] = useState(0);
@@ -90,9 +82,11 @@ function ListEndorsements(): JSX.Element {
         <List divided inverted relaxed >
           {claimDetail.ok.filter(_type => _type.show).map((_out, index: number) => 
           <List.Item> 
+
+          {isAccount? (<><IdentityIcon value={_out.claimant} /></>) : 
+          (<><Label color='teal'circular>{'No. '}{index+1}{' '}</Label></>
+          )}
           
-          <Label color='teal'
-                 circular>{'No. '}{index+1}{' '}</Label>
           <Label as='a' 
                  color='grey'
                  onClick={() => (
@@ -108,7 +102,7 @@ function ListEndorsements(): JSX.Element {
                 {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
                  {(i === 0) ? 
                  <>{'(self)'} {name}</> : 
-                 <><Badge color='green' icon='check'/>{'(endorser No.'}{i}{') '}{name} </>}
+                 <><Badge color='blue' icon='check'/>{'(endorser No.'}{i}{') '}{name} </>}
                 </List.Item>)}
                 </List>
           </List.Item>)}
@@ -121,7 +115,7 @@ function ListEndorsements(): JSX.Element {
           <List.Item> 
           <Badge color='red' icon='thumbs-down'/>
           <Label color='grey' >{t<string>(isHex(_out.claim) ? hexToString(_out.claim) : ' ')}</Label> {' '}
-          <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
+          <Label circular color='orange'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label> 
           <strong>{t<string>(' ClaimID: ')}</strong>{_out.claimId}</List.Item>)}
         </List>
@@ -167,11 +161,15 @@ try {
           <IdentityIcon value={from} />
           </Table.Cell>
           <Table.Cell>
+          {'Date/Time: '}
           {' '}{when.toLocaleDateString()} 
           {' '}{when.toLocaleTimeString()} 
           </Table.Cell>
           <Table.Cell>
+          {!isAccount && (<>
+            <IdentityIcon value={claimDetail.ok[0].claimant} />
           <strong>{t<string>(' Claim AccountId: ')}</strong>{claimDetail.ok[0].claimant}
+          </>)}
           </Table.Cell>
           <Table.Cell>
           <strong>{t<string>(' Key: ')}</strong>

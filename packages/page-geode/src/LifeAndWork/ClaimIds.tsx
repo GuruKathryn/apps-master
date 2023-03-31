@@ -18,6 +18,7 @@ import { useTranslation } from '../translate';
 interface Props {
   className?: string;
   onClear?: () => void;
+  isAccount: boolean;
   outcome: CallResult;
 }
 
@@ -35,7 +36,7 @@ type ClaimDetail = {
 ok: ClaimObj[]
 }
 
-function ClaimIds ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function ClaimIds ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
 
   let _Obj2: Object = {"ok":[{"claimtype":3,"claimant":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","claim":"0x4e657720636c61696d206f6e2061206e657720636f6e7472616374","claimId":"0x11039a64fa59bb014e10a41cc97e5afaaadb21b7ce4e152ba44cfb65e7d9d6e7","endorserCount":0,"show":true,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]}]}
@@ -56,10 +57,12 @@ function ListClaimIds(): JSX.Element {
         <List divided inverted relaxed >
           {claimDetail.ok.filter(_type => _type.show).map(_out => 
           <List.Item> 
-          <Badge color='green' icon='thumbs-up'/>
+      
+          {isAccount && (<IdentityIcon value={_out.claimant} />)}
           <Label color='grey'>{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> 
-          <Label circular color='blue'>{t<string>(claimIdRef[_out.claimtype])}</Label>     
+          <Label circular color='orange'>{t<string>(claimIdRef[_out.claimtype])}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
+          {isAccount && (<>{'accountID: '}{_out.claimant}</>)}
           <Output
                   className='output'
                   //isError={!result.isOk}

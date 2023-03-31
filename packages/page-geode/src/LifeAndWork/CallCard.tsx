@@ -302,6 +302,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <ClaimIds
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
+                isAccount={messageIndex===10 ? true: false}
                 outcome={outcome}
               />
             ))}
@@ -313,6 +314,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <Endorsements
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
+                isAccount={messageIndex===10 ? true: false}
                 outcome={outcome}
               />
             ))}
