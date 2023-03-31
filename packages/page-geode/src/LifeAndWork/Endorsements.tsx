@@ -16,7 +16,7 @@ import { useCodes } from '../useCodes';
 
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Output, Button, Badge, IdentityIcon, Card, LabelHelp } from '@polkadot/react-components';
+import { Button, Badge, IdentityIcon, Card, LabelHelp } from '@polkadot/react-components';
 import { __RouterContext } from 'react-router';
 import { useToggle } from '@polkadot/react-hooks';
 import ContractsTable from './ContractsTable';
