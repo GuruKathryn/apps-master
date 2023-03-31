@@ -1,0 +1,22 @@
+{
+    "bugs": "https://github.com/SparticleConcepts/geode-apps/issues",
+    "homepage": "https://github.com/SparticleConcepts/geode-apps/tree/master/packages/page-geode#readme",
+    "license": "Apache-2.0",
+    "name": "@polkadot/app-geode",
+    "private": true,
+    "repository": {
+        "directory": "packages/page-geode",
+        "type": "git",
+        "url": "https://github.com/SparticleConcepts/geode-apps/apps.git"
+    },
+    "sideEffects": false,
+    "type": "module",
+    "version": "0.123.2-32-x",
+    "dependencies": {
+        "@babel/runtime": "^7.20.13",
+        "@polkadot/apps-config": "^0.123.2-32-x",
+        "@polkadot/react-components": "^0.123.2-32-x",
+        "@polkadot/react-query": "^0.123.2-32-x",
+        "query-string": "^7.1.3"
+    }
+}
