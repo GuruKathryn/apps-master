@@ -15,7 +15,7 @@ import { useToggle } from '@polkadot/react-hooks';
 
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Button, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { AccountName, Button, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 
 interface Props {
   className?: string;
@@ -104,17 +104,21 @@ try {
       <Table>
         <Table.Row>
           <Table.Cell>
-          <IdentityIcon value={from} />
-          </Table.Cell>
-          <Table.Cell>
-          {t<string>('Date/Time: ')}
+          <strong>{t<string>('Date/Time: ')}</strong>
           {' '}{when.toLocaleDateString()} 
           {' '}{when.toLocaleTimeString()} 
           </Table.Cell>
           <Table.Cell>
+            <strong>{t<string>('Call Account: ')}</strong>
+          <IdentityIcon value={from} />
+          <AccountName value={from} withSidebar={true}/>
+          </Table.Cell>
+          <Table.Cell>
           {!isAccount && (
-          <><IdentityIcon value={claimDetail.ok[0].claimant} />  
-          {t<string>(' Claim AccountId: ')}{claimDetail.ok[0].claimant}
+          <>
+            <strong>{t<string>('Resume of: ')}</strong>
+          <IdentityIcon value={claimDetail.ok[0].claimant} />  
+          <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>    
           </>
           )}
           </Table.Cell>
@@ -216,15 +220,17 @@ try {
                 <Table.Cell>
                 {!isAccount ? (
                     <>
+                    <strong>{'Resume of: '}</strong>
                     <IdentityIcon value={claimDetail.ok[0].claimant} />
-                    {' Claim AccountID: '}<strong>{claimDetail.ok[0].claimant}</strong>
+                    <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>
+                    <strong>{' | AccountID: '}</strong>{claimDetail.ok[0].claimant}
                     </>
                 ) : 'Details of Search Results:'}          
                 </Table.Cell>
                 <Table.Cell>
-                {'Date/Time: '}
-                <strong>{' '}{when.toLocaleDateString()}</strong> 
-                <strong>{' '}{when.toLocaleTimeString()}</strong>
+                <strong>{'Date/Time: '}</strong>
+                {' '}{when.toLocaleDateString()}
+                {' '}{when.toLocaleTimeString()}
                 </Table.Cell>
               </Table.Row>
               <Table.Row>
@@ -234,9 +240,16 @@ try {
                 <List divided inverted relaxed >
                 {claimDetail.ok.filter(_type => _type.show).map((_out, index: number) => 
                 <List.Item> 
-                {isAccount && (<IdentityIcon value={_out.claimant} />)}
-                <Label color='teal' circular>{'No.'}{index+1}</Label>
+                {isAccount ? (
+                      <>
+                      <IdentityIcon value={_out.claimant} />
+                      <AccountName value={_out.claimant} withSidebar={false}/>
+                      </>    
+                      ) : 
+                <Label color='teal' circular>{'No.'}{index+1}</Label>}
+                
                 <Label color='grey'>{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> {' '}<br />
+                
                 {isAccount && (<>{' accountId: '}{_out.claimant}<br /></>)}
                 {hexToString(_out.link)!='' && (<>
                 {' claim Link: '}{isHex(_out.link) ? hexToString(_out.link) : ' '}<br /></>)}
