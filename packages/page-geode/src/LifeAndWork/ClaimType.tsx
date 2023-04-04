@@ -1,7 +1,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
+
 import React from 'react';
-//import React, { useCallback, useState } from 'react';
 
 import { Button, Card } from '@polkadot/react-components';
 import { useToggle } from '@polkadot/react-hooks';
@@ -15,7 +15,6 @@ import { useTranslation } from '../translate';
 interface Props {
   className?: string;
 }
-
 
 function ClaimType ({ className = '' }: Props): React.ReactElement {
 const { t } = useTranslation();
@@ -62,13 +61,11 @@ const [isIP, toggleIsIP] = useToggle();
     </Card>
     {isExpertise && (
           <div>
-              
               <ContractsTable
                 contracts={allContracts}
                 updated={codeTrigger}
                 initMessageIndex={0}
                 />   
-              
           </div>
         )}
     {isWorkHistory && (

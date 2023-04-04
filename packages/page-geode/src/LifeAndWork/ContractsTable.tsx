@@ -49,8 +49,9 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   
   const [isTableOpen, toggleTable] = useToggle();
   const [isLoadContract, toggleIsLoad] = useToggle();
-  // set to true to test contracts
+  // set to true to test contracts functionality
   const isTest: boolean = false;
+  // set default after contract load to chain
   const contractAddress: string = '5DnNfZompCc5RGacRb61gofhZkhS3CKV4UGaQdDECxMh1UgQ';
 
   const headerRef = useRef<[string?, string?, number?][]>([
@@ -66,11 +67,9 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
         .filter(({ method }) => api.tx.contracts.call.is(method))
         .map(({ args }): ContractLink | null => {
           const contractId = keyringContracts.find((a) => args[0].eq(a));
-
           if (!contractId) {
             return null;
           }
-
           return {
             blockHash: newBlock.block.header.hash.toHex(),
             blockNumber: formatNumber(newBlock.block.header.number),
@@ -94,11 +93,6 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
     [api, keyringContracts]
   );
 
-  // const _toggleCall = useCallback(
-  //   () => setIsCallOpen((isCallOpen) => !isCallOpen),
-  //   []
-  // );
-
   const _onCall = useCallback(
     (contractIndex: number, messageIndex: number, onCallResult: (messageIndex: number, result?: ContractCallOutcome) => void): void => {
       setIndexes({ contractIndex, messageIndex, onCallResult });
@@ -121,13 +115,12 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
         <Card>
           {t<string>('Load Life and Work')}
           <Button
-        icon={(isLoadContract) ? 'plus' : 'sign-in-alt'}
-        label={t<string>('Load')}
-        onClick={toggleIsLoad} 
-        />
+            icon={(isLoadContract) ? 'plus' : 'sign-in-alt'}
+            label={t<string>('Load')}
+            onClick={toggleIsLoad} 
+          />
         <br />
         </Card>
-
       )}
       {!contract && isLoadContract && (
         <ContractAdd 
@@ -136,53 +129,48 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
       )}
       {isTest && contract && (
         <Card>
-        {'(1) Default Life & Work Address: '}{contractAddress}{' | '}
-        {(contractAddress)?
+            {'(1) Default Life & Work Address: '}{contractAddress}{' | '}
+            {(contractAddress)?
             <Badge color='green' icon='thumbs-up'/> : 
             <Badge color='red' icon='x' />}<br />
             <InputAddress
-          //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
+              //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
               label={t<string>('contract to use')}
               type='contract'
               value={contractAddress}          
             />
-        {'(2) Set Contract Address: '}{contract.address.toString()}{' | '}
-        {(contract.address)?
+            {'(2) Set Contract Address: '}{contract.address.toString()}{' | '}
+            {(contract.address)?
             <Badge color='green' icon='thumbs-up'/> : 
             <Badge color='red' icon='x' />}<br />
-
-        <InputAddress
-          //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
-          label={t<string>('contract to use')}
-          type='contract'
-          value={contract.address}
-        />
-
-        {'(3) Is API Loaded?: '}
-          {(api)?
-            <Badge color='green' icon='thumbs-up'/> : 
-            <Badge color='red' icon='x' />}<br />
-        {'API size: '}{JSON.stringify(api).length}<br /><br />
-
-        {'(4) Is Life & Work Contract Loaded?: '}
-          {(contract)?
-            <Badge color='green' icon='thumbs-up'/> : 
-            <Badge color='red' icon='x' />}<br />
-        {'Life & Work contract size: '}{JSON.stringify(contract).length}<br />
-        {'Contract Index: '}{contractIndex}<br /><br />
-
-        {'(5) All Contracts Loaded?: '}
-          {(contracts)?
-            <Badge color='green' icon='thumbs-up'/> : 
-            <Badge color='red' icon='x' />}<br />
-        {'Life & Work contract size: '}{JSON.stringify(contracts).length}<br /><br />
-
-        <Button
-        icon={(isTableOpen) ? 'minus' : 'plus'}
-        label={t<string>('View Contracts')}
-        onClick={toggleTable} 
-        />
-        <br />
+            <InputAddress
+              //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
+              label={t<string>('contract to use')}
+              type='contract'
+              value={contract.address}
+            />
+            {'(3) Is API Loaded?: '}
+            {(api)?
+              <Badge color='green' icon='thumbs-up'/> : 
+              <Badge color='red' icon='x' />}<br />
+            {'API size: '}{JSON.stringify(api).length}<br /><br />
+            {'(4) Is Life & Work Contract Loaded?: '}
+            {(contract)?
+              <Badge color='green' icon='thumbs-up'/> : 
+              <Badge color='red' icon='x' />}<br />
+            {'Life & Work contract size: '}{JSON.stringify(contract).length}<br />
+            {'Contract Index: '}{contractIndex}<br /><br />
+            {'(5) All Contracts Loaded?: '}
+            {(contracts)?
+              <Badge color='green' icon='thumbs-up'/> : 
+              <Badge color='red' icon='x' />}<br />
+            {'Life & Work contract size: '}{JSON.stringify(contracts).length}<br /><br />
+            <Button
+              icon={(isTableOpen) ? 'minus' : 'plus'}
+              label={t<string>('View Contracts')}
+              onClick={toggleTable} 
+            />
+            <br />
         </Card>)}
 
       {isTableOpen && <Table
@@ -205,7 +193,6 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           messageIndex={messageIndex}
           onCallResult={onCallResult}
           onChangeMessage={_setMessageIndex}
-          
         />
       )}
     </>
@@ -215,18 +202,3 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
 export default React.memo(ContractsTable);
 
 
-// {'All contracts Loaded to Chain: '}{JSON.stringify(contracts).length}<br />
-// {'InitMessageIndex: '}{initMessageIndex}<br />
-// {'Life & Work Contract Address: '}{contract.address.toString()}<br />
-// {'Match Contract Index: '}{contracts.map((_out, i) => _out.address.toString() === contractAddress ? i : 0).filter(x => x)}<br />
-// {'Match using Find: '}{contracts.findIndex( x => x.address.toString() === contractAddress )}<br />
-// {'Contracts Loaded to Chain: '}<br />
-// {'Contract Links: '}{JSON.stringify(contractLinks)}<br />
-// {'Message Index: '}{messageIndex}<br />
-// {contracts.map((_contract, index): React.ReactNode => (
-//   <>
-//     {index}<br />
-//     {_contract.address.toString()}<br />
-//     {contractAddress}<br />
-//   </>
-//   ))}

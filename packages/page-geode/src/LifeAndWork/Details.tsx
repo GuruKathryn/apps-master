@@ -1,15 +1,11 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-//import React, { useCallback, useState } from 'react';
-//import React from 'react';
 import React, { useState } from 'react';
 import { useTranslation } from '../translate';
 
-//import { Feed, Icon } from 'semantic-ui-react'
 import { Table, List, Label } from 'semantic-ui-react'
 
-//import { Card } from '@polkadot/react-components';
 import type { CallResult } from './types';
 import { useToggle } from '@polkadot/react-hooks';
 
@@ -52,7 +48,6 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
   const [isClaim, setIsClaim] = useState(false);
 
  let _Obj2: Object = {"ok":[{"claimtype":3,"claimant":"5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc","claim":"0x49276d20616e206578706572742047726f706f","claimId":"0x4a3252d1668288f51bb269a6c27c11fca6b227a79db2ec2e726180a1f845f02f","endorserCount":0,"link":"0x68747470733a2f2f646576656c6f7065722e6d6f7a696c6c612e6f72672f656e2d55532f646f63732f5765622f4150492f46696c65526561646572","show":true,"endorsers":["5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc"]}]}
-//  let _Obj2: Object = {"ok":[{"claimtype":3,"claimant":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","claim":"0x4e657720636c61696d206f6e2061206e657720636f6e7472616374","claimId":"0x11039a64fa59bb014e10a41cc97e5afaaadb21b7ce4e152ba44cfb65e7d9d6e7","endorserCount":0,"show":true,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]}]}
   const objOutput2: string = stringify(output);
   _Obj2 = JSON.parse(objOutput2);
   const claimDetail: ClaimDetail = Object.create(_Obj2);
@@ -74,7 +69,7 @@ function ListClaims(props:ClaimList): JSX.Element {
               </>)}
         <Label  
                 color='grey'
-                >{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> {' '}                  
+                >{isHex(_out.claim) ? t<string>(hexToString(_out.claim)) : ' '}</Label> {' '}                  
         <Label circular color='teal'> {_out.endorserCount} </Label> 
         {hexToString(_out.link)!='' && (
             <>
@@ -109,14 +104,14 @@ try {
         <Table.Cell>
           {!isAccount && (
           <>
-            <strong>{t<string>('Resume of: ')}</strong>
+          <strong>{t<string>('Resume of: ')}</strong>
           <IdentityIcon value={claimDetail.ok[0].claimant} />  
           <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>    
           </>
           )}
           </Table.Cell>
           <Table.Cell>
-            <strong>{t<string>('Called from: ')}</strong>
+          <strong>{t<string>('Called from: ')}</strong>
           <IdentityIcon value={from} />
           <AccountName value={from} withSidebar={true}/>
           </Table.Cell>
@@ -151,9 +146,9 @@ try {
     <StyledDiv className={className}>
     <Card>  
         <ListAccount />
-        <Table>
+        <Table verticalAlign='top'>
           <Table.Row>
-            <Table.Cell>
+            <Table.Cell verticalAlign='top'>
               <LabelHelp help={t<string>(' Claims for Subject Matter Expertise')} /> 
               <strong>{t<string>(' Expertise:')}</strong><br /><br />
               <ListClaims
@@ -161,7 +156,7 @@ try {
                 noClaims={t<string>('There are no Expertise Claims for this account')}
                />
             </Table.Cell>
-            <Table.Cell>
+            <Table.Cell verticalAlign='top'>
               <LabelHelp help={t<string>(' Claims for Education and Specialized Training')} /> 
               <strong>{t<string>(' Education:')}</strong><br /><br />
               <ListClaims
@@ -171,7 +166,7 @@ try {
             </Table.Cell>
           </Table.Row>
           <Table.Row>
-          <Table.Cell>
+          <Table.Cell verticalAlign='top'>
               <LabelHelp help={t<string>(' Claims for Work History, Past and Current Employment')} /> 
               <strong>{t<string>(' Work History:')}</strong><br /><br />
               <ListClaims
@@ -179,7 +174,7 @@ try {
                 noClaims={t<string>('There are no Work History Claims for this account')}
                />
             </Table.Cell>
-            <Table.Cell>
+            <Table.Cell verticalAlign='top'>
             <LabelHelp help={t<string>(' Claims for Good Deeds and Contributions to Society and Public Welfare')} /> 
               <strong>{t<string>(' Good Deeds:')}</strong><br /><br />
               <ListClaims
@@ -189,7 +184,7 @@ try {
             </Table.Cell>
           </Table.Row>
           <Table.Row>
-            <Table.Cell>
+            <Table.Cell verticalAlign='top'>
             <LabelHelp help={t<string>(' Claims for Original Intellectual Property including Books, Music, Art, Research Papers, Engineering Documents and/or other Patentable Materials')} /> 
               <strong>{t<string>(' Intellectual Property:')}</strong><br /><br />
               <ListClaims
@@ -226,15 +221,15 @@ try {
                 <Table.Cell>
                 {!isAccount ? (
                     <>
-                    <strong>{'Resume of: '}</strong>
+                    <strong>{t<string>('Resume of: ')}</strong>
                     <IdentityIcon value={claimDetail.ok[0].claimant} />
                     <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>
-                    <strong>{' | AccountID: '}</strong>{claimDetail.ok[0].claimant}
+                    <strong>{t<string>(' | Account Id: ')}</strong>{claimDetail.ok[0].claimant}
                     </>
-                ) : 'Details of Search Results:'}          
+                ) : t<string>('Details of Search Results:')}          
                 </Table.Cell>
                 <Table.Cell>
-                <strong>{'Date/Time: '}</strong>
+                <strong>{t<string>('Date/Time: ')}</strong>
                 {' '}{when.toLocaleDateString()}
                 {' '}{when.toLocaleTimeString()}
                 </Table.Cell>
@@ -250,11 +245,11 @@ try {
                       <>
                       <IdentityIcon value={_out.claimant} />
                       <AccountName value={_out.claimant} withSidebar={false}/>
-                      <strong>{t<string>(' | accountId: ')}</strong>{_out.claimant}
+                      <strong>{t<string>(' | account Id: ')}</strong>{_out.claimant}
                       <br /><br />
                       </>    
                       ) : ''}
-                <Label color='grey'>{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> {' '}
+                <Label color='grey'>{isHex(_out.claim) ? t<string>(hexToString(_out.claim)) : ' '}</Label> {' '}
                 <Label circular color='teal'> {_out.endorserCount} </Label>
                 {hexToString(_out.link)!='' && (
                 <><Label  as='a'
@@ -266,11 +261,11 @@ try {
                 >{'Link'}
                 </Label></>
                 )}<br />
-                {isAccount && (<>{' accountId: '}{_out.claimant}<br /></>)}
+                {isAccount && (<>{t<string>(' account Id: ')}{_out.claimant}<br /></>)}
                 {hexToString(_out.link)!='' && (<>
-                {' claim Link: '}{isHex(_out.link) ? hexToString(_out.link) : ' '}<br /></>)}
-                {' claim Type: '}{claimIdRef[_out.claimtype]}<br />
-                {' claim Id: '}{_out.claimId}<br /> 
+                {t<string>(' claim Link: ')}{isHex(_out.link) ? t<string>(hexToString(_out.link)) : ' '}<br /></>)}
+                {t<string>(' claim Type: ')}{t<string>(claimIdRef[_out.claimtype])}<br />
+                {t<string>(' claim Id: ')}{t<string>(_out.claimId)}<br /> 
                 </List.Item>)}
                 </List>
                 </div>   

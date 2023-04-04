@@ -1,15 +1,10 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-//import React, { useCallback, useState } from 'react';
-//import React from 'react';
-//import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import React, { useState, useRef } from 'react';
 
-//import { Feed, Icon } from 'semantic-ui-react'
 import {  Table, List, Label } from 'semantic-ui-react'
 
-//import { Card } from '@polkadot/react-components';
 import type { CallResult } from './types';
 import { useContracts } from '../useContracts';
 import { useCodes } from '../useCodes';
@@ -23,15 +18,6 @@ import ContractsTable from './ContractsTable';
 //import Output from '@polkadot/app-js/Output';
 //import CopyToClipboard from 'react-copy-to-clipboard';
 
-//import CallModal from './Call';
-//import valueToText from '@polkadot/react-params/valueToText';
-
-//import Codes from '@polkadot/app-contracts/src/Codes';
-//import { useContracts } from '@polkadot/app-contracts/src/useContracts';
-//import { useCodes } from '@polkadot/app-contracts/src/useCodes';
-//import { useToggle } from '@polkadot/react-hooks';
-//import ContractsTable from '@polkadot/app-contracts/src/Contracts/ContractsTable';
-//import { formatNumber } from '@polkadot/util';
 import { useTranslation } from '../translate';
 
 interface Props {
@@ -73,9 +59,6 @@ function HideClaims ({ className = '', onClear, outcome: { from, message, output
   _Obj2 = JSON.parse(objOutput2);
   const claimDetail: ClaimDetail = Object.create(_Obj2);
 
-  // static test const
-//const expertise: string[] = ['ink programmer ', 'Smart Contracts ', 'Nonmonotonic Reasoning '];
-
 
 function ListClaims(): JSX.Element {
 
@@ -89,9 +72,9 @@ function ListClaims(): JSX.Element {
         <List divided inverted relaxed >
           {claimDetail.ok.filter(_type => _type.show).map((_out, index: number) => 
           <List.Item> 
-            <Label color='grey' circular>{'Claim '}{showRef.current=index+1}{' '}</Label>
+          <Label color='grey' circular>{t<string>('Claim ')}{showRef.current=index+1}{' '}</Label>
           <Label color='grey'
-            >{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> 
+            >{isHex(_out.claim) ? t<string>(hexToString(_out.claim)) : ' '}</Label> 
           <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
           
@@ -99,8 +82,8 @@ function ListClaims(): JSX.Element {
                 <List divided inverted bulleted>
                 {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
                  {(i === 0) ? 
-                 <><strong>{'Claim Endorsements:'}</strong>{'(self)'} {name}</> : 
-                 <><Badge color='blue' icon='check'/>{'(endorser No.'}{i}{') '}{name} </>}
+                 <><strong>{t<string>('Claim Endorsements:')}</strong>{t<string>('(self)')} {name}</> : 
+                 <><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}{name} </>}
                 </List.Item>)}
                 </List>
                 
@@ -115,17 +98,17 @@ function ListClaims(): JSX.Element {
           <List.Item> 
           
           <Label color='red'
-                 circular>{'Claim '}{hideRef.current=index+1}{' '}</Label>
+                 circular>{t<string>('Claim ')}{hideRef.current=index+1}{' '}</Label>
           <Label color='grey'
-            >{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> 
+            >{isHex(_out.claim) ? t<string>(hexToString(_out.claim)) : ' '}</Label> 
           <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
           
-          <strong>{' ClaimId: '}</strong>{_out.claimId}<br />
+          <strong>{t<string>(' ClaimId: ')}</strong>{_out.claimId}<br />
                 <List divided inverted bulleted>
                 {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
                  {(i === 0) ? 
-                 <><strong>{'Claim Endorsements:'}</strong>{'(self)'} {name}</> : 
+                 <><strong>{t<string>('Claim Endorsements:')}</strong>{t<string>('(self)')} {name}</> : 
                  <><Badge color='red' icon='check'/>{name} </>}
                 </List.Item>)}
                 </List>
@@ -253,22 +236,4 @@ const StyledDiv = styled.div`
 
 export default React.memo(HideClaims);
 
-// {/* <strong>{'Index:'}{isIndex + 1}</strong>
-// {' Claim: '}{hexToString(claimDetail.ok[isIndex].claim)}
-// {' ClaimId: '}{claimDetail.ok[isIndex].claimId}
-// {' ClaimType: '}{claimIdRef[claimDetail.ok[isIndex].claimtype]}<br /> */}
-
-// {/* <strong>{t<string>('AccountID (Owner of Claim): ')}</strong>{claimDetail.ok[isIndex].claimant}<br />
-// <strong>{t<string>('Claim to Hide/Show: ')}</strong>{hexToString(claimDetail.ok[isIndex].claim)}<br />
-// <strong>{t<string>('ClaimID to Hide/Show:')}</strong>{t<string>(' (copy this Hash to the claimHash below:)')}
-// <Output
-//       className='output'
-//       //isError={!result.isOk}
-//       //isSmall
-//       isTrimmed
-//       isMonospace
-//       withCopy
-//       //label={'claimId'}
-//       value={claimDetail.ok[isIndex].claimId}
-//       /> */}
 

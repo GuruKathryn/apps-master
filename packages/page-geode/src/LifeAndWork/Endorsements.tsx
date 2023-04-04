@@ -1,15 +1,10 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-//import React, { useCallback, useState } from 'react';
-//import React from 'react';
-//import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import React, { useState } from 'react';
 
-//import { Feed, Icon } from 'semantic-ui-react'
 import {  Table, List, Label } from 'semantic-ui-react'
 
-//import { Card } from '@polkadot/react-components';
 import type { CallResult } from './types';
 import { useContracts } from '../useContracts';
 import { useCodes } from '../useCodes';
@@ -59,16 +54,12 @@ function Endorsements ({ className = '', onClear, isAccount, outcome: { from, me
     const [showButton, setShowButton] = useState(true);
 
   //todo: code for allCodes:
-  console.log(JSON.stringify(allCodes));
+    console.log(JSON.stringify(allCodes));
 
   let _Obj2: Object = {"ok":[{"claimtype":3,"claimant":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","claim":"0x4e657720636c61696d206f6e2061206e657720636f6e7472616374","claimId":"0x11039a64fa59bb014e10a41cc97e5afaaadb21b7ce4e152ba44cfb65e7d9d6e7","endorserCount":0,"show":true,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]}]}
   const objOutput2: string = stringify(output);
   _Obj2 = JSON.parse(objOutput2);
   const claimDetail: ClaimDetail = Object.create(_Obj2);
-
-  // static test const
-//const expertise: string[] = ['ink programmer ', 'Smart Contracts ', 'Nonmonotonic Reasoning '];
-
 
 function ListEndorsements(): JSX.Element {
 
@@ -124,7 +115,7 @@ function ListEndorsements(): JSX.Element {
           {claimDetail.ok.filter(_type => !_type.show).map((_out, index: number) => 
           <List.Item> 
           <Label color='red' circular>{'Claim '}{index+1}</Label>
-          <Label color='grey' >{t<string>(isHex(_out.claim) ? hexToString(_out.claim) : ' ')}</Label> {' '}
+          <Label color='grey' >{t<string>(isHex(_out.claim) ? t<string>(hexToString(_out.claim)) : ' ')}</Label> {' '}
           <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label> 
           <strong>{t<string>(' ClaimID: ')}</strong>{_out.claimId}<br />
@@ -270,8 +261,4 @@ const StyledDiv = styled.div`
 
 export default React.memo(Endorsements);
 
-// {/* <strong>{'Index:'}{isIndex + 1}</strong>
-// {' Claim: '}{hexToString(claimDetail.ok[isIndex].claim)}
-// {' ClaimId: '}{claimDetail.ok[isIndex].claimId}
-// {' ClaimType: '}{claimIdRef[claimDetail.ok[isIndex].claimtype]}<br /> */}
 

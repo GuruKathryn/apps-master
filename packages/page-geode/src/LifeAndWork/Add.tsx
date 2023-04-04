@@ -1,4 +1,5 @@
 // Copyright 2017-2023 @polkadot/app-contracts authors & contributors
+// Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
 

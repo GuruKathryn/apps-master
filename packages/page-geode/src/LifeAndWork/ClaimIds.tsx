@@ -65,13 +65,13 @@ function ListClaimIds(): JSX.Element {
                 <IdentityIcon value={_out.claimant} />
                 <AccountName value={_out.claimant} withSidebar={true}/>
                 {isAccount && (<>
-                  <strong>{' | accountID: '}</strong>{_out.claimant}</>)}
+                  <strong>{t<string>(' | accountID: ')}</strong>{_out.claimant}</>)}
                 <br /><br />
                 </>): 
                 (<>
-                <Label color='grey' circular>{'Claim '}{index+1}{' '}</Label>
+                <Label color='grey' circular>{t<string>('Claim ')}{index+1}{' '}</Label>
                 </>)}
-          <Label color='grey'>{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> 
+          <Label color='grey'>{isHex(_out.claim) ? t<string>(hexToString(_out.claim)) : ' '}</Label> 
           <Label circular color='blue'>{t<string>(claimIdRef[_out.claimtype])}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
           <Output
@@ -94,7 +94,7 @@ function ListClaimIds(): JSX.Element {
         <List divided inverted relaxed >
           {claimDetail.ok.filter(_type => !_type.show).map((_out, index: number) => 
           <List.Item> 
-          <Label color='red' circular>{'Claim '}{index+1}{' '}</Label>
+          <Label color='red' circular>{t<string>('Claim ')}{index+1}{' '}</Label>
           <Label color='grey'>{isHex(_out.claim) ? t<string>(hexToString(_out.claim)) : ' '} {' '}</Label>          
           <Label circular color='blue'>{t<string>(claimIdRef[_out.claimtype])}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label> 
@@ -138,11 +138,11 @@ function ListAccount(): JSX.Element {
             )}
             </Table.Cell>
             <Table.Cell>
-                <strong>{' Called from: '}</strong><IdentityIcon value={from} />
+                <strong>{t<string>(' Called from: ')}</strong><IdentityIcon value={from} />
                 <AccountName value={from} withSidebar={true}/>
             </Table.Cell>
             <Table.Cell>
-            <strong>{'Date/Time: '}</strong>
+            <strong>{t<string>('Date/Time: ')}</strong>
             {' '}{when.toLocaleDateString()} 
             {' '}{when.toLocaleTimeString()} 
             </Table.Cell>

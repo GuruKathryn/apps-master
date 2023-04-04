@@ -2,12 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-//import JSONlifeAndWork from './claim_registration_v20230314.json';
 
 import { Abi } from '@polkadot/api-contract';
 import { IconLink, InputFile, Labelled } from '@polkadot/react-components';
-//import AutoInputFile from './AutoInputFile';
-//import AutoLoadFile from './AutoLoadFile';
 
 import { useTranslation } from '../translate';
 import Messages from './Messages';

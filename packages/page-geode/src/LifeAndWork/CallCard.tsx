@@ -1,4 +1,5 @@
 // Copyright 2017-2022 @polkadot/app-contracts authors & contributors
+// Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
 
@@ -58,8 +59,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
-  //const _claimType: string[] = ['Detail Results', 'Match Results', 'Expertise', 'Education', 'Work History', 'Good Deeds', 'Intellectual Property'];
-  //const testHash: unknown[] = [0xbf1003cd5c1336387f7e4eebf72a3d9cd4fa8ab5be19825bc0e3ecd8ce1cd140]
   const [isTest, setIsTest] = useToggle();
   const [isClaimIds, setIsClaimIds] = useToggle();
   const [isEndorse, setIsEndorse] = useToggle();
@@ -386,7 +385,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />
           </>
         )}
-        
         {isTest && (
         <div>
         <br /><br />
@@ -396,11 +394,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 message
                   ? message.args
                   : undefined
-              }    
-              //onEnter={testHash}          
+              }            
               registry={contract.abi.registry}
         />
-
         <Static
           label={t<string>('preimage hash')}
           value={blake2AsHex(stringToHex(params.toString()))}
@@ -419,34 +415,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         <strong>{' contract query: '}</strong>{JSON.stringify(contract.query)}<br />
         <strong>{' contract registry: '}</strong>{JSON.stringify(contract.registry)}<br />
         <strong>{' contract tx: '}</strong>{JSON.stringify(contract.tx)}<br />
+        <strong>{' message Index: '}</strong>{messageIndex}
         <br />
-        <strong>{' Params: '}</strong><br />
-        <strong>{' (params) hash: '}</strong>{JSON.stringify(params)}<br />
-        <strong>{' (params) dbParams: '}</strong>{JSON.stringify(dbParams)}<br />
-        <strong>{' dbValues: '}</strong>{JSON.stringify(dbValue)}<br /><br />
-
-        <strong>{' Messages:'}</strong><br />
-        <strong>{' messageIndex: '}{messageIndex}</strong><br />
-        <strong>{' message.args: '}</strong>{JSON.stringify(message.args)}<br />
-        <strong>{' message.identifier: '}</strong>{JSON.stringify(message.identifier)}<br />
-        <strong>{' message.docs: '}</strong>{JSON.stringify(message.docs)}<br />
-        <strong>{' message.index: '}</strong>{JSON.stringify(message.index)}<br />
-        <strong>{' message.isMutating: '}</strong>{JSON.stringify(message.isMutating)}<br />
-        <strong>{' message.fromU8a: '}</strong>{JSON.stringify(message.fromU8a)}<br />
-        <strong>{' message.isConstructor: '}</strong>{JSON.stringify(message.isConstructor)}<br />
-        <strong>{' message.isPayable: '}</strong>{JSON.stringify(message.isPayable)}<br />
-        <strong>{' message.method: '}</strong>{JSON.stringify(message.method)}<br />
-        <strong>{' message.path: '}</strong>{JSON.stringify(message.path)}<br />
-        <strong>{' message.returnType: '}</strong>{JSON.stringify(message.returnType)}<br />
-        <strong>{' message.selector: '}</strong>{JSON.stringify(message.selector)}<br /><br />
-        <strong>{' outcomes: '}</strong>{JSON.stringify(outcomes)}<br /><br />
-        
-        <strong>{' registry: '}</strong>{JSON.stringify(contract.abi.registry)}<br /><br />
-
-        <strong>{' Weights: '}</strong>
-        <strong>{' estimatedWeight: '}</strong>{JSON.stringify(estimatedWeight)}<br />
-        <strong>{' estimatedWeightV2: '}</strong>{JSON.stringify(estimatedWeightV2)}<br />
-        <strong>{' weight: '}</strong>{JSON.stringify(weight)}<br /><br />
         </div>
         )}
         
@@ -469,13 +439,3 @@ export default React.memo(styled(CallCard)`
 `);
 
 
-// {messageIndex<5 && (
-//   <>
-//   <Badge color='blue' icon='thumbs-up'/>
-//   {t<string>('This is your unique claimId - Enter it above in claimHash or Select a File to Hash: (NOTE: Each Claim must have a unique ClaimId hash.)')}
-//   <Static
-//   label={t<string>('Unique hash:')}
-//   value={blake2AsHex(stringToHex(params.toString()))}
-//   withCopy/>
-//   </>
-// )}

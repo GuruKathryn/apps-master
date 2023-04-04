@@ -4,27 +4,18 @@
 import type { TFunction } from 'i18next';
 //import type { TabItem } from '@polkadot/react-components/Tabs/types';
 import type { KeyedEvent } from '@polkadot/react-hooks/ctx/types';
+//import { useAccounts, useIpfs } from '@polkadot/react-hooks';
 
 import React, { useRef } from 'react';
 import { Route, Switch } from 'react-router';
 
 import { Tabs } from '@polkadot/react-components';
-// import { useApi } from '@polkadot/react-hooks';
-// import { isFunction } from '@polkadot/util';
 
 import LifeAndWork from './LifeAndWork';
 import Home from './Home/Home';
 import Market from './Market';
 import Social from './Social';
 import Messaging from './Messaging';
-
-
-//import Api from './Api';
-//import BlockInfo from './BlockInfo';
-//import Forks from './Forks';
-//import Latency from './Latency';
-//import Main from './Main';
-//import NodeInfo from './NodeInfo';
 
 import { useTranslation } from './translate';
 
@@ -40,6 +31,8 @@ interface TabItem {
   name: string;
   text: string;
 }
+
+//const HIDDEN_ACC = ['lifeAndWork'];
 
 function createPathRef (basePath: string): Record<string, string | string[]> {
   return {
@@ -59,7 +52,6 @@ function createItemsRef (t: TFunction): TabItem[] {
       text: t<string>('Home')
     },
     {
-      //isRoot: true,
       name: 'lifeAndWork',
       text: t<string>('Life and Work')
     },
@@ -81,22 +73,19 @@ function createItemsRef (t: TFunction): TabItem[] {
 
 function GeodeApp ({ basePath, className }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-//  const { api } = useApi();
-  // const { lastHeaders } = useBlockAuthors();
-  // const { eventCount, events } = useBlockEvents();
+  // to hide for non-account access
+  //const { hasAccounts } = useAccounts();
+  //const { isIpfs } = useIpfs();
+
   const itemsRef = useRef(createItemsRef(t));
   const pathRef = useRef(createPathRef(basePath));
-  //const currentPath = useRef('home');
-  // const hidden = useMemo<string[]>(
-  //   () => isFunction(api.query.babe?.authorities) ? [] : ['forks'],
-  //   [api]
-  // );
 
   return (
     
     <main className={className}>
       <Tabs
         basePath={basePath}
+        //hidden={(hasAccounts && !isIpfs) ? undefined : HIDDEN_ACC}
         items={itemsRef.current}
       />
       
