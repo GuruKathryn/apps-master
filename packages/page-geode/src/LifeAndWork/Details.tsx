@@ -66,10 +66,14 @@ function ListClaims(props:ClaimList): JSX.Element {
       <List divided inverted relaxed >
         {claimDetail.ok.filter(_type => _type.claimtype===props.claimIndex && _type.show).map((_out, index: number) => 
         <List.Item> 
-        {isAccount && (<IdentityIcon value={_out.claimant} />)}
-        <Label  as='a' 
+        {isAccount && (
+              <>
+              <IdentityIcon value={_out.claimant} />
+              <AccountName value={_out.claimant} withSidebar={false}/>
+              <br /><br />
+              </>)}
+        <Label  
                 color='grey'
-              
                 >{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> {' '}                  
         <Label circular color='teal'> {_out.endorserCount} </Label> 
         {hexToString(_out.link)!='' && (
@@ -86,7 +90,6 @@ function ListClaims(props:ClaimList): JSX.Element {
         )}
         </List.Item>)}
       </List>
-      
       </div>   
   )
 } else {
@@ -103,17 +106,7 @@ try {
     <div>
       <Table>
         <Table.Row>
-          <Table.Cell>
-          <strong>{t<string>('Date/Time: ')}</strong>
-          {' '}{when.toLocaleDateString()} 
-          {' '}{when.toLocaleTimeString()} 
-          </Table.Cell>
-          <Table.Cell>
-            <strong>{t<string>('Call Account: ')}</strong>
-          <IdentityIcon value={from} />
-          <AccountName value={from} withSidebar={true}/>
-          </Table.Cell>
-          <Table.Cell>
+        <Table.Cell>
           {!isAccount && (
           <>
             <strong>{t<string>('Resume of: ')}</strong>
@@ -123,9 +116,22 @@ try {
           )}
           </Table.Cell>
           <Table.Cell>
+            <strong>{t<string>('Called from: ')}</strong>
+          <IdentityIcon value={from} />
+          <AccountName value={from} withSidebar={true}/>
+          </Table.Cell>
+
+          <Table.Cell>
+          <strong>{t<string>('Date/Time: ')}</strong>
+          {' '}{when.toLocaleDateString()} 
+          {' '}{when.toLocaleTimeString()} 
+          </Table.Cell>
+          <Table.Cell>
           <strong>{t<string>(' Key: ')}</strong>
           {t<string>(' No. of Endorsements: ')}
           <Label circular color='teal'> # </Label>  
+          {t<string>(' Link to See More: ')}
+          <Label circular color='orange'> Link </Label>  
           </Table.Cell>
         </Table.Row>
       </Table>
@@ -184,7 +190,7 @@ try {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-            <LabelHelp help={t<string>(' Claims Original Intellectual Property including Books, Music, Art, Research Papers, Engineering Documents and/or other Patentable')} /> 
+            <LabelHelp help={t<string>(' Claims for Original Intellectual Property including Books, Music, Art, Research Papers, Engineering Documents and/or other Patentable Materials')} /> 
               <strong>{t<string>(' Intellectual Property:')}</strong><br /><br />
               <ListClaims
                 claimIndex={5}
@@ -244,18 +250,27 @@ try {
                       <>
                       <IdentityIcon value={_out.claimant} />
                       <AccountName value={_out.claimant} withSidebar={false}/>
+                      <strong>{t<string>(' | accountId: ')}</strong>{_out.claimant}
+                      <br /><br />
                       </>    
-                      ) : 
-                <Label color='teal' circular>{'No.'}{index+1}</Label>}
-                
-                <Label color='grey'>{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> {' '}<br />
-                
+                      ) : ''}
+                <Label color='grey'>{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> {' '}
+                <Label circular color='teal'> {_out.endorserCount} </Label>
+                {hexToString(_out.link)!='' && (
+                <><Label  as='a'
+                color='orange'
+                circular
+                href={isHex(_out.link) ? hexToString(_out.link) : ' '}
+                target="_blank" 
+                rel="noopener noreferrer"
+                >{'Link'}
+                </Label></>
+                )}<br />
                 {isAccount && (<>{' accountId: '}{_out.claimant}<br /></>)}
                 {hexToString(_out.link)!='' && (<>
                 {' claim Link: '}{isHex(_out.link) ? hexToString(_out.link) : ' '}<br /></>)}
                 {' claim Type: '}{claimIdRef[_out.claimtype]}<br />
-                {' claim Id: '}{_out.claimId}<br />
-                {' number of Endorsements: '}<Label circular color='teal'> {_out.endorserCount} </Label> 
+                {' claim Id: '}{_out.claimId}<br /> 
                 </List.Item>)}
                 </List>
                 </div>   

@@ -41,7 +41,7 @@ const [isDeveloperOpen, toggleDeveloper] = useToggle();
 
 const isShowDeveloper: boolean = false;
 
-const refTitle: string[] = [' Display your resume and make new Claims for Education, Expertise, Work History, Good Deeds and Intellectual Property ', ' Enter your claim data below. (Click again to close) ', ' Select Read to display the account Resume. (Click again to close) ', ' Keyword search. Enter your search string below and select Read. (Click again to close) '];
+const refTitle: string[] = [' Display your Claims and make new Claims for Education, Expertise, Work History, Good Deeds and Intellectual Property ', ' Enter your claim data below. (Click again to close) ', ' Look up Resumes for specific accounts. (Click again to close) ', ' Search Claims by Keywords. Enter your search keyword below and select Read. (Click again to close) '];
 
 const _onShowDeploy = useCallback(
   (codeHash: string, constructorIndex: number): void => {
@@ -98,7 +98,7 @@ const showCodeHash: boolean = false;
           <>
               <Button
                 icon={(isResumeOpen) ? 'minus' : 'plus'}
-                label={t('Get Resumes')}
+                label={t('Get a Resume')}
                 onClick={toggleResume}>
               </Button>    
           </>

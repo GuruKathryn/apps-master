@@ -16,7 +16,7 @@ import { useCodes } from '../useCodes';
 
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Button, Badge, IdentityIcon, Card, LabelHelp } from '@polkadot/react-components';
+import { AccountName, Button, Badge, IdentityIcon, Card, LabelHelp } from '@polkadot/react-components';
 import { __RouterContext } from 'react-router';
 import { useToggle } from '@polkadot/react-hooks';
 import ContractsTable from './ContractsTable';
@@ -76,18 +76,26 @@ function ListEndorsements(): JSX.Element {
       return(
         <div>
         <br />
-        <Badge color='green' icon='thumbs-up'/>
-        <strong>{t<string>('Claims:')}</strong>   
-        <LabelHelp help={t<string>('  Click on the Claim to get the ClaimId.')} />   <br /> 
-        <List divided inverted relaxed >
+        {!isAccount && (
+          <>
+            <strong>{t<string>('Claims Shown: ')}</strong>  
+            <LabelHelp help={t<string>(' Claims shown on your resume. ')} /><br />        
+          </>
+        )}
+         <List divided inverted relaxed >
           {claimDetail.ok.filter(_type => _type.show).map((_out, index: number) => 
           <List.Item> 
 
-          {isAccount? (<><IdentityIcon value={_out.claimant} /></>) : 
-          (<><Label color='teal'circular>{'No. '}{index+1}{' '}</Label></>
+          {isAccount? (<>
+              <IdentityIcon value={_out.claimant} />
+              <AccountName value={_out.claimant} withSidebar={true}/>
+              <strong>{' Account ID: '}</strong>{_out.claimant}
+              <br /><br />
+              </>) : 
+          (<><Label color='grey'circular>{'Claim '}{index+1}{' '}</Label></>
           )}
           
-          <Label as='a' 
+          <Label 
                  color='grey'
                  onClick={() => (
                     <>
@@ -108,17 +116,29 @@ function ListEndorsements(): JSX.Element {
           </List.Item>)}
 
         </List>
-        <Badge color='red' icon='thumbs-down'/>
-        <strong>{t<string>('Claims Hidden:')}</strong><br />
+        {!isAccount && (
+          <>
+        <strong>{t<string>('Claims Hidden:')}</strong>
+        <LabelHelp help={t<string>(' Claims not shown on your resume. ')} /><br />
         <List divided inverted relaxed >
-          {claimDetail.ok.filter(_type => !_type.show).map(_out => 
+          {claimDetail.ok.filter(_type => !_type.show).map((_out, index: number) => 
           <List.Item> 
-          <Badge color='red' icon='thumbs-down'/>
+          <Label color='red' circular>{'Claim '}{index+1}</Label>
           <Label color='grey' >{t<string>(isHex(_out.claim) ? hexToString(_out.claim) : ' ')}</Label> {' '}
-          <Label circular color='orange'>{claimIdRef[_out.claimtype]}</Label>     
+          <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label> 
-          <strong>{t<string>(' ClaimID: ')}</strong>{_out.claimId}</List.Item>)}
-        </List>
+          <strong>{t<string>(' ClaimID: ')}</strong>{_out.claimId}<br />
+                <List divided inverted bulleted>
+                {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
+                 {(i === 0) ? 
+                 <>{'(self)'} {name}</> : 
+                 <><Badge color='blue' icon='check'/>{'(endorser No.'}{i}{') '}{name} </>}
+                </List.Item>)}
+                </List>          
+          </List.Item>)}
+        </List>          
+          </>
+        )}
         </div>   
     )
   } else {
@@ -133,7 +153,7 @@ function MakeEndorsement(): JSX.Element {
             <strong>{t<string>('Instructions for Endorsing Claims: ')}</strong><br />
             {'(1) '}{t<string>('Make Sure the (account to use) is NOT the owner of the claims')}<br /> 
             {'(2) '}{t<string>('Copy the ClaimID for the claim to Endorse into the (claimHash: Hash) field below')}<br />
-            {'(3) '}{t<string>('Click Claim to sign and subit this transaction')}<br /><br />
+            {'(3) '}{t<string>('Click Submit button to sign and submit this transaction')}<br /><br />
 
             {t<string>('⚠️ Please Note: You can not endorse your own claims.')}
         <Table>
@@ -157,19 +177,26 @@ try {
     <div>
       <Table>
         <Table.Row>
+        <Table.Cell>
+            {!isAccount && (
+              <>
+              <strong>{t<string>(' Resume of: ')}</strong>
+              <IdentityIcon value={claimDetail.ok[0].claimant} />
+              <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>  
+              <strong>{t<string>(' | account Id: ')}</strong>{claimDetail.ok[0].claimant}
+              </>              
+            )}
+            </Table.Cell>
+
           <Table.Cell>
+          <strong>{t<string>(' Called from: ')}</strong>
           <IdentityIcon value={from} />
+          <AccountName value={from} withSidebar={true}/>
           </Table.Cell>
           <Table.Cell>
           {'Date/Time: '}
           {' '}{when.toLocaleDateString()} 
           {' '}{when.toLocaleTimeString()} 
-          </Table.Cell>
-          <Table.Cell>
-          {!isAccount && (<>
-            <IdentityIcon value={claimDetail.ok[0].claimant} />
-          <strong>{t<string>(' Claim AccountId: ')}</strong>{claimDetail.ok[0].claimant}
-          </>)}
           </Table.Cell>
           <Table.Cell>
           <strong>{t<string>(' Key: ')}</strong>

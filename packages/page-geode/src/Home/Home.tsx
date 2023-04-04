@@ -111,7 +111,9 @@ const GoToGitHub = () => {
           <strong>Step 3: Buy some GEODE coin to use</strong> <br />
           Until GEODE is available on exchanges, you can buy it from people who already have it. This link allows you to buy GEODE
           directly from Sparticle Concepts LLC, the founders of Geode. This is a personal transaction between you and them. You can also
-          buy GEODE coin from others on the network who are willing to sell. Discuss that directly with them.<br />
+          buy GEODE coin from others on the network who are willing to sell. Discuss that directly with them.<br /><br />
+          {'⚠️ IMPORTANT: By making a Geode account and using the applications, you certify that you are at least 18 years of age.'}<br />
+
       </Card>
 
       <SummaryBox>        

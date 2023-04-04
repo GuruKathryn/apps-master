@@ -111,7 +111,7 @@ function Add ({ defaultAddress, onClose }: Props): React.ReactElement {
   
   return (
     <Modal
-      header={t('Load the Life & Work Contract to your local browser: (Click Save)')}
+      header={t('Load the Life & Work Contract to your local browser: (just Click Load!)')}
       onClose={onClose}
     >
       <Modal.Content>

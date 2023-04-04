@@ -4,19 +4,13 @@
 import React from 'react';
 
 import { Card, CardSummary, SummaryBox } from '@polkadot/react-components';
-//import { formatNumber } from '@polkadot/util';
 
 import { useTranslation } from '../translate';
 
 
 function Summary (): React.ReactElement {
   const { t } = useTranslation();
-  //const linkCount = 5;
-  //const itemCount = 0;
-  const summaryOne: string = ' Life and Work ';
-  const summaryTwo: string = ' - In this app you can make claims for your educational, professional and personal history. ';
-  const summaryThree: string = 'Additionally, you can submit endorsements for other users educational, professional and personal history. ';
-  
+  const summaryOne: string = ' Register your claims of expertise, work history, education/training, good deeds and original intellectual property to the Geode Blockchain. Endorse the authenticity of other users’ claims. Look up resumes by account. Search claims by keyword to discover people and their contributions to the world. ';
 
   return (
     <div>
@@ -26,9 +20,7 @@ function Summary (): React.ReactElement {
       </CardSummary> 
     </SummaryBox>
     <Card> 
-      <strong>  {t<string>(summaryOne)}  </strong> <br /><br />
-                {t<string>(summaryTwo)}  
-                {t<string>(summaryThree)} <br />
+      <strong>  {t<string>(summaryOne)}  </strong> <br />
     </Card>
     </div>
   );

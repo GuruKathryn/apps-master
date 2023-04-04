@@ -16,7 +16,7 @@ import { useCodes } from '../useCodes';
 
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Button, Badge, IdentityIcon, Card, LabelHelp } from '@polkadot/react-components';
+import { AccountName, Button, Badge, IdentityIcon, Card, LabelHelp } from '@polkadot/react-components';
 import { __RouterContext } from 'react-router';
 import { useToggle } from '@polkadot/react-hooks';
 import ContractsTable from './ContractsTable';
@@ -58,7 +58,6 @@ ok: ClaimObj[]
 function HideClaims ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     const { t } = useTranslation();
     const [isModalOpen, toggleModal] = useToggle();
-    //const [isIndex, setIsIndex] = useState(0);
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
     const claimIdRef: string[] = [' ', 'work history', 'education', 'expertise', 'good deeds', 'intellectual property', '', '', ' - Get Resume', '', '', '', ' - Search', '', '', '', '', '', ''];
@@ -84,17 +83,14 @@ function ListClaims(): JSX.Element {
       return(
         <div>
         <br />
-        <Badge color='green' icon='thumbs-up'/>
-        <strong>{t<string>('Claims:')}</strong>   
+        <Label color='blue' circular>{showRef.current}</Label>
+        <strong>{t<string>(' Claim(s) Shown: ')}</strong>   
         <LabelHelp help={t<string>('  Copy the ClaimId below to Hide or Show. Then click the Hide/Show Claim button at the bottom of the page.')} />   <br /> 
         <List divided inverted relaxed >
           {claimDetail.ok.filter(_type => _type.show).map((_out, index: number) => 
           <List.Item> 
-          
-          <Label color='blue'
-                 circular>{'No. '}{showRef.current=index+1}{' '}</Label>
-          <Label as='a' 
-                 color='grey'
+            <Label color='grey' circular>{'Claim '}{showRef.current=index+1}{' '}</Label>
+          <Label color='grey'
             >{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> 
           <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
@@ -104,24 +100,23 @@ function ListClaims(): JSX.Element {
                 {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
                  {(i === 0) ? 
                  <><strong>{'Claim Endorsements:'}</strong>{'(self)'} {name}</> : 
-                 <><Badge color='green' icon='check'/>{'(endorser No.'}{i}{') '}{name} </>}
+                 <><Badge color='blue' icon='check'/>{'(endorser No.'}{i}{') '}{name} </>}
                 </List.Item>)}
                 </List>
                 
           </List.Item>)}
           
         </List>
-        <Badge color='red' icon='thumbs-down'/>
-        <strong>{t<string>('Claims Hidden:')}</strong>
+        <Label color='red' circular>{hideRef.current}</Label>
+        <strong>{t<string>(' Claim(s) Hidden:')}</strong>
         <LabelHelp help={t<string>('  Copy the ClaimId below to Hide or Show. Then click the Hide/Show Claim button at the bottom of the page.')} />   <br /> 
         <List divided inverted relaxed >
           {claimDetail.ok.filter(_type => !_type.show).map((_out, index: number) => 
           <List.Item> 
           
           <Label color='red'
-                 circular>{'No. '}{hideRef.current=index+1}{' '}</Label>
-          <Label as='a' 
-                 color='grey'
+                 circular>{'Claim '}{hideRef.current=index+1}{' '}</Label>
+          <Label color='grey'
             >{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> 
           <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
@@ -152,7 +147,7 @@ function MakeHideClaim(): JSX.Element {
             {'(1) '}{t<string>('Make Sure the (account to use) is the owner of the claims')}<br /> 
             {'(2) '}{t<string>('Copy the ClaimID for the claim to Hide/Show into the (claimHash: Hash) field below')}<br />
             {'(3) '}{t<string>('Set the (setShow: bool) field to either no (Hide) or yes (Show)')}<br />
-            {'(4) '}{t<string>('Click Claim to sign and subit this transaction')}<br /><br />
+            {'(4) '}{t<string>('Click Submit Button to sign and submit this transaction')}<br /><br />
             {t<string>('⚠️ Please Note: You must be the account owner to show or hide a claim.')}<br />
         <Table>
           <Table.Row>
@@ -177,13 +172,14 @@ try {
         <Table.Row>
           <Table.Cell>
           <IdentityIcon value={from} />
+          <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>
+          </Table.Cell>
+          <Table.Cell>
+          <strong>{t<string>(' Claim AccountId: ')}</strong>{claimDetail.ok[0].claimant}
           </Table.Cell>
           <Table.Cell>
           {' '}{when.toLocaleDateString()} 
           {' '}{when.toLocaleTimeString()} 
-          </Table.Cell>
-          <Table.Cell>
-          <strong>{t<string>(' Claim AccountId: ')}</strong>{claimDetail.ok[0].claimant}
           </Table.Cell>
           <Table.Cell>
           <strong>{t<string>(' Key: ')}</strong>
@@ -215,9 +211,6 @@ try {
             <Table.Cell> 
             <strong>{t<string>(' Hide or Show a Claim: ')}</strong>
             <LabelHelp help={t<string>(' Use this card to select claims to hide or show on your Resume. By default all claims created are shown.')} /> <br />                      
-            {'Summary: '}
-            {t<string>('Total No. of Accounts Shown:')}<Label color='blue' circular>{showRef.current}</Label>
-            {t<string>('Total No. of Accounts Hidden:')}<Label color='red' circular>{hideRef.current}</Label>
             <ListClaims />
             </Table.Cell>
           </Table.Row>

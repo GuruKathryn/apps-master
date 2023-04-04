@@ -1,7 +1,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-//import React, { useCallback, useState } from 'react';
+//import React, { useRef } from 'react';
 import React from 'react';
 
 import { Table, List, Label } from 'semantic-ui-react'
@@ -11,7 +11,7 @@ import type { CallResult } from './types';
 
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Output, Badge, IdentityIcon, Card } from '@polkadot/react-components';
+import { AccountName, Output, IdentityIcon, Card, LabelHelp } from '@polkadot/react-components';
 import { __RouterContext } from 'react-router';
 import { useTranslation } from '../translate';
 
@@ -44,25 +44,36 @@ function ClaimIds ({ className = '', onClear, isAccount, outcome: { from, messag
   _Obj2 = JSON.parse(objOutput2);
   const claimDetail: ClaimDetail = Object.create(_Obj2);
 
-//const bnTest: boolean = false;
 
 function ListClaimIds(): JSX.Element {
   const claimIdRef: string[] = [' ', 'work history', 'education', 'expertise', 'good deeds', 'intellectual property', '', '', ' - Get Resume', '', '', '', ' - Search', '', '', '', '', '', ''];
 
     if (claimDetail.ok) {
       return(
-        <div>
-        <Badge color='green' icon='thumbs-up'/>
-        <strong>{t<string>('Claims Shown:')}</strong><br />
+        <div> 
+        {!isAccount && (
+          <>
+            <strong>{t<string>(' Claims Shown:')}</strong>
+            <LabelHelp help={t<string>(' Claims shown on your resume. ')} /><br />             
+          </>
+        )}
         <List divided inverted relaxed >
-          {claimDetail.ok.filter(_type => _type.show).map(_out => 
+          {claimDetail.ok.filter(_type => _type.show).map((_out, index: number) => 
           <List.Item> 
-      
-          {isAccount && (<IdentityIcon value={_out.claimant} />)}
+          {isAccount ? (
+                <>
+                <IdentityIcon value={_out.claimant} />
+                <AccountName value={_out.claimant} withSidebar={true}/>
+                {isAccount && (<>
+                  <strong>{' | accountID: '}</strong>{_out.claimant}</>)}
+                <br /><br />
+                </>): 
+                (<>
+                <Label color='grey' circular>{'Claim '}{index+1}{' '}</Label>
+                </>)}
           <Label color='grey'>{isHex(_out.claim) ? hexToString(_out.claim) : ' '}</Label> 
-          <Label circular color='orange'>{t<string>(claimIdRef[_out.claimtype])}</Label>     
+          <Label circular color='blue'>{t<string>(claimIdRef[_out.claimtype])}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
-          {isAccount && (<>{'accountID: '}{_out.claimant}</>)}
           <Output
                   className='output'
                   //isError={!result.isOk}
@@ -74,16 +85,18 @@ function ListClaimIds(): JSX.Element {
                   value={_out.claimId}
                   />
           </List.Item>)}
-          
         </List>
-        <Badge color='red' icon='thumbs-down'/>
-        <strong>{t<string>('Claims Hidden:')}</strong><br />
+        
+        {!isAccount && (
+        <>
+        <strong>{t<string>(' Claims Hidden:')}</strong>
+        <LabelHelp help={t<string>(' Claims not shown on your resume. ')} /><br />   
         <List divided inverted relaxed >
-          {claimDetail.ok.filter(_type => !_type.show).map(_out => 
+          {claimDetail.ok.filter(_type => !_type.show).map((_out, index: number) => 
           <List.Item> 
-          <Badge color='red' icon='thumbs-down'/>
-          {isHex(_out.claim) ? hexToString(_out.claim) : ' '} {' '}          
-          <Label circular color='blue'>{_out.claimtype}</Label>     
+          <Label color='red' circular>{'Claim '}{index+1}{' '}</Label>
+          <Label color='grey'>{isHex(_out.claim) ? t<string>(hexToString(_out.claim)) : ' '} {' '}</Label>          
+          <Label circular color='blue'>{t<string>(claimIdRef[_out.claimtype])}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label> 
           <Output
                   className='output'
@@ -96,7 +109,9 @@ function ListClaimIds(): JSX.Element {
                   value={_out.claimId}
                   />          
           </List.Item>)}
-        </List>
+        </List>  
+        </>
+        )}
         </div>   
     )
   } else {
@@ -112,16 +127,24 @@ function ListAccount(): JSX.Element {
       <div>
         <Table>
           <Table.Row>
-            <Table.Cell>
-            <IdentityIcon value={from} />
+          <Table.Cell>
+            {!isAccount && (
+              <>
+              <strong>{t<string>(' Resume of: ')}</strong>
+              <IdentityIcon value={claimDetail.ok[0].claimant} />
+              <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>  
+              <strong>{t<string>(' | account Id: ')}</strong>{claimDetail.ok[0].claimant}
+              </>              
+            )}
             </Table.Cell>
             <Table.Cell>
+                <strong>{' Called from: '}</strong><IdentityIcon value={from} />
+                <AccountName value={from} withSidebar={true}/>
+            </Table.Cell>
+            <Table.Cell>
+            <strong>{'Date/Time: '}</strong>
             {' '}{when.toLocaleDateString()} 
             {' '}{when.toLocaleTimeString()} 
-            </Table.Cell>
-            <Table.Cell>
-            <IdentityIcon value={claimDetail.ok[0].claimant} />
-            <strong>{t<string>(' Claim AccountId: ')}</strong>{claimDetail.ok[0].claimant}
             </Table.Cell>
             <Table.Cell>
             <strong>{t<string>(' Key: ')}</strong>
@@ -151,7 +174,9 @@ function ListAccount(): JSX.Element {
         <Table>
           <Table.Row>
             <Table.Cell>              
-              <strong>{t<string>('Claims by ClaimIds:')}</strong><br /><br />
+              <strong>{t<string>('Claims by ClaimIds:')}</strong>
+              <LabelHelp help={t<string>('  Click the copy button on the right to copy a Claim ID. ')} />   
+              <br /><br />
               <ListClaimIds />
             </Table.Cell>
           </Table.Row>

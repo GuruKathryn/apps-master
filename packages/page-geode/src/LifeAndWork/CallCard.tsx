@@ -168,13 +168,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}
         {messageIndex !== null && messageIndex<5 && (
           <><br /><br />
-          <Badge color='blue' icon='thumbs-up'/>
-          {t<string>('Select the AccountID for this Resume:')}
+          <Badge color='blue' icon='1'/>
+          {t<string>('Select the AccountID for this Claim:')}
           </>)}
           {messageIndex !== null && messageIndex===7 && (
           <><br /><br />
-          <Badge color='blue' icon='thumbs-up'/>
-          {t<string>('Select the AccountID for calling the Resume:')}
+          <Badge color='blue' icon='1'/>
+          {t<string>('Select which of your Accounts is asking for this Resume:')}
           </>)}
         <InputAddress
           defaultValue={accountId}
@@ -209,14 +209,14 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             )}
             {messageIndex !== null && messageIndex===7 && (
               <>
-              <Badge color='blue' icon='thumbs-up'/>
-              {t<string>('Select the AccountID associated with the Resume:')}
+              <Badge color='blue' icon='2'/>
+              {t<string>('Select the Account whose Resume you want to view:')}
               </>)}
 
             {messageIndex<5 && (
               <>
-                <Badge color='blue' icon='thumbs-up'/>
-                {t<string>('Enter Your Claim Here:')}
+                <Badge color='blue' icon='2'/>
+                {t<string>('Enter Your keywords, description and link to See More:')}
               </>)}
             <Params
               onChange={setParams}
@@ -337,7 +337,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             <Button
             icon='sign-in-alt'
             isDisabled={!isValid}
-            label={t<string>('Read')}
+            label={t<string>('View')}
             onClick={_onSubmitRpc} 
             />
           )
@@ -347,7 +347,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               extrinsic={execTx}
               icon='sign-in-alt'
               isDisabled={!isValid || !execTx}
-              label={t('Claim')}
+              label={t('Submit')}
               onStart={onClose}
             />
           )
@@ -367,12 +367,16 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               label={t<string>('Endorsements')}
               onClick={setIsEndorse} 
             />
+            {messageIndex != 10 && (
+              <>
             <Button
               icon={(isHideClaim) ? 'minus' : 'plus'}
               //isDisabled={!isValid}
               label={t<string>('Hide/Show Claims')}
               onClick={setIsHideClaim} 
-            />
+            />              
+            </>
+            )}
         {' | '}
             <Button
               icon={(isTest) ? 'minus' : 'plus'}
