@@ -8,7 +8,7 @@ import { Table } from '@polkadot/react-components';
 import Summary from './Summary';
 import Details from './Details';
 
-export default function Market (): React.ReactElement {
+export default function Profile (): React.ReactElement {
 
   return (
     <div>

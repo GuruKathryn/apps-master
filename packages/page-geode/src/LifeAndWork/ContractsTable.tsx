@@ -52,8 +52,8 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   // set to true to test contracts functionality
   const isTest: boolean = false;
   // set default after contract load to chain
-  const contractAddress: string = '5DnNfZompCc5RGacRb61gofhZkhS3CKV4UGaQdDECxMh1UgQ';
-
+  //const contractAddress: string = '5DnNfZompCc5RGacRb61gofhZkhS3CKV4UGaQdDECxMh1UgQ';
+  const contractAddress: string = '5GNugRJWBbZX8JUzBfDtcpq3cCAAsnUav7awJVEYLRxMus4M';
   const headerRef = useRef<[string?, string?, number?][]>([
     [t('Add claims for Life and Work'), 'start'],
     [undefined, undefined, 3],
