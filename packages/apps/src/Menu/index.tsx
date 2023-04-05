@@ -38,6 +38,12 @@ function createExternals (t: TFunction): ItemRoute[] {
       icon: 'book',
       name: 'wiki',
       text: t<string>('nav.wiki', 'Help', { ns: 'apps-routing' })
+    },
+    {
+      href: 'http://geodechain.com/tos/',
+      icon: 'book',
+      name: 'tos',
+      text: t<string>('nav.wiki', 'TOS', { ns: 'apps-routing' })
     }
   ];
 }
