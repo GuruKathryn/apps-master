@@ -3,8 +3,7 @@
 
 import React from 'react';
 
-import { CardSummary, SummaryBox } from '@polkadot/react-components';
-//import { formatNumber } from '@polkadot/util';
+import { Card, CardSummary, SummaryBox } from '@polkadot/react-components';
 
 import { useTranslation } from '../translate';
 
@@ -22,6 +21,9 @@ function Summary (): React.ReactElement {
       {t<string>('Geode Profile')}
       </CardSummary>
     </SummaryBox>
+    <Card>
+        <strong>{t<string>('Set or update your Geode Profile, look up the profile for a specific account, and search profiles by keyword.')}</strong>
+    </Card>
     </div>
   );
 }

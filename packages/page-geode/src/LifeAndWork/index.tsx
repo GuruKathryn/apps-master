@@ -98,7 +98,7 @@ const showCodeHash: boolean = false;
           <>
               <Button
                 icon={(isResumeOpen) ? 'minus' : 'plus'}
-                label={t('Get a Resume')}
+                label={t('Get Resumes')}
                 onClick={toggleResume}>
               </Button>    
           </>

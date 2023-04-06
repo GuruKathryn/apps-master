@@ -111,7 +111,7 @@ try {
           )}
           </Table.Cell>
           <Table.Cell>
-          <strong>{t<string>('Called from: ')}</strong>
+            <strong>{t<string>('Called from: ')}</strong>
           <IdentityIcon value={from} />
           <AccountName value={from} withSidebar={true}/>
           </Table.Cell>

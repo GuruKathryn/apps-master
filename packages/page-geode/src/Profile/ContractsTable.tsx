@@ -52,12 +52,12 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   // set to true to test contracts functionality
   const isTest: boolean = false;
   // set default after contract load to chain
-  // test contract Address
-  const contractAddress: string = '5DnNfZompCc5RGacRb61gofhZkhS3CKV4UGaQdDECxMh1UgQ';
-  // contract Address for Geode
+  // test contract Address for Geode Profile
+  const contractAddress: string = '5CXBbMFVGSfstpfSxRB5U5bMzD4sxwhiwnoy32SWULdNcEfa';
+  // Geode Profile contract Address for Geode Chain 
   // const contractAddress: string = '5GNugRJWBbZX8JUzBfDtcpq3cCAAsnUav7awJVEYLRxMus4M';
   const headerRef = useRef<[string?, string?, number?][]>([
-    [t('Add claims for Life and Work'), 'start'],
+    [t('Add claims for Geode Profile'), 'start'],
     [undefined, undefined, 3],
     [t('status'), 'start'],
     []
@@ -115,7 +115,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
     <>
       {!contract && (
         <Card>
-          {t<string>('Load Life and Work')}
+          {t<string>('Load Geode Profile Contract')}
           <Button
             icon={(isLoadContract) ? 'plus' : 'sign-in-alt'}
             label={t<string>('Load')}
@@ -131,7 +131,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
       )}
       {isTest && contract && (
         <Card>
-            {'(1) Default Life & Work Address: '}{contractAddress}{' | '}
+            {'(1) Default Geode Profile Contract Address: '}{contractAddress}{' | '}
             {(contractAddress)?
             <Badge color='green' icon='thumbs-up'/> : 
             <Badge color='red' icon='x' />}<br />
@@ -156,17 +156,17 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
               <Badge color='green' icon='thumbs-up'/> : 
               <Badge color='red' icon='x' />}<br />
             {'API size: '}{JSON.stringify(api).length}<br /><br />
-            {'(4) Is Life & Work Contract Loaded?: '}
+            {'(4) Is Geode Profile Contract Loaded?: '}
             {(contract)?
               <Badge color='green' icon='thumbs-up'/> : 
               <Badge color='red' icon='x' />}<br />
-            {'Life & Work contract size: '}{JSON.stringify(contract).length}<br />
+            {'Profile contract size: '}{JSON.stringify(contract).length}<br />
             {'Contract Index: '}{contractIndex}<br /><br />
             {'(5) All Contracts Loaded?: '}
             {(contracts)?
               <Badge color='green' icon='thumbs-up'/> : 
               <Badge color='red' icon='x' />}<br />
-            {'Life & Work contract size: '}{JSON.stringify(contracts).length}<br /><br />
+            {'Profile contract size: '}{JSON.stringify(contracts).length}<br /><br />
             <Button
               icon={(isTableOpen) ? 'minus' : 'plus'}
               label={t<string>('View Contracts')}

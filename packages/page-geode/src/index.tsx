@@ -12,6 +12,7 @@ import { Route, Switch } from 'react-router';
 import { Tabs } from '@polkadot/react-components';
 
 import LifeAndWork from './LifeAndWork';
+import Profile from './Profile';
 import Home from './Home/Home';
 import Market from './Market';
 import Social from './Social';
@@ -37,6 +38,7 @@ interface TabItem {
 function createPathRef (basePath: string): Record<string, string | string[]> {
   return {
     lifeAndWork: `${basePath}/lifeAndWork`,
+    profile: `${basePath}/profile`,
     home: `${basePath}/`,
     market: `${basePath}/market`,
     social: `${basePath}/social`,
@@ -54,6 +56,10 @@ function createItemsRef (t: TFunction): TabItem[] {
     {
       name: 'lifeAndWork',
       text: t<string>('Life and Work')
+    },
+    {
+      name: 'profile',
+      text: t<string>('Profile')
     },
     {
       name: 'market',
@@ -91,6 +97,7 @@ function GeodeApp ({ basePath, className }: Props): React.ReactElement<Props> {
       
       <Switch>
         <Route path={pathRef.current.lifeAndWork}><LifeAndWork /></Route>
+        <Route path={pathRef.current.profile}><Profile /></Route>
         <Route path={pathRef.current.market}><Market /></Route>
         <Route path={pathRef.current.social}><Social /></Route>
         <Route path={pathRef.current.messaging}><Messaging /></Route>
