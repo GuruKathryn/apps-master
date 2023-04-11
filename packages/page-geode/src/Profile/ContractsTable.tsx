@@ -18,6 +18,7 @@ import ContractAdd from './Add';
 import CallCard from './CallCard';
 import Contract from './Contract';
 import { getContractForAddress } from './util';
+import JSONContractAddress from '../shared/geode_contracts.json';
 
 export interface Props {
   contracts: string[];
@@ -52,10 +53,8 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   // set to true to test contracts functionality
   const isTest: boolean = false;
   // set default after contract load to chain
-  // test contract Address for Geode Profile
-  const contractAddress: string = '5CXBbMFVGSfstpfSxRB5U5bMzD4sxwhiwnoy32SWULdNcEfa';
-  // Geode Profile contract Address for Geode Chain 
-  // const contractAddress: string = '5GNugRJWBbZX8JUzBfDtcpq3cCAAsnUav7awJVEYLRxMus4M';
+  const contractAddress: string = (JSONContractAddress[1])? JSONContractAddress[1] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
+
   const headerRef = useRef<[string?, string?, number?][]>([
     [t('Add claims for Geode Profile'), 'start'],
     [undefined, undefined, 3],

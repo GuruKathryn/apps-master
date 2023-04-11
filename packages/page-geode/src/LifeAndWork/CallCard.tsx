@@ -8,7 +8,7 @@ import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import type { CallResult } from './types';
-import { blake2AsHex } from '@polkadot/util-crypto';
+//import { blake2AsHex } from '@polkadot/util-crypto';
 import MessageSignature from '../shared/MessageSignature';
 
 
@@ -17,17 +17,17 @@ import MessageSignature from '../shared/MessageSignature';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Static, Badge, Card, Button, Dropdown, Expander, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
+import { Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
-import { stringToHex, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
+import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
 
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
-import OutcomeClaim from './OutcomeClaim';
+//import OutcomeClaim from './OutcomeClaim';
 import Details from './Details';
-import ClaimIds from './ClaimIds';
+//import ClaimIds from './ClaimIds';
 import { getCallMessageOptions } from './util';
 import Endorsements from './Endorsements';
 import HideClaims from './HideClaims';
@@ -55,17 +55,15 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
   const [isViaCall, toggleViaCall] = useToggle();
-  const [isMenu, setIsMenu] = useState(false);
+  const [isCalled, toggleIsCalled] = useToggle(true);
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
   const [isTest, setIsTest] = useToggle();
-  const [isClaimIds, setIsClaimIds] = useToggle();
   const [isEndorse, setIsEndorse] = useToggle();
   const [isHideClaim, setIsHideClaim] = useToggle();
-  const claimIdRef: string[] = [' - Expertise', ' - Work History', ' - Education', ' - Good Deeds', ' - Intellectual Property', '', '', ' - Get Resume', '', '', '', ' - Search', '', '', '', '', '', ''];
   
-  const isTestData: boolean = false; //takes out code elements we only see for test
+  //const isTestData: boolean = false; //takes out code elements we only see for test
 
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -119,7 +117,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
       if (!accountId || !message || !value || !weight) {
         return;
       }
-      {setIsMenu(true)}
+      //{setIsMenu(true)}
+      {toggleIsCalled()}
       contract
         .query[message.method](
           accountId,
@@ -155,7 +154,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   return (
     <Card >
-        <strong>{t<string>('Life and Work Claims')}{' '}{claimIdRef[messageIndex]}</strong>
+        
         {isTest && (
           <InputAddress
           //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
@@ -165,16 +164,18 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           value={contract.address}
           />
         )}
-        {messageIndex !== null && messageIndex<5 && (
+        {isCalled && messageIndex !== null && messageIndex<5 && (
           <><br /><br />
           <Badge color='blue' icon='1'/>
           {t<string>('Select the AccountID for this Claim:')}
           </>)}
-          {messageIndex !== null && messageIndex===7 && (
+        {isCalled && messageIndex !== null && messageIndex===7 && (
           <><br /><br />
           <Badge color='blue' icon='1'/>
           {t<string>('Select which of your Accounts is asking for this Resume:')}
           </>)}
+        {isCalled && (
+          <>
         <InputAddress
           defaultValue={accountId}
           //help={t<string>('Specify the user account to use for this contract call. And fees will be deducted from this account.')}
@@ -188,9 +189,11 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           onChange={setAccountId}
           type='account'
           value={accountId}
-        />
+          />
+          </>
+        )}
 
-        {messageIndex !== null && (
+        {isCalled && messageIndex !== null && (
           <>
             {isTest && (
             <>
@@ -206,13 +209,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />              
             </>
             )}
-            {messageIndex !== null && messageIndex===7 && (
+            {isCalled && messageIndex !== null && messageIndex===7 && (
               <>
               <Badge color='blue' icon='2'/>
               {t<string>('Select the Account whose Resume you want to view:')}
               </>)}
 
-            {messageIndex<5 && (
+            {isCalled && messageIndex<5 && (
               <>
                 <Badge color='blue' icon='2'/>
                 {t<string>('Enter Your keywords, description and link to See More:')}
@@ -265,72 +268,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}        
         </>
         )}
-        {isTestData && isTest && outcomes.length > 0 && (
-          <Expander
-            className='outcomes'
-            isOpen
-            summary={t<string>('Call results')}
-          >
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <OutcomeClaim
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                outcome={outcome}
-                titleText=''//t<string>('Claim Type Selection Error')}
-                isDetail={messageIndex===7 || messageIndex===6}
-                isFullDetail={messageIndex===6}
-              />
-            ))}
-          </Expander>
-        )}
-        {outcomes.length > 0 && (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <Details
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                isAccount={messageIndex===10 ? true: false}
-                outcome={outcome}
-              />
-            ))}
-            </div>
-        )}
-        {outcomes.length > 0 && isClaimIds && (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <ClaimIds
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                isAccount={messageIndex===10 ? true: false}
-                outcome={outcome}
-              />
-            ))}
-            </div>
-        )}
-        {outcomes.length > 0 && isEndorse && (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <Endorsements
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                isAccount={messageIndex===10 ? true: false}
-                outcome={outcome}
-              />
-            ))}
-            </div>
-        )}
-        {outcomes.length > 0 && isHideClaim && (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <HideClaims
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                outcome={outcome}
-              />
-            ))}
-            </div>
-        )}
-
+        <Card>
+        {isCalled && (
+          <>
         {isViaRpc
           ? (
             <Button
@@ -350,24 +290,24 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               onStart={onClose}
             />
           )
-        }
-        {isMenu && (
+        }          
+        </>
+        )}
+        {!isCalled && (
           <>
         {' | '}
-            <Button
-              icon={(isClaimIds) ? 'minus' : 'plus'}
-              //isDisabled={!isValid}
-              label={t<string>('Claim Ids')}
-              onClick={setIsClaimIds} 
-            />
+            {!isHideClaim && (
+            <>
             <Button
               icon={(isEndorse) ? 'minus' : 'plus'}
               //isDisabled={!isValid}
-              label={t<string>('Endorsements')}
+              label={t<string>('Endorse')}
               onClick={setIsEndorse} 
-            />
-            {messageIndex != 10 && (
-              <>
+            />          
+            </>
+            )}
+        {messageIndex != 10 && !isEndorse && (
+            <>
             <Button
               icon={(isHideClaim) ? 'minus' : 'plus'}
               //isDisabled={!isValid}
@@ -385,41 +325,49 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />
           </>
         )}
-        {isTest && (
-        <div>
-        <br /><br />
-        <Params
-              onChange={setParams}
-              params={
-                message
-                  ? message.args
-                  : undefined
-              }            
-              registry={contract.abi.registry}
-        />
-        <Static
-          label={t<string>('preimage hash')}
-          value={blake2AsHex(stringToHex(params.toString()))}
-          withCopy
-        />
-        <strong>{t<string>('Message Signature:')}</strong><br />
-          <MessageSignature
-            message={message}
-            params={params}
-          />
-        <strong>{' accountId: '}</strong>{accountId}<br /><br />
-        <strong>{' Contract: '}</strong><br />
-        <strong>{' contract abi length: '}</strong>{JSON.stringify(contract.abi).length}<br />
-        <strong>{' contract address: '}</strong>{JSON.stringify(contract.address)}<br />
-        <strong>{' contract api length: '}</strong>{JSON.stringify(contract.api).length}<br />
-        <strong>{' contract query: '}</strong>{JSON.stringify(contract.query)}<br />
-        <strong>{' contract registry: '}</strong>{JSON.stringify(contract.registry)}<br />
-        <strong>{' contract tx: '}</strong>{JSON.stringify(contract.tx)}<br />
-        <strong>{' message Index: '}</strong>{messageIndex}
-        <br />
-        </div>
+        </Card>
+
+        {outcomes.length > 0 && isEndorse && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <Endorsements
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                isAccount={messageIndex===10 ? true: false}
+                outcome={outcome}
+              />
+            ))}
+            </div>
         )}
-        
+
+        {outcomes.length > 0 && isHideClaim && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <HideClaims
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+
+        {outcomes.length > 0 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <Details
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                isAccount={messageIndex===10 ? true: false}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+
+
         </Card>
   );
 }
@@ -437,5 +385,4 @@ export default React.memo(styled(CallCard)`
     margin-top: 1rem;
   }
 `);
-
 

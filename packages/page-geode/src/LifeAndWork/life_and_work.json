@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x4c5d3c5c4e8d2bbb4b3b1f4d886dd218c002f02975afc8565311389ed89d79b1",
+    "hash": "0x30b78c86d1442bd4d825dc00334aaf38d819de63d4e17b10665becea3517920b",
     "language": "ink! 4.0.1",
     "compiler": "rustc 1.70.0-nightly",
     "build_info": {
@@ -464,15 +464,6 @@
       },
       {
         "args": [
-          {
-            "label": "owner",
-            "type": {
-              "displayName": [
-                "AccountId"
-              ],
-              "type": 4
-            }
-          },
           {
             "label": "claim_id",
             "type": {

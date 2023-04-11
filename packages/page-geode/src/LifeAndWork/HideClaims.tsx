@@ -33,7 +33,8 @@ type ClaimObj = {
   claimId: string,
   endorserCount: number,
   show: boolean,
-  endorsers: string[]
+  endorsers: string[],
+  link: string
 }
 
 type ClaimDetail = {
@@ -51,6 +52,8 @@ function HideClaims ({ className = '', onClear, outcome: { from, message, output
     const showRef = useRef(0);
     const hideRef = useRef(0);
 
+    const isShowTest: boolean = false;
+
   //todo: code for allCodes:
   console.log(JSON.stringify(allCodes));
 
@@ -61,7 +64,6 @@ function HideClaims ({ className = '', onClear, outcome: { from, message, output
 
 
 function ListClaims(): JSX.Element {
-
     if (claimDetail.ok) {
       return(
         <div>
@@ -78,7 +80,21 @@ function ListClaims(): JSX.Element {
           <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
           
-          <strong>{' ClaimId: '}</strong>{_out.claimId}<br />
+          <strong>{' ClaimId: '}</strong>{_out.claimId}<br /><br />
+          {hexToString(_out.link)!='' && (
+            <>
+                <Badge color='orange' icon='link'/>{' '}
+                {isHex(_out.link) ? hexToString(_out.link) : ' '}
+                <Label  as='a'
+                  color='orange'
+                  circular
+                  href={isHex(_out.link) ? hexToString(_out.link) : ' '}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >{'Link'}
+                </Label>
+            </>
+        )}
                 <List divided inverted bulleted>
                 {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
                  {(i === 0) ? 
@@ -104,7 +120,22 @@ function ListClaims(): JSX.Element {
           <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
           <Label circular color='teal'> {_out.endorserCount} </Label>
           
-          <strong>{t<string>(' ClaimId: ')}</strong>{_out.claimId}<br />
+          <strong>{t<string>(' ClaimId: ')}</strong>{_out.claimId}<br /><br />
+          {hexToString(_out.link)!='' && (
+            <>
+                <Badge color='orange' icon='link'/>{' '}
+                {isHex(_out.link) ? hexToString(_out.link) : ' '}
+                <Label  as='a'
+                  color='orange'
+                  circular
+                  href={isHex(_out.link) ? hexToString(_out.link) : ' '}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >{'Link'}
+                </Label>
+            </>
+        )}
+
                 <List divided inverted bulleted>
                 {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
                  {(i === 0) ? 
@@ -126,6 +157,7 @@ function ListClaims(): JSX.Element {
 function MakeHideClaim(): JSX.Element {
     return(
         <div>
+            <h2><strong>{t<string>('Life and Work - Hide and Show Your Claims')}{' '}</strong></h2><br />
             <strong>{t<string>('Instructions for Hiding and Showing Claims: ')}</strong><br />
             {'(1) '}{t<string>('Make Sure the (account to use) is the owner of the claims')}<br /> 
             {'(2) '}{t<string>('Copy the ClaimID for the claim to Hide/Show into the (claimHash: Hash) field below')}<br />
@@ -188,6 +220,8 @@ try {
   return (
     <StyledDiv className={className}>
     <Card>  
+      {isShowTest && (
+        <>
         <ListAccount />
         <Table>
           <Table.Row>
@@ -215,10 +249,13 @@ try {
                 </Table.Cell>
           </Table.Row>
         </Table>
+        </>
+      )}
 
-    {isModalOpen && (
+    {isShowTest && isModalOpen && (
         <MakeHideClaim />
     )}
+    <MakeHideClaim />
     </Card>
     </StyledDiv>
   );

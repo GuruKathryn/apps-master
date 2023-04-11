@@ -53,6 +53,8 @@ function Endorsements ({ className = '', onClear, isAccount, outcome: { from, me
     const claimIdRef: string[] = [' ', 'work history', 'education', 'expertise', 'good deeds', 'intellectual property', '', '', ' - Get Resume', '', '', '', ' - Search', '', '', '', '', '', ''];
     const [showButton, setShowButton] = useState(true);
 
+    const isShowTest: boolean = false;
+  //  const isDontShow: boolean = true;
   //todo: code for allCodes:
     console.log(JSON.stringify(allCodes));
 
@@ -141,6 +143,7 @@ function ListEndorsements(): JSX.Element {
 function MakeEndorsement(): JSX.Element {
     return(
         <div>
+            <h2><strong>{t<string>('Life and Work - Endorse a Claim')}</strong></h2><br />
             <strong>{t<string>('Instructions for Endorsing Claims: ')}</strong><br />
             {'(1) '}{t<string>('Make Sure the (account to use) is NOT the owner of the claims')}<br /> 
             {'(2) '}{t<string>('Copy the ClaimID for the claim to Endorse into the (claimHash: Hash) field below')}<br />
@@ -213,37 +216,46 @@ try {
   return (
     <StyledDiv className={className}>
     <Card>  
-        <ListAccount />
+      {isShowTest && (
+        <>
+          <ListAccount />        
+        </>
+      )}
+      {isShowTest && (
         <Table>
           <Table.Row>
             <Table.Cell> 
             <strong>{t<string>(' Claim Endorsements: ')}</strong>
             <LabelHelp help={t<string>(' Use this card to endorse Resume claims. Open the endorsement card below.')} /> <br />                      
-            <ListEndorsements />
+            <ListEndorsements />        
             </Table.Cell>
           </Table.Row>
         </Table>
+        )}
+        {isShowTest && (
         <Table>
-            <Table.Row>
-                <Table.Cell>
-                {showButton && (
-                    <>
-                    <Button
-                        icon={(isModalOpen) ? 'minus' : 'plus'}
-                        //isDisabled={!isValid}
-                        //label={t<string>('Claim Ids')}
-                        label={t<string>('Make Endorsement')}
-                        onClick={toggleModal} 
-                    />        
-                    </>
-                )}
-                </Table.Cell>
-          </Table.Row>
-        </Table>
+        <Table.Row>
+            <Table.Cell>
+            {showButton && (
+                <>
+                <Button
+                    icon={(isModalOpen) ? 'minus' : 'plus'}
+                    //isDisabled={!isValid}
+                    //label={t<string>('Claim Ids')}
+                    label={t<string>('Make Endorsement')}
+                    onClick={toggleModal} 
+                />        
+                </>
+            )}
+            </Table.Cell>
+      </Table.Row>
+    </Table>
+    )}
 
-    {isModalOpen && (
+    {isShowTest && isModalOpen && (
         <MakeEndorsement />
     )}
+      <MakeEndorsement />
     </Card>
     </StyledDiv>
   );

@@ -8,29 +8,24 @@ import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import type { CallResult } from './types';
-import { blake2AsHex } from '@polkadot/util-crypto';
-import MessageSignature from '../shared/MessageSignature';
-
-
-//import type { Hash } from '@polkadot/types/interfaces';
+//import { blake2AsHex } from '@polkadot/util-crypto';
+//import MessageSignature from '../shared/MessageSignature';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Static, Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
+import { Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
-import { stringToHex, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
+import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
+//import { Table } from 'semantic-ui-react'
 
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
-//import OutcomeClaim from './OutcomeClaim';
 import Details from './Details';
-//import ClaimIds from './ClaimIds';
+import SearchDetails from './SearchDetails';
 import { getCallMessageOptions } from './util';
-//import Endorsements from './Endorsements';
-//import HideClaims from './HideClaims';
 
 interface Props {
   className?: string;
@@ -60,7 +55,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
   const [isTest, setIsTest] = useToggle();
-  //const [isClaimIds, setIsClaimIds] = useToggle();
   
   //const isTestData: boolean = false; //takes out code elements we only see for test
 
@@ -152,7 +146,21 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   return (
     <Card >
-        <strong>{t<string>(' Geode Profile ')}{' '}{messageIndex}</strong>
+        <h2><strong>{t<string>(' Geode Profile ')}{' '}</strong>
+        {messageIndex===0 && (
+          <>
+            {'- Enter Your Profile Data'}</>
+        )}
+        {messageIndex===1 && (
+          <>{'- View Profiles'}</>
+        )}
+        {messageIndex===2 && (
+          <>{'- Search Profiles by Keyword'}</>
+        )}
+        {messageIndex===3 && (
+          <>{'- Search Profiles by Account ID'}</>
+        )}
+        </h2>
         {isTest && (
           <InputAddress
           //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
@@ -162,15 +170,15 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           value={contract.address}
           />
         )}
-        {messageIndex !== null && messageIndex<2 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the AccountID for this Profile:')}
-          </>)}
-          {messageIndex !== null && messageIndex===2 && (
+        {messageIndex !== null && messageIndex===1 && (
           <><br /><br />
           <Badge color='blue' icon='1'/>
           {t<string>('Select which of your Accounts is asking for this Profile:')}
+          </>)}
+        {messageIndex !== null && messageIndex===0 && (
+          <><br /><br />
+          <Badge color='blue' icon='1'/>
+          {t<string>('Select the Account for this Profile:')}
           </>)}
         <InputAddress
           defaultValue={accountId}
@@ -203,13 +211,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />              
             </>
             )}
-            {messageIndex !== null && messageIndex===3 && (
+            {messageIndex !== null && messageIndex===1 && (
               <>
               <Badge color='blue' icon='2'/>
               {t<string>('Select the Account whose Profile you want to view:')}
               </>)}
 
-            {messageIndex<5 && (
+            {messageIndex=== 0 && (
               <>
                 <Badge color='blue' icon='2'/>
                 {t<string>('Enter Your keywords, description and link to See More:')}
@@ -262,19 +270,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}        
         </>
         )}
-        {outcomes.length > 0 && (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <Details
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                isAccount={messageIndex===10 ? true: false}
-                outcome={outcome}
-              />
-            ))}
-            </div>
-        )}
-
+        <Card>
         {isViaRpc
           ? (
             <Button
@@ -305,70 +301,34 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               onClick={setIsTest} 
             />
           </>
-        )}
-        {isTest && (
-        <div>
-        <br /><br />
-        <Params
-              onChange={setParams}
-              params={
-                message
-                  ? message.args
-                  : undefined
-              }            
-              registry={contract.abi.registry}
-        />
-        <Static
-          label={t<string>('preimage hash')}
-          value={blake2AsHex(stringToHex(params.toString()))}
-          withCopy
-        />
-        <strong>{t<string>('Message Signature:')}</strong><br />
-          <MessageSignature
-            message={message}
-            params={params}
-          />
-        <strong>{' accountId: '}</strong>{accountId}<br /><br />
-        <strong>{' Contract: '}</strong><br />
-        <strong>{' contract abi length: '}</strong>{JSON.stringify(contract.abi).length}<br />
-        <strong>{' contract address: '}</strong>{JSON.stringify(contract.address)}<br />
-        <strong>{' contract api length: '}</strong>{JSON.stringify(contract.api).length}<br />
-        <strong>{' contract query: '}</strong>{JSON.stringify(contract.query)}<br />
-        <strong>{' contract registry: '}</strong>{JSON.stringify(contract.registry)}<br />
-        <strong>{' contract tx: '}</strong>{JSON.stringify(contract.tx)}<br />
-        <br />
-        <strong>{' Params: '}</strong><br />
-        <strong>{' (params) hash: '}</strong>{JSON.stringify(params)}<br />
-        <strong>{' (params) dbParams: '}</strong>{JSON.stringify(dbParams)}<br />
-        <strong>{' dbValues: '}</strong>{JSON.stringify(dbValue)}<br /><br />
+        )} 
+        </Card>
 
-        <strong>{' Messages:'}</strong><br />
-        <strong>{' messageIndex: '}{messageIndex}</strong><br />
-        <strong>{' message.args: '}</strong>{JSON.stringify(message.args)}<br />
-        <strong>{' message.identifier: '}</strong>{JSON.stringify(message.identifier)}<br />
-        <strong>{' message.docs: '}</strong>{JSON.stringify(message.docs)}<br />
-        <strong>{' message.index: '}</strong>{JSON.stringify(message.index)}<br />
-        <strong>{' message.isMutating: '}</strong>{JSON.stringify(message.isMutating)}<br />
-        <strong>{' message.fromU8a: '}</strong>{JSON.stringify(message.fromU8a)}<br />
-        <strong>{' message.isConstructor: '}</strong>{JSON.stringify(message.isConstructor)}<br />
-        <strong>{' message.isPayable: '}</strong>{JSON.stringify(message.isPayable)}<br />
-        <strong>{' message.method: '}</strong>{JSON.stringify(message.method)}<br />
-        <strong>{' message.path: '}</strong>{JSON.stringify(message.path)}<br />
-        <strong>{' message.returnType: '}</strong>{JSON.stringify(message.returnType)}<br />
-        <strong>{' message.selector: '}</strong>{JSON.stringify(message.selector)}<br /><br />
-        
-        <strong>{' outcomes: '}</strong>{JSON.stringify(outcomes)}<br /><br />
-        
-        <strong>{' registry: '}</strong>{JSON.stringify(contract.abi.registry)}<br /><br />
-
-        <strong>{' Weights: '}</strong>
-        <strong>{' estimatedWeight: '}</strong>{JSON.stringify(estimatedWeight)}<br />
-        <strong>{' estimatedWeightV2: '}</strong>{JSON.stringify(estimatedWeightV2)}<br />
-        <strong>{' weight: '}</strong>{JSON.stringify(weight)}<br /><br />
-        <br />
-        </div>
+        {outcomes.length > 0 && messageIndex < 2 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <Details
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                isAccount={messageIndex===3 ? true: false}
+                outcome={outcome}
+              />
+            ))}
+            </div>
         )}
-        
+        {outcomes.length > 0 && messageIndex > 1 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <SearchDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                isAccount={messageIndex > 1 ? true: false}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+      
         </Card>
   );
 }
