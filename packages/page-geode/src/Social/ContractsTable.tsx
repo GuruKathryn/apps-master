@@ -9,7 +9,7 @@ import type { ContractLink } from './types';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Badge, Card, Button, Table } from '@polkadot/react-components';
+import { Badge, InputAddress, Card, Button, Table } from '@polkadot/react-components';
 import { useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { formatNumber } from '@polkadot/util';
 
@@ -18,13 +18,10 @@ import ContractAdd from './Add';
 import CallCard from './CallCard';
 import Contract from './Contract';
 import { getContractForAddress } from './util';
-
-
 // uncomment for test configuration - - - - >
 import JSONContractAddress from '../shared/geode_contracts_test.json';
 // uncomment for production chain - - - - >
 //import JSONContractAddress from '../shared/geode_contracts.json';
-
 
 export interface Props {
   contracts: string[];
@@ -58,14 +55,11 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   const [isLoadContract, toggleIsLoad] = useToggle();
   // set to true to test contracts functionality
   const isTest: boolean = false;
-  console.log(contractIndex);
   // set default after contract load to chain
-  const contractAddress: string = (JSONContractAddress[0])? JSONContractAddress[0] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
-
-
+  const contractAddress: string = (JSONContractAddress[2])? JSONContractAddress[2] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
 
   const headerRef = useRef<[string?, string?, number?][]>([
-    [t('Add claims for Life and Work'), 'start'],
+    [t('Geode Social'), 'start'],
     [undefined, undefined, 3],
     [t('status'), 'start'],
     []
@@ -123,7 +117,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
     <>
       {!contract && (
         <Card>
-          {t<string>('Load Life and Work')}
+          {t<string>('Load Geode Social Contract')}
           <Button
             icon={(isLoadContract) ? 'plus' : 'sign-in-alt'}
             label={t<string>('Load')}
@@ -139,15 +133,42 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
       )}
       {isTest && contract && (
         <Card>
-            {'test code here!: '}{contractAddress}{' | '}
+            {'(1) Default Geode Social Contract Address: '}{contractAddress}{' | '}
             {(contractAddress)?
             <Badge color='green' icon='thumbs-up'/> : 
             <Badge color='red' icon='x' />}<br />
-            {'Is API Loaded?: '}
+            <InputAddress
+              //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
+              label={t<string>('contract to use')}
+              type='contract'
+              value={contractAddress}          
+            />
+            {'(2) Set Contract Address: '}{contract.address.toString()}{' | '}
+            {(contract.address)?
+            <Badge color='green' icon='thumbs-up'/> : 
+            <Badge color='red' icon='x' />}<br />
+            <InputAddress
+              //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
+              label={t<string>('contract to use')}
+              type='contract'
+              value={contract.address}
+            />
+            {'(3) Is API Loaded?: '}
             {(api)?
               <Badge color='green' icon='thumbs-up'/> : 
               <Badge color='red' icon='x' />}<br />
-            {'Life & Work contract size: '}{JSON.stringify(contracts).length}<br /><br />
+            {'API size: '}{JSON.stringify(api).length}<br /><br />
+            {'(4) Is Geode Social Contract Loaded?: '}
+            {(contract)?
+              <Badge color='green' icon='thumbs-up'/> : 
+              <Badge color='red' icon='x' />}<br />
+            {'Social contract size: '}{JSON.stringify(contract).length}<br />
+            {'Contract Index: '}{contractIndex}<br /><br />
+            {'(5) All Contracts Loaded?: '}
+            {(contracts)?
+              <Badge color='green' icon='thumbs-up'/> : 
+              <Badge color='red' icon='x' />}<br />
+            {'Social contract size: '}{JSON.stringify(contracts).length}<br /><br />
             <Button
               icon={(isTableOpen) ? 'minus' : 'plus'}
               label={t<string>('View Contracts')}

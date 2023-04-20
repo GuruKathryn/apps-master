@@ -15,7 +15,7 @@ import { useTranslation } from '../translate';
 import useAbi from '../useAbi';
 import ValidateAddr from './ValidateAddr';
 
-import JSONgeodeProfile from './geode_profile.json';
+import JSONgeodeProfile from './geode_social.json';
 
 interface Props {
   defaultAddress: string;
@@ -109,7 +109,7 @@ function Add ({ defaultAddress, onClose }: Props): React.ReactElement {
   
   return (
     <Modal
-      header={t('Load the Geode Profile Contract to your local browser: (just Click Load!)')}
+      header={t('Load the Geode Social Contract to your local browser: (just Click Load!)')}
       onClose={onClose}
     >
       <Modal.Content>
