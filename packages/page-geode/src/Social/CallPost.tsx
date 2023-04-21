@@ -1,9 +1,9 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useState } from 'react';
+import React from 'react';
 
-import {  Table, List, Label } from 'semantic-ui-react'
+import {  Table, Label } from 'semantic-ui-react'
 
 //import type { CallResult } from './types';
 import { useContracts } from '../useContracts';
@@ -13,7 +13,7 @@ import styled from 'styled-components';
 //import { stringify, hexToString, isHex } from '@polkadot/util';
 import { AccountName, Button, Badge, IdentityIcon, Card, LabelHelp } from '@polkadot/react-components';
 import { __RouterContext } from 'react-router';
-//import { useToggle } from '@polkadot/react-hooks';
+import { useToggle } from '@polkadot/react-hooks';
 import ContractsTable from './ContractsTable';
 //import CopyToClipboard from 'react-copy-to-clipboard';
 
@@ -40,14 +40,22 @@ function CallPost ({ className = '', onClear, isPost }: Props): React.ReactEleme
   //  const isDontShow: boolean = true;
   //todo: code for allCodes:
     console.log(JSON.stringify(allCodes));
-    const showInstructions: boolean = false;
+    //const showInstructions: boolean = true;
+    const [showInstructions, toggleShowInstructions] = useToggle(false);
 
     function MakePost(): JSX.Element {
     return(
         <div>
             {isPost ? (
                 <>
-                <h2><strong>{t<string>('Make a Post')}</strong></h2>
+                <h2>
+                <Badge
+                  icon='info'
+                  color={(showInstructions) ? 'blue' : 'gray'}
+                  onClick={toggleShowInstructions}  
+                /> 
+                    <strong>{t<string>(' Make a Post ')}</strong>            
+                </h2>
                 </>
             ) : (
                 <>
@@ -55,11 +63,13 @@ function CallPost ({ className = '', onClear, isPost }: Props): React.ReactEleme
                 </>
             )}
             {showInstructions && (<>
-                <strong>{t<string>('Instructions for Making a Post Claims: ')}</strong><br />
-            {'(1) '}{t<string>('Make Sure the (account to use) is NOT the owner of the claims')}<br /> 
-            {'(2) '}{t<string>('Copy the ClaimID for the claim to Endorse into the (claimHash: Hash) field below')}<br />
-            {'(3) '}{t<string>('Click Submit button to sign and submit this transaction')}<br /><br />
-            {t<string>('⚠️ Please Note: You can not endorse your own claims.')}            
+            <strong>{t<string>('Instructions for Making a Post: ')}</strong><br />
+            {'(1) '}{t<string>('Select the (account to use) for the Post.')}<br /> 
+            {'(2) '}{t<string>('Enter the message in (newMessage:) text field.')}
+            {t<string>(' ⚠️ Note: The Text field will change color if all entered characters are excepted.')}<br />            
+            {'(3) '}{t<string>('Enter a valid link including Web pages, Photos, Video clips, etc.')}<br />
+            {'(4) '}{t<string>('If entering a Reply Post, enter the message Id of the original Post.')}<br /><br />
+            {t<string>('Click Submit Button below to make your Post.')}            
             </>)}
         <Table>
           <Table.Row>

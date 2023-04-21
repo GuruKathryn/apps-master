@@ -14,7 +14,7 @@ import type { CallResult } from './types';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
+import { Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton, LabelHelp } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';

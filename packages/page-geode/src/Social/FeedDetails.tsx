@@ -12,7 +12,7 @@ import { List, Table, Label, Image, Divider } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 
 import JSONprohibited from '../shared/geode_prohibited.json';
-import { useToggle } from '@polkadot/react-hooks';
+//import { useToggle } from '@polkadot/react-hooks';
 
 interface Props {
     className?: string;
@@ -56,6 +56,7 @@ function FeedDetails ({ className = '', onClear, isShowEndorsers, isShowMessageI
     const isReplyToReply: boolean = false;
 
     const [feedIndex, setFeedIndex] = useState(0);
+    const [countPost, setCountPost] = useState(0);
 
     const isShowBlockedAccounts: boolean = false;
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -96,6 +97,23 @@ function FeedDetails ({ className = '', onClear, isShowEndorsers, isShowMessageI
        }
     }
 
+function RenderLink(_link: string): JSX.Element {
+const ilink: string = withHttp(hexToString(_link).trim());
+const videoLink: string = (ilink.includes('embed')) ? ilink 
+		  : ilink.includes('youtu.be') ? ('https://www.youtube.com/embed/' + ilink.slice(17))
+      	  : ('https://www.youtube.com/embed/' + ilink.slice(32));
+
+return(
+    <>
+    {(ilink).includes('youtu')? (
+      <iframe width="450" height="345" src={videoLink +'?autoplay=0&mute=1'}> 
+      </iframe>) : (
+      <Image bordered rounded src={ilink} size='large' />
+      )}
+    </>
+    )
+}
+
     function ListAccount(): JSX.Element {
       try {
         return (
@@ -105,10 +123,9 @@ function FeedDetails ({ className = '', onClear, isShowEndorsers, isShowMessageI
               <Table.Cell>
                 </Table.Cell>
                 <Table.Cell>
-                <LabelHelp help={t<string>(' The account calling the information.')} /> 
-                <strong>{t<string>(' Called from: ')}</strong>
                 <IdentityIcon value={from} />
                 <AccountName value={from} withSidebar={true}/>
+                <LabelHelp help={t<string>(' The account calling the information.')} /> 
                 </Table.Cell>
       
                 <Table.Cell>
@@ -122,7 +139,11 @@ function FeedDetails ({ className = '', onClear, isShowEndorsers, isShowMessageI
                 <Label circular color='orange'> Link </Label>  
                 {t<string>(' No. of Endorsements: ')}
                 <Label circular color='blue'>{'#'}</Label>  
-                {t<string>(' Copy Message ID: ')}<CopyInline value={' '} label={''}/>
+                {t<string>(' See Replies: ')}
+                <Label color='blue'>{'Reply'}</Label>  
+                {t<string>(' Copy Message ID: ')}
+                <CopyInline value={' '} label={''}/>
+                
                 </Table.Cell>
               </Table.Row>
             </Table>
@@ -159,10 +180,15 @@ function ShowFeed(): JSX.Element {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>
-                  <h2>{'Your Feed'}</h2>
+                  {t<string>(' Number of Posts: ')}<strong>{countPost}</strong>
                 </Table.HeaderCell>
                 <Table.HeaderCell>
-                  {'Number of Posts to show: '}<strong>{feedDetail.ok.maxfeed}</strong><br />
+                  {t<string>(' Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong><br />
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  {feedDetail.ok.blocked.length>0 && (
+                    <>{t<string>(' Blocked: ')}<strong>{feedDetail.ok.blocked.length}</strong><br /></>
+                  )}
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -227,13 +253,10 @@ function ShowFeed(): JSX.Element {
                       : (<><i>{'message Id: '}{_feed.messageId}</i><br /></>)}
                         </>)} 
                         <br />      
-
+                {RenderLink(_feed.link)}
                 {(_feed.link != '0x') ? (
                 <>{(isHex(_feed.link) ? withHttp(hexToString(_feed.link).trim()) : defaultImage) !='' ? 
-                        (
-                        <>
-                        <Image bordered rounded src={(isHex(_feed.link) ? withHttp(hexToString(_feed.link).trim()) : defaultImage)} size='large' />
-                        </>
+                        (<>{''}</>
                         ) : (
                         <><Image src={defaultImage} size='small'  /></>
                     )}<br />
@@ -262,6 +285,7 @@ function ShowFeed(): JSX.Element {
                     <br /> 
                     
                     {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
+                    {setCountPost(index+1)}
                     <Divider />
                     </>
             )}
@@ -283,7 +307,6 @@ function ShowFeed(): JSX.Element {
 function ShowReplies(replyMessageId: string): JSX.Element {
 
 try {
-
     return(
       <>
                  {feedDetail.ok.myfeed
@@ -305,6 +328,7 @@ try {
                               {' ('}<AccountName value={_replyFeed.fromAcct} withSidebar={true}/>{') '}
                               {' '}<Label color='blue' circular>{_replyFeed.endorserCount}</Label>
                               {' '}{timeStampToDate(_replyFeed.timestamp)}{' '}
+                              
                               {isReplyToReply && (
                                 <>
                               {' '}{(_replyFeed.replyCount>0)? (
@@ -313,11 +337,10 @@ try {
                                   onClick={() => setFeedIndex(index)}>
                                   {' Replies '}{_replyFeed.replyCount}
                                   </Label>) : (
-                                  <Label color='grey'>{' Replies 0'}</Label>)}{t<string>(' ')}
-                                  <CopyInline value={_replyFeed.messageId} label={''}/>                                
+                                  <Label color='grey'>{' Replies 0'}</Label>)}{t<string>(' ')}    
                                 </>
                               )}
-                                  
+                              <CopyInline value={_replyFeed.messageId} label={''}/>                                
                                   {isShowEndorsers && _replyFeed.endorserCount > 0 && (
                                   <>
                                   <List divided inverted >
@@ -361,7 +384,6 @@ try {
                           <>{(isHex(_replyFeed.message)? hexToString(_replyFeed.message).trim() :'')}{' '}</>
                           )}
                         <br /> 
-                      
 
                         </Table.Cell>
                       </Table.Row>
