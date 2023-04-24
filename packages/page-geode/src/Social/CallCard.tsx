@@ -24,11 +24,18 @@ import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
 import FeedDetails from './FeedDetails';
+import PaidFeedDetails from './PaidFeedDetails';
+import StatDetails from './StatDetails';
 import CallPost from './CallPost';
 import CallEndorse from './CallEndorse';
+import CallStats from './CallStats';
 
 //import SearchDetails from './SearchDetails';
 import { getCallMessageOptions } from './util';
+import JSONhelp from '../shared/geode_social_help.json';
+import JSONnote from '../shared/geode_social_note.json';
+import JSONTitle from '../shared/geode_social_card_titles.json';
+
 
 interface Props {
   className?: string;
@@ -64,8 +71,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   //const [isGetReply, toggleGetReply] = useToggle();
   const [isShowEndorse, toggleShowEndorse] = useToggle(false);
   const [isShowMsgID, toggleShowMsgID] = useToggle(false);
+  const [isShowInterest, toggleShowInterest] = useToggle(false);
+  const [isPaidEndorse, togglePaidEndorse] = useToggle(false);
+  const [isShowInfo, toggleShowInfo] = useToggle(false);
+  const [isStats, toggleStats] = useToggle(false);
   //const isTestData: boolean = false; //takes out code elements we only see for test
-
+  const isShowDeveloper: boolean = true;
+  
   useEffect((): void => {
     setEstimatedWeight(null);
     setEstimatedWeightV2(null);
@@ -151,44 +163,23 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));      
+  const _help: string[] = JSONhelp;
+  const _note: string[] = JSONnote;
+  const _title: string[] = JSONTitle;
 
   return (
     <Card >
-        <h2><strong>{t<string>(' Geode Social ')}{' '}</strong>
-        {messageIndex===0 && (
-          <>{'- Your Post'}</>
-        )}
-        {messageIndex===1 && (
-          <>{'- Paid Post'}</>
-        )}
-        {messageIndex===4 && (
-          <>{'- Account to Follow'}</>
-        )}
-        {messageIndex===5 && (
-          <>{'- Account to Unfollow'}</>
-        )}
-        {messageIndex===6 && (
-          <>{'- Account to Block'}</>
-        )}
-        {messageIndex===7 && (
-          <>{'- Account to Unblock'}</>
-        )}
-        {messageIndex===8 && (
-          <>{'- Update your Settings'}</>
-        )}
-        {messageIndex===9 && (
-          <>{'- View Your Feed'}</>
-        )}
-        {messageIndex===10 && (
-          <>{'- View Your Paid Feed'}</>
-        )}
-        {messageIndex===11 && (
-          <>{'- Search by Account'}</>
-        )}
-        {messageIndex===13 && (
-          <>{'- Search by Keyword'}</>
-        )}
+        <h2>
+        <Badge
+          icon='info'
+          color={(isShowInfo) ? 'blue' : 'gray'}
+          onClick={toggleShowInfo}/> 
+        <strong>{t<string>(' Geode Social ')}</strong>{_title[messageIndex]}
         </h2>
+        {isShowInfo && (<>
+          <br />{_help[messageIndex]}<br /><br />
+                {_note[messageIndex]}<br />
+          </>)}
         {isTest && (
           <InputAddress
           //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
@@ -211,7 +202,12 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         {messageIndex===2 && (
           <><br /><br />
           <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account to Use:')}
+          {t<string>('Select the Account to Use for this Endorsement:')}
+          </>)}
+        {messageIndex===3 && (
+          <><br /><br />
+          <Badge color='blue' icon='1'/>
+          {t<string>('Select the Account to Use for this Paid Endorsement:')}
           </>)}
         {messageIndex===4 && (
           <><br /><br />
@@ -299,7 +295,11 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               </>)}
             {messageIndex===2 && (
               <><Badge color='blue' icon='2'/>
-              {t<string>('Select the Account and Message ID to Endorse:')}
+              {t<string>('Input the Message ID of the Post to Endorse:')}
+              </>)}
+            {messageIndex===3 && (
+              <><Badge color='blue' icon='2'/>
+              {t<string>('Input the Message ID of the Paid Post to Endorse:')}
               </>)}
             {messageIndex===4 && (
               <><Badge color='blue' icon='2'/>
@@ -377,14 +377,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         <Card>
         {isViaRpc
           ? (
-            <Button
-            icon='sign-in-alt'
-            isDisabled={!isValid}
-            label={t<string>('View')}
-            onClick={_onSubmitRpc} 
-            />
-          )
-          : (
+              <Button
+              icon='sign-in-alt'
+              isDisabled={!isValid}
+              label={t<string>('View')}
+              onClick={_onSubmitRpc} 
+              />                
+            ) : (
             <TxButton
               accountId={accountId}
               extrinsic={execTx}
@@ -397,51 +396,89 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         }
         {isMenu && (
         <>
-        {' | '}
           {messageIndex===9 && (
+            <>
+            {' | '}
             <Button
             icon={(isPubPost) ? 'minus' : 'plus'}
             //isDisabled={!isValid}
             label={t<string>('Post')}
             onClick={togglePubPost} 
             />
+            </>
           )}
           {messageIndex===10 && (
+            <>
+            {' | '}
             <Button
             icon={(isPaidPost) ? 'minus' : 'plus'}
             //isDisabled={!isValid}
             label={t<string>('Paid Post')}
             onClick={togglePaidPost} 
           />
+          </>
           )}
-          
+          {messageIndex===9 && (<>
             <Button
             icon={(isEndorse) ? 'minus' : 'plus'}
             //isDisabled={!isValid}
             label={t<string>('Endorse')}
             onClick={toggleEndorse} 
-            />
-        {' | '}
+            />          
+          </>)}   
+          {messageIndex===10 && (<>
             <Button
-              icon={(isShowEndorse) ? 'minus' : 'plus'}
-              //isDisabled={!isValid}
-              label={t<string>('Show Endorsers')}
-              onClick={toggleShowEndorse} 
+            icon={(isPaidEndorse) ? 'minus' : 'plus'}
+            //isDisabled={!isValid}
+            label={t<string>('Endorse')}
+            onClick={togglePaidEndorse} 
+            />          
+          </>)}   
+          {messageIndex===10 && (<>
+            <Button
+            icon={(isStats) ? 'minus' : 'plus'}
+            //isDisabled={!isValid}
+            label={t<string>('Interest Stats')}
+            onClick={toggleStats} 
+            />          
+          </>)}   
+        
+            {messageIndex!=14 && (
+            <>
+            {' | '}
+            <Button
+            icon={(isShowEndorse) ? 'minus' : 'plus'}
+            //isDisabled={!isValid}
+            label={t<string>('Show Endorsers')}
+            onClick={toggleShowEndorse} 
             />
+            </>
+            )}
+            {messageIndex===9 && (
             <Button
               icon={(isShowMsgID) ? 'minus' : 'plus'}
               //isDisabled={!isValid}
               label={t<string>('Show Message IDs')}
               onClick={toggleShowMsgID} 
             />
-
-        {' | '}
+            )}
+            {messageIndex===10 && (
+            <Button
+              icon={(isShowInterest) ? 'minus' : 'plus'}
+              //isDisabled={!isValid}
+              label={t<string>('Show Interest')}
+              onClick={toggleShowInterest} 
+            />
+            )}
+        {isShowDeveloper && (<>
+          {' | '}
             <Button
               icon={(isTest) ? 'minus' : 'plus'}
               //isDisabled={!isValid}
               label={t<string>('Developer')}
               onClick={setIsTest} 
-            />
+            />        
+        </>)}
           </>
         )} 
         </Card>
@@ -456,7 +493,15 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           /></>
         )}
         {isEndorse && (
-          <><CallEndorse /></>
+          <><CallEndorse
+          isPost={true} /></>
+        )}
+        {isPaidEndorse && (
+          <><CallEndorse
+          isPost={false} /></>
+        )}
+        {isStats && (
+          <><CallStats /></>
         )}
         {outcomes.length > 0 && messageIndex===9 && (
             <div>
@@ -467,6 +512,36 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 onClear={_onClearOutcome(index)}
                 isShowEndorsers={isShowEndorse}
                 isShowMessageID={isShowMsgID}
+                outcome={outcome}
+              />
+              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
+              </>
+            ))}
+            </div>
+        )}
+        {outcomes.length > 0 && messageIndex===10 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <>
+              <PaidFeedDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                isShowEndorsers={isShowEndorse}
+                isShowInterest={isShowInterest}
+                outcome={outcome}
+              />
+              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
+              </>
+            ))}
+            </div>
+        )}
+        {outcomes.length > 0 && messageIndex===14 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <>
+              <StatDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
                 outcome={outcome}
               />
               {isTest && (<>{JSON.stringify(outcome.output)}</>)}

@@ -50,6 +50,8 @@ const [isUnFollow, toggleUnFollow] = useToggle();
 const [isBlock, toggleBlock] = useToggle();
 const [isUnBlock, toggleUnBlock] = useToggle();
 
+const isNoPost: boolean = false;
+
 const refTitle: string[] = 
 [' Display a feed of all public messages and endorsed public messages from all accounts that you follow, sorted by most recent. (Click again to close) ', 
  ' Make a Post or a paid Post. (Click again to close) ', 
@@ -83,7 +85,7 @@ console.log(allCodes);
                 onClick={toggleFeed}>
             </Button></>
             )}
-            {!isYourPost && !isPaidPost && !isFeed && !isSettings && !isSearch && (
+            {isNoPost && !isYourPost && !isPaidPost && !isFeed && !isSettings && !isSearch && (
             <><Button
                 icon={(isPost) ? 'minus' : 'plus'}
                 label={t<string>('Post')}

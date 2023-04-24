@@ -7,7 +7,7 @@ import { useTranslation } from '../translate';
 import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Table, Label, Image } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 
@@ -91,6 +91,14 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
                 {t<string>(' Link to See More: ')}
                 <Label circular color='orange'> Link </Label>  
                 </Table.Cell>
+                <Table.Cell>
+                <Button
+                  icon='times'
+                  label={t<string>('Close')}
+                  onClick={onClear}
+                />
+                </Table.Cell>
+
               </Table.Row>
             </Table>
           </div>

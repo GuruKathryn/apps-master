@@ -1,0 +1,23 @@
+[
+    "Create a Public Post for your Geode Community. Add links to Videos, Images and Web Pages. Instructions for Making a Post: (1) Select the (account to use) for the Post. (2) Enter the message in (newMessage:) text field. ⚠️ Note: The Text field will change color if all entered characters are excepted. (3) Enter a valid link including Web pages, Photos, Video clips, etc. (4) If entering a Reply Post, enter the message Id of the original Post. Click Submit Button below to make your Post.",
+    "Instructions for Making a Paid Post: (1) Select the (account to use) for the Paid Post. (2) Enter the message in (newMessage:) text field. ⚠️ Note: The Text field will change color if all entered characters are excepted. (3) Enter a valid link including Web pages, Photos, Video clips, etc. in the (photOrOtherLink) text field. (4) Enter the total number of Paid Endorsers (the number of people you want to pay for viewing your Ad) in the (maximumNumberOfPaidEndorsers) text field. (5) List your target interests for this Ad in the (targetInterests) text field. For example: dogs, cats, pets, cars... You can enter multiple interests just seperate them by commas. (6) Enter the total value you which to distribute to Paid Endorsers in (value) text field. Click Submit Button below to make your Post.",
+    "Endorse your favorite Public Posts. It's Fun! ... and it makes your friends happy. Instructions for Endorsing: (1) Make Sure the (account to use) is NOT the owner of the message (2) Copy the Message ID to Endorse into the (thisMessageId: Hash) field below (3) Click Submit button to sign and submit this transaction ⚠️ Please Note: You can not endorse your own posts.",
+    "Instructions for Endorsing: (1) Make Sure the (account to use) is NOT the owner of the message (2) Copy the Message ID to Endorse into the (thisMessageId: Hash) field below (3) Click Submit button to sign and submit this transaction. ⚠️ Please Note: You can not endorse your own posts.",
+    "Update the Accounts to Follow in your Public and Paid Feeds: (1) Select your account to use for the Public and Paid Feeds. (2) Select the Account to follow in your Public and Paid Feeds.",
+    "Update the Accounts to Unfollow in your Public and Paid Feeds: (1) Select your account to use for the Public and Paid Feeds. (2) Select the Account to Unfollow in your Public and Paid Feed.",
+    "Update the Accounts to Block in your Public and Paid Feeds: (1) Select your account to use for the Public and Paid Feeds. (2) Select the Account to Block in your Public and Paid Feed.",
+    "Update the Accounts to Unblock in your Public and Paid Feeds: (1) Select your account to use for the Public and Paid Feeds. (2) Select the Account to Unblock in your Public and Paid Feed.",
+    "Update Your Social Settings: (1) Enter your Username in (myUsername) (2) Enter your interests in (myInterest). NOTE: interests are single words followed by commas, Example: cars, dogs, planes, etc. (300 characters Max). (3) Set the maximum messages to see in your Public Feed (0 - 1000) (4) Set the maximum messages to see in your Paid Feed (0 - 1000) Click Submit when completed.",
+    "Your Menu Selection Choices Below: (View) - Displays and/or Refreshes your Public Feed. (Post) - Use this to create a Public Post or to Create a Reply to a Post in your Feed. (Endorse) - Endorse someone else's Post. (Show Endorsers) - Display who has endorsed each Post. (Show Message Ids) - Display the Message Ids and Reply Message Ids for each Public Post.",
+    "Your Menu Selection Choices Below: (View) - Displays and/or Refreshes your Paid Feed. (Paid Post) - Use this to create a Paid Post. (Endorse) - Endorse someone else's Paid Post and earn Geode. (Show Endorsers) - Display who has endorsed each Paid Post. (Show Interest) - Display the Interest Keyword for each Ad.",
+    "containers",
+    "dogs",
+    "dolphins",
+    "flags",
+    "flowers",
+    "people",
+    "pants",
+    "pools",
+    "ships",
+    "tents"
+]

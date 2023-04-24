@@ -11,7 +11,7 @@ import { Button, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polk
 import { List, Table, Label, Image, Divider } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
-
+//import JSONSocialInterests from '../shared/geode_social_interest.json';
 import JSONprohibited from '../shared/geode_prohibited.json';
 //import { useToggle } from '@polkadot/react-hooks';
 
@@ -19,7 +19,7 @@ interface Props {
     className?: string;
     onClear?: () => void;
     isShowEndorsers: boolean;
-    isShowMessageID: boolean;
+    isShowInterest: boolean;
     outcome: CallResult;
     //onClose: () => void;
   }
@@ -32,40 +32,48 @@ interface Props {
     message: string,
     link: string,
     endorserCount: number,
-    replyCount: number,
     timestamp: number,
+    paidEndorserMax: number,
+    endorserPayment: number,
+    targetInterests: string,
+    totalStaked: number,
     endorsers: string[]
   }
 
   type FeedObj = {
     maxfeed: number,
+    myinterests: string,
     blocked: string[],
-    myfeed: MessageObj[],
+    mypaidfeed: MessageObj[],
   }
   
   type FeedDetail = {
   ok: FeedObj
   }
   
-function FeedDetails ({ className = '', onClear, isShowEndorsers, isShowMessageID, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function PaidFeedDetails ({ className = '', onClear, isShowEndorsers, isShowInterest, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
     const searchWords: string[] = JSONprohibited;
+    //const interestWords: string[] = JSONSocialInterests;
     //const [isReply, toggleReply] = useToggle(true);
 
-    const isReply: boolean = true;
-    const isReplyToReply: boolean = false;
+    //const isReply: boolean = true;
+    //const isReplyToReply: boolean = false;
 
-    const [feedIndex, setFeedIndex] = useState(0);
+    //const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
 
     //const isShowBlockedAccounts: boolean = true;
     const [isShowBlockedAccounts, toggleShowBlockedAccounts] = useToggle(false);
+    const [isShowMyInterest, toggleShowInterest] = useToggle(false);
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
     //const isShowMsgId: boolean = true;
 
-    // example objects
-    let _Obj: Object = {"ok": {"maxfeed":10, "blocked":["5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL","5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw"], "myfeed": [ {"messageId":"0xb92283bc2400d530a60ee0cd73a992ce73d72af846608205d51427ba55be72af","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x466972737420706f7374","link":"0x68747470733a2f2f6d656469612e6973746f636b70686f746f2e636f6d2f69642f313330333433363033322f70686f746f2f6672656e63682d62756c6c646f672d6f6e2d7468652d67726173732d696e2d7468652d7061726b2d62656175746966756c2d646f672d62726565642d6672656e63682d62756c6c646f672d696e2d617574756d6e2d6f7574646f6f722e6a70673f623d3126733d3137303636376126773d30266b3d323026633d5a574f4b4f624133665939685756512d53505472454b53534c4f5577626442347168567a6a3749633773383d","endorserCount":0,"replyCount":0,"timestamp":1681657752005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]},{"messageId":"0xc76570158d247a1907b01ced4ea2ba29a8c6bff29165d85ca1183e0a35b1fe35","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x5365636f6e6420506f7374","link":"0x68747470733a2f2f74342e667463646e2e6e65742f6a70672f30302f39322f30342f38392f3336305f465f39323034383937395f4d50735a3074466c686477436653515a53463541554979476e30696f7a447a422e6a7067","endorserCount":0,"replyCount":0,"timestamp":1681657794005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]}]}}
+    // example objects      'myInrests': '0x2344424'
+    //{"ok":{"maxfeed":15,"myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64","blocked":[],"mypaidfeed":[]}}
+    let _Obj: Object = { "ok": {"maxfeed": 10, "myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64", "blocked": ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy"], "mypaidfeed": [ { "messageId": "0x09d3adb1294121426054d65b1535ccbdcebc44220b8304360aeddbeb5d448eac", "replyTo": "0x0000000000000000000000000000000000000000000000000000000000000000", "fromAcct": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw", "username": "Nala the Wonder Dog", "message": "More Free Puppies, Buy One get Two FREE!", "link": "https://dogsbestlife.com/wp-content/uploads/2022/09/french-bulldog-puppy-scaled.jpeg", "endorserCount": 0, "timestamp": 1682109894001, "paidEndorserMax": 10, "endorserPayment": 100000000000000, "targetInterests": "dogs", totalStaked: 1000000000000000, "endorsers": [ "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw" ] } ] } }
+    //let _Obj: Object = {"ok": {"maxfeed":10, "blocked":["5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL","5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw"], "myfeed": [ {"messageId":"0xb92283bc2400d530a60ee0cd73a992ce73d72af846608205d51427ba55be72af","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x466972737420706f7374","link":"0x68747470733a2f2f6d656469612e6973746f636b70686f746f2e636f6d2f69642f313330333433363033322f70686f746f2f6672656e63682d62756c6c646f672d6f6e2d7468652d67726173732d696e2d7468652d7061726b2d62656175746966756c2d646f672d62726565642d6672656e63682d62756c6c646f672d696e2d617574756d6e2d6f7574646f6f722e6a70673f623d3126733d3137303636376126773d30266b3d323026633d5a574f4b4f624133665939685756512d53505472454b53534c4f5577626442347168567a6a3749633773383d","endorserCount":0,"replyCount":0,"timestamp":1681657752005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]},{"messageId":"0xc76570158d247a1907b01ced4ea2ba29a8c6bff29165d85ca1183e0a35b1fe35","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x5365636f6e6420506f7374","link":"0x68747470733a2f2f74342e667463646e2e6e65742f6a70672f30302f39322f30342f38392f3336305f465f39323034383937395f4d50735a3074466c686477436653515a53463541554979476e30696f7a447a422e6a7067","endorserCount":0,"replyCount":0,"timestamp":1681657794005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]}]}}
     const objOutput: string = stringify(output);
     _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
@@ -99,11 +107,16 @@ function FeedDetails ({ className = '', onClear, isShowEndorsers, isShowMessageI
        }
     }
 
-function blockAccount(_acct: string): boolean {
-  const _blocked: boolean = (feedDetail.ok.blocked.find(_blk => _blk === _acct))
-   ? true : false
-  return(_blocked)
-}    
+function hextoHuman(_hexIn: string): string {
+        const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): ''
+        return(_Out)
+}
+
+function unitToGeode(_unitIn: number): string{
+    const _convert: number = 1000000000000;
+    const _Out: string = (_unitIn / _convert).toString();
+    return(_Out)
+}
 
 function renderLink(_link: string): JSX.Element {
   const ilink: string = isHex(_link)? withHttp(hexToString(_link).trim()): '0x';
@@ -149,8 +162,6 @@ function renderLink(_link: string): JSX.Element {
                 <Label circular color='orange'> Link </Label>  
                 {t<string>(' No. of Endorsements: ')}
                 <Label circular color='blue'>{'#'}</Label>  
-                {t<string>(' See Replies: ')}
-                <Label color='blue'>{'Reply'}</Label>  
                 {t<string>(' Copy Message ID: ')}
                 <CopyInline value={' '} label={''}/>
                 </Table.Cell>
@@ -161,6 +172,7 @@ function renderLink(_link: string): JSX.Element {
                   onClick={onClear}
                 />
                 </Table.Cell>
+
               </Table.Row>
             </Table>
           </div>
@@ -188,9 +200,9 @@ function renderLink(_link: string): JSX.Element {
 
 
 function ShowFeed(): JSX.Element {
-      setCountPost(0)
-      const maxIndex: number = feedDetail.ok.maxfeed;
-      try {
+    setCountPost(0)
+    const maxIndex: number = feedDetail.ok.maxfeed;
+    try {
         return(
           <div>
             <div>
@@ -198,7 +210,19 @@ function ShowFeed(): JSX.Element {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>
-                  {t<string>(' Number of Posts: ')}<strong>{countPost}</strong>
+                  {t<string>(' Number of Posts: ')}
+                  <strong>{countPost}</strong>
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  <Badge
+                  icon='info'
+                  color={(isShowMyInterest) ? 'blue' : 'gray'}
+                  onClick={toggleShowInterest}/> 
+                  {t<string>('Your Interests: ')}
+                    
+                  {isShowMyInterest && (<>{' ('}
+                    {hextoHuman(feedDetail.ok.myinterests)}{') '}
+                  </>)}
                 </Table.HeaderCell>
                 <Table.HeaderCell>
                   {t<string>(' Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong><br />
@@ -224,38 +248,31 @@ function ShowFeed(): JSX.Element {
             </Table.Header>
             <Table.Row>
               <Table.Cell verticalAlign='top'>
-                {feedDetail.ok.myfeed
+                {feedDetail.ok.mypaidfeed
                     // filter out duplicates
                     .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                     // filter out all replies
-                    .filter(_subFeed => _subFeed.replyTo === zeroMessageId)
+                    //.filter(_subFeed => _subFeed.replyTo === zeroMessageId)
                     // sort into descending order based on timestamp
                     .sort((a, b) => b.timestamp - a.timestamp)
                     // sort message replys below original messages
-                    .sort((a, b) => (a.messageId === b.replyTo)? -1 : 1)
+                    //.sort((a, b) => (a.messageId === b.replyTo)? -1 : 1)
                     //.sort((a, b) => (a.replyTo === b.replyTo)? 1 : -1)
-                    .map((_feed, index: number) =>
+                    .map((_feed, index: number) =>   
                     <>
                     {index < maxIndex && (
                     <>
-                    <h3> 
-                            <strong>{'@'}</strong>
-                            <strong>{(isHex(_feed.username)? hexToString(_feed.username).trim() : '')}</strong>
+                    <h3> <strong>{'@'}</strong>
+                         <strong>{(isHex(_feed.username)? hexToString(_feed.username).trim() : '')}</strong>
                               {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
                               {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                               {' '}{timeStampToDate(_feed.timestamp)}{' '}
-                              {' '}{(_feed.replyCount>0)? (
-                              
-                              <Label  as='a' 
-                                color={(isReply && (index === feedIndex)) ? 'blue' : 'grey'}
-                                onClick={() => setFeedIndex(index)}>
-
-                                {' Replies '}{_feed.replyCount}
-                              </Label>) : (
-                              <Label color='grey'>{' Replies 0'}</Label>)}{t<string>(' ')}
                               <CopyInline value={_feed.messageId} label={''}/>
                      </h3>
-                     {isShowEndorsers && _feed.endorserCount > 0 && (
+                            <i><strong>{'Payment: '}{unitToGeode(_feed.endorserPayment)}{' Geode'}
+                            {', Paid Endorsements Left: '}{_feed.paidEndorserMax-_feed.endorserCount}</strong></i>
+                            <br />
+                    {isShowEndorsers && _feed.endorserCount > 0 && (
                     <>
                     <List divided inverted >
                       {_feed.endorsers.map((name, i: number) => <List.Item key={name}> 
@@ -266,15 +283,12 @@ function ShowFeed(): JSX.Element {
                     </List>     
                     </>
                     )}
-                
-                    {isShowMessageID && 
-                      (<>{(_feed.replyTo != zeroMessageId)
-                      ? (<><i>{'reply to: '}{_feed.replyTo}</i><br />
-                           <i>{'message Id: '}{_feed.messageId}</i><br /></>) 
-                      : (<><i>{'message Id: '}{_feed.messageId}</i><br /></>)}
-                        </>)} 
-                        <br />      
-                        {renderLink(_feed.link)}
+                {isShowInterest && 
+                      (<>
+                      <br />{'Ad Target Interest: '}{hextoHuman(_feed.targetInterests)}
+                      </>)} 
+                <br />      
+                {renderLink(_feed.link)}
                 {(_feed.link != '0x') ? (
                 <>
                     {(isHex(_feed.message)? (
@@ -299,12 +313,10 @@ function ShowFeed(): JSX.Element {
                     )}
 
                     <br /> 
-                    
-                    {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
                     {setCountPost(index+1)}
-                    <Divider />                        
+                    <Divider />       
                     </>)}
-              </>
+                </>
             )}
              </Table.Cell>
             </Table.Row>
@@ -321,104 +333,6 @@ function ShowFeed(): JSX.Element {
     }
 }
 
-function ShowReplies(replyMessageId: string): JSX.Element {
-
-try {
-    return(
-      <>
-                 {feedDetail.ok.myfeed
-                    // filter out duplicates
-                    .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
-                    // filter out all blocked accts
-                    //.filter(_blkFeed => feedDetail.ok.blocked.map(_blkd => _blkFeed.fromAcct != _blkd)) 
-                    // filter out all replies
-                    .filter(_subFeed => _subFeed.replyTo === replyMessageId)
-                    // sort into descending order based on timestamp
-                    .sort((a, b) => b.timestamp - a.timestamp)
-                    // sort message replys below original messages
-                    .sort((a, b) => (a.messageId === b.replyTo)? -1 : 1)
-                    //.sort((a, b) => (a.replyTo === b.replyTo)? 1 : -1)
-                    .map((_replyFeed, index: number) =>
-                      <>
-                      {!blockAccount(_replyFeed.fromAcct) && (<>
-                        <Table.Row>
-                            <Table.Cell>
-                              <strong>{'Reply'}{' - @'}</strong>
-                              <strong>{(isHex(_replyFeed.username)? hexToString(_replyFeed.username).trim() : '')}</strong>
-                              {' ('}<AccountName value={_replyFeed.fromAcct} withSidebar={true}/>{') '}
-                              {' '}<Label color='blue' circular>{_replyFeed.endorserCount}</Label>
-                              {' '}{timeStampToDate(_replyFeed.timestamp)}{' '}
-                              
-                              {isReplyToReply && (
-                              <>
-                              {' '}{(_replyFeed.replyCount>0)? (
-                                  <Label  as='a' 
-                                  color='grey'
-                                  onClick={() => setFeedIndex(index)}>
-                                  {' Replies '}{_replyFeed.replyCount}
-                                  </Label>) : (
-                                  <Label color='grey'>{' Replies 0'}</Label>)}{t<string>(' ')}    
-                                </>
-                              )}
-                              <CopyInline value={_replyFeed.messageId} label={''}/>                                
-                              
-                              {isShowEndorsers && _replyFeed.endorserCount > 0 && (
-                                  <>
-                                  <List divided inverted >
-                                    {_replyFeed.endorsers.map((name, i: number) => <List.Item key={name}> 
-                                    {(i > 0) && (<><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}
-                                    {' ('}<AccountName value={name} withSidebar={true}/>{') '}{name} 
-                                    </>)}
-                                  </List.Item>)}
-                                  </List>     
-                                  </>
-                                  )}
-
-                                  {isShowMessageID && 
-                                  (<><br />{(_replyFeed.replyTo != zeroMessageId)
-                                  ? (<><i>{'reply to: '}{_replyFeed.replyTo}</i><br />
-                                  <i>{'message Id: '}{_replyFeed.messageId}</i><br /></>) 
-                                  : (<><i>{'message Id: '}{_replyFeed.messageId}</i><br /></>)}
-                                  </>)} 
-                                  <br />      
-
-                              {renderLink(_replyFeed.link)}
-                              
-                              {(_replyFeed.link != '0x') ? (
-                              <>
-
-                              {(isHex(_replyFeed.message)? (
-                              <>{hexToString(_replyFeed.message).trim()}</>
-                              ) :'')}{' '}
-                            <Label  as='a'
-                            color='orange'
-                            circular
-                            href={isHex(_replyFeed.link) ? withHttp(hexToString(_replyFeed.link).trim()) : ''} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                          >{t<string>('Link')}
-                          </Label>{' '}
-                          {isHex(_replyFeed.link) ? (
-                            <LabelHelp help={withHttp(hexToString(_replyFeed.link).trim())} />
-                            ) : ''}</>) : (
-                          <>{(isHex(_replyFeed.message)? hexToString(_replyFeed.message).trim() :'')}{' '}</>
-                          )}
-                        <br /> 
-                        </Table.Cell>
-                      </Table.Row>  
-                      </>)}
-                      </>
-                    )}                          
-      </>)
-} catch(e) {
-  console.log(e);
-    return(
-      <>
-      {'No Replies for this message.'}
-      </>
-    )
-}
-}
     
   return (
     <StyledDiv className={className}>
@@ -438,4 +352,4 @@ const StyledDiv = styled.div`
     margin: 0.25rem 0.5rem;
   }
 `;
-export default React.memo(FeedDetails);
+export default React.memo(PaidFeedDetails);
