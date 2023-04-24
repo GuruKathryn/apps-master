@@ -65,6 +65,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
   const [isTest, setIsTest] = useToggle();
+  const [isCalled, toggleIsCalled] = useToggle(false);
   const [isPubPost, togglePubPost] = useToggle();
   const [isPaidPost, togglePaidPost] = useToggle();
   const [isEndorse, toggleEndorse] = useToggle();
@@ -76,7 +77,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [isShowInfo, toggleShowInfo] = useToggle(false);
   const [isStats, toggleStats] = useToggle(false);
   //const isTestData: boolean = false; //takes out code elements we only see for test
-  const isShowDeveloper: boolean = true;
+  const isShowDeveloper: boolean = false;
   
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -131,6 +132,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         return;
       }
       {setIsMenu(true)}
+      {toggleIsCalled()}
       contract
         .query[message.method](
           accountId,
@@ -162,7 +164,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   );
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
-  const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));      
+  const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
+  const isClosed = (isCalled && messageIndex === 14);
   const _help: string[] = JSONhelp;
   const _note: string[] = JSONnote;
   const _title: string[] = JSONTitle;
@@ -254,6 +257,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           <Badge color='blue' icon='thumbs-up'/>
           {t<string>('Select the Account to use for this Keyword Search:')}
           </>)}
+        {!isClosed && (
+        <>
         <InputAddress
           defaultValue={accountId}
           //help={t<string>('Specify the user account to use for this contract call. And fees will be deducted from this account.')}
@@ -268,6 +273,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           type='account'
           value={accountId}
         />
+        </>
+        )}  
 
         {messageIndex !== null && (
           <>
@@ -325,7 +332,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <><Badge color='blue' icon='2'/>
                 {t<string>('Enter the Keyword to Lookup:')}
               </>)}
-
             <Params
               onChange={setParams}
               params={
@@ -374,7 +380,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}        
         </>
         )}
-        <Card>
+      <Card>
+      {!isClosed && (
+        <>
         {isViaRpc
           ? (
               <Button
@@ -393,12 +401,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               onStart={onClose}
             />
           )
-        }
+        }          
+        </>
+        )}
         {isMenu && (
         <>
           {messageIndex===9 && (
-            <>
-            {' | '}
+            <>{' | '}
             <Button
             icon={(isPubPost) ? 'minus' : 'plus'}
             //isDisabled={!isValid}
@@ -408,14 +417,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </>
           )}
           {messageIndex===10 && (
-            <>
-            {' | '}
+            <>{' | '}
             <Button
             icon={(isPaidPost) ? 'minus' : 'plus'}
             //isDisabled={!isValid}
             label={t<string>('Paid Post')}
             onClick={togglePaidPost} 
-          />
+            />
           </>
           )}
           {messageIndex===9 && (<>
@@ -442,10 +450,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             onClick={toggleStats} 
             />          
           </>)}   
-        
             {messageIndex!=14 && (
-            <>
-            {' | '}
+            <>{' | '}
             <Button
             icon={(isShowEndorse) ? 'minus' : 'plus'}
             //isDisabled={!isValid}
