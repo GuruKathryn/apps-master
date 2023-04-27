@@ -25,6 +25,12 @@ interface Props {
   type FeedDetail = {
   ok: string[];
   }
+
+  // type objFreq = {
+  //   interest: string;
+  //   freq: number;
+  // }
+
   
 function StatDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
@@ -35,29 +41,11 @@ function StatDetails ({ className = '', onClear, outcome: { from, message, outpu
     const [isByFreq, toggleByFreq] = useToggle(false);
     const [isByGraph, toggleByGraph] = useToggle(false);
     const [isShowInfo, toggleShowInfo] = useToggle(false);
+    const [isFilter, toggleFilter] = useToggle(false);
+    const [isUnique, toggleUnique] = useToggle(false);
+
+    const isShowFilter = (isByFreq && isShowInfo);
     
-    //const interestWords: string[] = JSONSocialInterests;
-    //const [isReply, toggleReply] = useToggle(true);
-
-    //const isReply: boolean = true;
-    //const isReplyToReply: boolean = false;
-
-    //const [feedIndex, setFeedIndex] = useState(0);
-    //const [countPost, setCountPost] = useState(0);
-
-    //const isShowBlockedAccounts: boolean = true;
-    // const [isShowBlockedAccounts, toggleShowBlockedAccounts] = useToggle(false);
-    // const [isShowMyInterest, toggleShowInterest] = useToggle(false);
-    //const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
-    //const isShowMsgId: boolean = true;
-
-    // example objects      'myInrests': '0x2344424'
-    //{"ok":{"maxfeed":15,"myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64","blocked":[],"mypaidfeed":[]}}
-    
-    //let _Obj: Object = { "ok": "dogs", "art", "boats", "airplanes", "dogs", "art", "boats", "flowers", "cars", "art, "boats", "flowers", "cars", "people", "art", "flowers", "cars", "art", "flowers", "cars", "dogs", "people", "art", "cars", "people", "art", "cars", "people", "dogs", "trees", "snacks", "cars", "people", "dogs", "trees", "snacks", "tables", "chairs" }
-    //let _Obj: Object = { "ok": {"maxfeed": 10, "myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64", "blocked": ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy"], "mypaidfeed": [ { "messageId": "0x09d3adb1294121426054d65b1535ccbdcebc44220b8304360aeddbeb5d448eac", "replyTo": "0x0000000000000000000000000000000000000000000000000000000000000000", "fromAcct": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw", "username": "Nala the Wonder Dog", "message": "More Free Puppies, Buy One get Two FREE!", "link": "https://dogsbestlife.com/wp-content/uploads/2022/09/french-bulldog-puppy-scaled.jpeg", "endorserCount": 0, "timestamp": 1682109894001, "paidEndorserMax": 10, "endorserPayment": 100000000000000, "targetInterests": "dogs", totalStaked: 1000000000000000, "endorsers": [ "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw" ] } ] } }
-    //let _Obj: Object = {"ok": {"maxfeed":10, "blocked":["5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL","5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw"], "myfeed": [ {"messageId":"0xb92283bc2400d530a60ee0cd73a992ce73d72af846608205d51427ba55be72af","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x466972737420706f7374","link":"0x68747470733a2f2f6d656469612e6973746f636b70686f746f2e636f6d2f69642f313330333433363033322f70686f746f2f6672656e63682d62756c6c646f672d6f6e2d7468652d67726173732d696e2d7468652d7061726b2d62656175746966756c2d646f672d62726565642d6672656e63682d62756c6c646f672d696e2d617574756d6e2d6f7574646f6f722e6a70673f623d3126733d3137303636376126773d30266b3d323026633d5a574f4b4f624133665939685756512d53505472454b53534c4f5577626442347168567a6a3749633773383d","endorserCount":0,"replyCount":0,"timestamp":1681657752005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]},{"messageId":"0xc76570158d247a1907b01ced4ea2ba29a8c6bff29165d85ca1183e0a35b1fe35","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x5365636f6e6420506f7374","link":"0x68747470733a2f2f74342e667463646e2e6e65742f6a70672f30302f39322f30342f38392f3336305f465f39323034383937395f4d50735a3074466c686477436653515a53463541554979476e30696f7a447a422e6a7067","endorserCount":0,"replyCount":0,"timestamp":1681657794005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]}]}}
-    //{"ok":["0x636f77732c20646f67732c20686f727365732c2062697264732c20737175697272656c73","0x646f67732c20707570706965732c20736e61636b732c20737175697272656c732c206172742c206d757365756d732c2074726565732c2077616c6b73","0x646f67732c206172742c20726f626f74732c2041492c20746563686e6f6c6f67792c2064726f6e65732c20626c6f636b636861696e2c2073706163652c20617374726f6e6f6d79","0x6172742c2074726565732c206f7574646f6f72732c2063616d70696e672c2068696b696e672c2066697368696e672c207377696d6d696e6720696e206372797374616c206c616b65732c206d6f756e7461696e732c2063616d7020676561722c2063616d70696e67","0x736369656e63652c2063616d70696e672c206172742c20706879736963732c20656c656374726f6e6963732c2076616375756d207475626520616d706c6966696572732c207472616e736973746f72732c2064696f646573","0x6d6f746f726379636c65732c20686f7420726f64732c2066617420626f7920656e67696e65732c2062696b65206275696c64732c2062696b65732c20726964696e672c206861726c6579","0x737175697272656c732c20646f67732c2074726565732c20736e61636b732c20646f672062656473","0x737175697272656c732c20646f67732c2074726565732c20736e61636b732c20646f6720626564732c206d6f746f726379636c65732c20706879736963732c2076616375756d207475626573"]}
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
@@ -84,9 +72,73 @@ function removeDuplicates(arr: string[]) {
   return arr.filter((item, index) => arr.indexOf(item) === index);
 }
 
-function removeSpaces(arr: string[]) {
-  return arr.map(_w => (_w.trim()))
+function sortDesend(arr: string[]) {
+  const _arr: string[] = isFilter ? (arr.sort()) : (arr)
+  return(_arr)
 }
+
+function removeSpaces(arr: string[]) {
+  return arr.map(_w => (_w.trim()).toLowerCase() // Normalize
+  .replace(/["“”(\[{}\])]|\B['‘]([^'’]+)['’]/g, '$1') // Strip quotes and brackets
+  .replace(/[‒–—―…]|--|\.\.\./g, ' ') // Strip dashes and ellipses
+  .replace(/[!?;:.,]\B/g, '')); // Strip punctuation marks
+}
+
+function ShowOrderByAlpha(inStr: string, inArr: string[]): JSX.Element {
+  return(
+          <>{inArr.map((_word, index: number) => 
+                    <>
+                    {_word.trim()!='' && (
+                        <div>
+                        <CopyInline value={_word.trim()} label={''}/>
+                        {inStr.split(_word.trim()).length - 1 > 0 ? (
+                        <>
+                        <strong>{_word.trim()}{': '}</strong>
+                        <Label color={inStr.split(_word.trim()).length - 1 < 2 ? 'grey' : 'blue'} 
+                            circular>
+                            {inStr.split(_word.trim()).length - 1}
+                        </Label>
+                        </>
+                        ) : (
+                        <>{_word.trim()}{': '}<strong>{0}</strong></>
+                        )
+                    }
+                    <br />
+                    </div>
+              )}</>)}</>
+            )
+}
+
+function ShowOrderByFreq(inStr: string, inArr: string[]): JSX.Element {
+  const arr = orderByFrequency(inStr, inArr);
+  return (
+  <>
+{arr.map((_word, index: number) => 
+      <>
+       {_word.freq != 0 ? (
+        <>
+        <CopyInline value={_word.interest} label={''}/>
+          <strong>{_word.interest.trim()}</strong>{': '}
+            <Label color={_word.freq < 2 ? 'grey' : 'blue'} 
+                    circular>
+                    {_word.freq}
+            </Label>
+          <br />
+        </>
+       ) : ''}
+      </>)
+    }    
+  </>
+    )
+}
+
+function orderByFrequency(inStr: string, inArr: string[]) {
+  return inArr.map(_word => _word !='' ? 
+        {"interest": _word, "freq": (inStr.split(_word).length - 1) } :
+        {"interest": '', "freq": 0})
+        .sort((a, b) => b.freq - a.freq)
+}
+
 
 function ShowStat(): JSX.Element {
     try {
@@ -172,7 +224,21 @@ function ShowStat(): JSX.Element {
                     icon='info'
                     color={(isShowInfo) ? 'blue' : 'gray'}
                     onClick={toggleShowInfo}/> 
-                <strong>{'Frequency Analysis: '}</strong><br /><br />
+                <strong>{'Frequency Analysis: '}</strong>{' '}
+                {isShowFilter && (
+                <>
+                <Badge
+                      icon={(isFilter) ? 'thumbs-up': 'thumbs-down'}
+                      color={(isFilter) ? 'red' : 'gray'}
+                      onClick={toggleFilter}/>
+                      {t<string>(' Sort Alphabetic ')}
+                <Badge
+                      icon={(isUnique) ? 'thumbs-up': 'thumbs-down'}
+                      color={(isUnique) ? 'red' : 'gray'}
+                      onClick={toggleUnique}/>
+                      {t<string>(' Show Unique Words ')}</> 
+                    )}
+                <br /><br />
                 {isShowInfo && (
                     <>
                     <CopyInline value={'copy'} label={''}/>
@@ -181,40 +247,29 @@ function ShowStat(): JSX.Element {
                     </>
                   )}
 
-                <strong>{'All Words: '}</strong>{modArr.map(_subWord => (
-                  <>
-                  {_subWord}
-                  </>
-                ))}<br /><br />
                 <strong>{'Unique Words: '}</strong>
-                {strObj.map((_word, index: number) => (
+                {sortDesend(strObj).map((_word, index: number) => (
                   <>
-                    {' "'}{_word}{'", '}
+                    {isUnique && (<>{' "'}{_word}{'", '}</>)}
                   </>
                 ))}
                 <br /><br />
-                {strObj.map((_word, index: number) => 
-                    <>
-                    {_word.trim()!='' && (
-                        <div>
-                        <CopyInline value={_word.trim()} label={''}/>
-                        {strArr.split(_word.trim()).length - 1 > 0 ? (
-                        <>
-                        <strong>{_word.trim()}{': '}</strong>
-                        <Label color='blue' circular>
-                            {strArr.split(_word.trim()).length - 1}
-                        </Label>
-                        </>
-                        ) : (
-                        <>{_word.trim()}{': '}<strong>{0}</strong></>
-                        )
-                    }
-                    <br />
-                    </div>
-                    )}
-                    </>
-                    )}
-                <Divider />
+
+        <Table>
+          <Table.Cell>
+            <u><strong>{t<string>('Frequency Order: ')}</strong></u><br />
+                {ShowOrderByFreq(strArr, strObj)} 
+          </Table.Cell>
+          <br /><br />
+          <Table.Cell>
+            {isFilter && (<>
+              <u><strong>{t<string>('Alphabetic Order: ')}</strong></u><br />
+                {ShowOrderByAlpha(strArr, strObj)}            
+            </>)}
+                
+          </Table.Cell>
+        </Table>        
+        <Divider />
                 </>
               )}
              </Table.Cell>

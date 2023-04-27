@@ -8,8 +8,6 @@ import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import type { CallResult } from './types';
-//import { blake2AsHex } from '@polkadot/util-crypto';
-//import MessageSignature from '../shared/MessageSignature';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -35,6 +33,7 @@ import { getCallMessageOptions } from './util';
 import JSONhelp from '../shared/geode_social_help.json';
 import JSONnote from '../shared/geode_social_note.json';
 import JSONTitle from '../shared/geode_social_card_titles.json';
+import JSONTier1Help from '../shared/geode_social_tier1_help.json';
 
 
 interface Props {
@@ -169,6 +168,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const _help: string[] = JSONhelp;
   const _note: string[] = JSONnote;
   const _title: string[] = JSONTitle;
+  const _tierOne: string[] = JSONTier1Help;
 
   return (
     <Card >
@@ -192,71 +192,10 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           value={contract.address}
           />
         )}
-        {messageIndex===0 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account for this Post:')}
-          </>)}
-        {messageIndex===1 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account for this Paid Post:')}
-          </>)}
-        {messageIndex===2 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account to Use for this Endorsement:')}
-          </>)}
-        {messageIndex===3 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account to Use for this Paid Endorsement:')}
-          </>)}
-        {messageIndex===4 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account to Use for Following another Account:')}
-          </>)}
-        {messageIndex===5 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account to Use for Unfollowing another Account:')}
-          </>)}
-        {messageIndex===6 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account to Use for Blocking another Account:')}
-          </>)}
-        {messageIndex===7 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account to Use for Unblocking another Account:')}
-          </>)}
-        {messageIndex===8 && (
-          <><br /><br />
-          <Badge color='blue' icon='thumbs-up'/>
-          {t<string>('Select the Account and Update the Settings for this Account:')}
-          </>)}
-        {messageIndex===9 && (
-          <><br /><br />
-          <Badge color='blue' icon='thumbs-up'/>
-          {t<string>('Select the Account for this Feed:')}
-          </>)}
-        {messageIndex===10 && (
-          <><br /><br />
-          <Badge color='blue' icon='thumbs-up'/>
-          {t<string>('Select the Account for this Paid Feed:')}
-          </>)}
-        {messageIndex===11 && (
-          <><br /><br />
-          <Badge color='blue' icon='thumbs-up'/>
-          {t<string>('Select the Account to use for this Account Search:')}
-          </>)}
-        {messageIndex===13 && (
-          <><br /><br />
-          <Badge color='blue' icon='thumbs-up'/>
-          {t<string>('Select the Account to use for this Keyword Search:')}
-          </>)}
+        <><br /><br />
+        <Badge color='blue' icon='1'/>
+          {t<string>(_tierOne[messageIndex])}
+          </>
         {!isClosed && (
         <>
         <InputAddress

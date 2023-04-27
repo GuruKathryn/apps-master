@@ -201,9 +201,9 @@ function renderLink(_link: string): JSX.Element {
 
 function ShowFeed(): JSX.Element {
     setCountPost(0)
-    const maxIndex: number = feedDetail.ok.maxfeed;
     try {
-        return(
+      const maxIndex: number = feedDetail.ok.maxfeed;
+      return(
           <div>
             <div>
             <Table stretch>

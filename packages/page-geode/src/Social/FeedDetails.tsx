@@ -189,8 +189,8 @@ function renderLink(_link: string): JSX.Element {
 
 function ShowFeed(): JSX.Element {
       setCountPost(0)
-      const maxIndex: number = feedDetail.ok.maxfeed;
       try {
+        const maxIndex: number = feedDetail.ok.maxfeed;
         return(
           <div>
             <div>
