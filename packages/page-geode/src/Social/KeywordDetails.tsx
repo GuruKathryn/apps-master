@@ -35,18 +35,15 @@ interface Props {
     timestamp: number,
     endorsers: string[]
   }
-
-//   type FeedObj = {
-//     messageList: MessageObj[],
-//   }
+  
+  type FeedObj = {
+    search: string,
+    messageList: MessageObj[],
+  }
   
   type FeedDetail = {
-  ok: MessageObj[]
+  ok: FeedObj
   }
-
-  // type ProfileSearchIndex = {
-  // index: number
-  // }
 
   
 function KeywordDetails ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
@@ -58,13 +55,12 @@ function KeywordDetails ({ className = '', onClear, isAccount, outcome: { from, 
     const isReply: boolean = true;
     const isReplyToReply: boolean = false;
 
-    //const [isShowFollowers, toggleShowFollowers] = useToggle(false);
-    //const [isShowFollowing, toggleShowFollowing] = useToggle(false);
     const [isShowEndorsers, toggleShowEndorse] = useToggle(false);
     const [isShowMessageID, toggleShowMsgId] = useToggle(false);
 
     const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
+    const [pgIndex, setPgIndex] = useState(1);
 
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
@@ -102,12 +98,6 @@ function KeywordDetails ({ className = '', onClear, isAccount, outcome: { from, 
       }
    }
 
-// function blockAccount(_acct: string): boolean {
-//  const _blocked: boolean = (feedDetail.ok.blocked.find(_blk => _blk === _acct))
-//   ? true : false
-//  return(_blocked)
-// }    
-
 function renderLink(_link: string): JSX.Element {
  const ilink: string = isHex(_link)? withHttp(hexToString(_link).trim()): '0x';
  const videoLink: string = (ilink.includes('embed')) ? ilink 
@@ -126,80 +116,78 @@ function renderLink(_link: string): JSX.Element {
    <br /></>
  )
 }
-
-function ListAccount(): JSX.Element {
-  try {
-    return (
-      <div>
-        <Table>
-          <Table.Row>
-          <Table.Cell>
-            </Table.Cell>
-            <Table.Cell>
-            <IdentityIcon value={from} />
-            <AccountName value={from} withSidebar={true}/>
-            <LabelHelp help={t<string>(' The account calling the information.')} /> 
-            </Table.Cell>
-  
-            <Table.Cell>
-            <strong>{t<string>('Date/Time: ')}</strong>
-            {' '}{when.toLocaleDateString()} 
-            {' '}{when.toLocaleTimeString()} 
-            </Table.Cell>
-            <Table.Cell>
-            <strong>{t<string>(' Key: ')}</strong>
-            {t<string>(' Link to See More: ')}
-            <Label circular color='orange'> Link </Label>  
-            {t<string>(' No. of Endorsements: ')}
-            <Label circular color='blue'>{'#'}</Label>  
-            {t<string>(' See Replies: ')}
-            <Label color='blue'>{'Reply'}</Label>  
-            {t<string>(' Copy Message ID: ')}
-            <CopyInline value={' '} label={''}/>
-            </Table.Cell>
-            <Table.Cell>
-            <Button
-              icon='times'
-              label={t<string>('Close')}
-              onClick={onClear}
-            />
-            </Table.Cell>
-          </Table.Row>
-        </Table>
-      </div>
-    )
-  } catch(error) {
-    console.error(error)
-    //setIsClaim(false)
-    return(
-      <div>
+function PagePager(): JSX.Element {
+  const currPgIndex: number = (pgIndex > 0) ? pgIndex : (pgIndex < countPost) ? pgIndex : countPost;
+  const _indexer: number = maxIndex;
+  return(
+    <div>
+      {countPost>0 && (<>
       <Table>
         <Table.Row>
           <Table.Cell>
-          <strong>{t<string>('There are no posts available.')}</strong>
-          </Table.Cell>
-          <Table.Cell>
-          <strong>{t<string>('Date/Time: ')}</strong>
-            {' '}{when.toLocaleDateString()} 
-            {' '}{when.toLocaleTimeString()} 
+           <Button icon={'minus'} 
+            label={t<string>('Prev Page')}
+            isDisabled={currPgIndex===1}
+            onClick={()=> setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}/>
+           <Button icon={'plus'} 
+            label={t<string>('Next Page')}
+            isDisabled={currPgIndex>countPost}
+            onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
+           <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
           </Table.Cell>
         </Table.Row>
       </Table>
-      </div>
-    )
-  }}
+      </>)}
+    </div>
+  )
+ }
 
-  function ShowFeed(): JSX.Element {
+
+function PageIndexer(): JSX.Element {
+  const currPgIndex: number = (pgIndex > 0) ? pgIndex : (pgIndex < countPost) ? pgIndex : countPost;
+  const _indexer: number = 1;
+  return (
+    <div>
+      <Table>
+        <Table.Row>
+          <Table.Cell>
+          <Button
+            icon='times'
+            label={t<string>('Close')}
+            onClick={onClear}
+          />
+           <Button icon={'home'} 
+           isDisabled={currPgIndex===0}
+           onClick={()=> setPgIndex(1)}/>
+           <Button icon={'minus'} 
+           isDisabled={countPost===0}
+            onClick={()=> setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}/>
+           <Button icon={'plus'} 
+           isDisabled={countPost===0}
+            onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
+           <Button icon={'sign-in-alt'}
+           isDisabled={countPost===0}
+           onClick={()=> setPgIndex((countPost>0)? countPost: 1)}/>
+           <strong>{t<string>(' | Showing Post: ')}{pgIndex<countPost? pgIndex: countPost}{' thru '}{
+           (pgIndex+maxIndex) < countPost? pgIndex+maxIndex: countPost}</strong>
+           <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
+          </Table.Cell>
+        </Table.Row>
+      </Table>
+    </div>
+  )
+ }
+
+  function ShowSearchResults(): JSX.Element {
     try {
-      
+    
       return(
         <div>
-          <div>
-          <Table stretch>
-          <Table.Header>
+          <Table>
             <Table.Row>
-              <Table.HeaderCell>
-                  <LabelHelp help={t<string>(' Search result ')} /> 
+              <Table.Cell>
+              <h2>{t<string>('Number of Posts Found: ')}<strong>{countPost}</strong>
+                  {t<string>(' for Search Word: ')}<strong>{hextoHuman(feedDetail.ok.search)}</strong></h2>
               {' '}
               <Badge
                 icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
@@ -211,13 +199,36 @@ function ListAccount(): JSX.Element {
                 color={(isShowMessageID) ? 'blue' : 'gray'}
                 onClick={toggleShowMsgId}/> 
                 {' Show Message IDs | '}
-                {t<string>('Number of Posts: ')}<strong>{countPost}</strong>
-              </Table.HeaderCell>
-              </Table.Row>
-          </Table.Header>
+
+
+              </Table.Cell>
+            </Table.Row>
+          </Table>
+        </div>)
+    }catch(e){
+      console.log(e)
+      return(
+        <div>
+          <Table>
+            <Table.Row>
+              <Table.Cell>
+                <strong>{'No keyword results found'}</strong>      
+              </Table.Cell>
+            </Table.Row>
+          </Table>
+        </div>)
+    }
+  }
+  function ShowFeed(): JSX.Element {
+    try {
+      setCountPost(0)
+      return(
+        <div>
+          <div>
+          <Table stretch>
           <Table.Row>
             <Table.Cell verticalAlign='top'>
-              {feedDetail.ok
+              {feedDetail.ok.messageList
                   // filter out duplicates
                   .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                   // filter out all replies
@@ -229,9 +240,10 @@ function ListAccount(): JSX.Element {
                   //.sort((a, b) => (a.replyTo === b.replyTo)? 1 : -1)
                   .map((_feed, index: number) =>
                   <>
-                  {index < maxIndex && (
+                  {index >= pgIndex -1 && index < pgIndex + maxIndex && (
                   <>
                   <h3> 
+                          <Label color='blue' circular>{'Post '}{index+1}</Label>                   
                           <strong>{'@'}</strong>
                           <strong>{(isHex(_feed.username)? hexToString(_feed.username).trim() : '')}</strong>
                             {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
@@ -294,9 +306,9 @@ function ListAccount(): JSX.Element {
                   <br /> 
                   
                   {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
-                  {setCountPost(index+1)}
                   <Divider />                        
                   </>)}
+                {setCountPost(index+1)}
             </>
           )}
            </Table.Cell>
@@ -319,7 +331,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
   try {
       return(
         <>
-                   {feedDetail.ok
+                   {feedDetail.ok.messageList
                       // filter out duplicates
                       .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                       // filter out all blocked accts
@@ -416,11 +428,11 @@ function ShowReplies(replyMessageId: string): JSX.Element {
 return (
     <StyledDiv className={className}>
     <Card>
-    <AccountHeader
-        fromAcct={from}
-        timeDate={when}
-        />
+    <AccountHeader fromAcct={from} timeDate={when} />
+    <ShowSearchResults />
+    <PageIndexer />
     <ShowFeed />
+    <PagePager />
     </Card>
     
     </StyledDiv>

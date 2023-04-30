@@ -142,7 +142,8 @@ function ShowFeed(): JSX.Element {
                   onClick={onClear}
                 />
                 {t<string>(' Number of Posts: ')}<strong>{countPost}</strong>
-                {t<string>(' |  Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong><br />
+                {t<string>(' |  Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong>
+                <LabelHelp help={t<string>('Go to User Settings to change the number of Posts to show.')} />
                 </Table.HeaderCell>
                 <Table.HeaderCell>
                   {feedDetail.ok.blocked.length>0 && (
@@ -238,13 +239,12 @@ function ShowFeed(): JSX.Element {
                     ) : (
                     <>{(isHex(_feed.message)? hexToString(_feed.message).trim() :'')}{' '}</>
                     )}
-
                     <br /> 
-                    
                     {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
-                    {setCountPost(index+1)}
+                    
                     <Divider />                        
                     </>)}
+                    {setCountPost(index+1)}
               </>
             )}
              </Table.Cell>

@@ -70,28 +70,30 @@ function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, m
     const _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-    //const isRemove: boolean = true;
 
    function PagePager(): JSX.Element {
     const currPgIndex: number = (pgIndex > 0) ? pgIndex : (pgIndex < countPost) ? pgIndex : countPost;
-    const _indexer: number = 25;
+    const _indexer: number = maxIndex;
     return(
       <div>
+        {countPost>0 && (<>
         <Table>
           <Table.Row>
             <Table.Cell>
              <Button icon={'minus'} 
               label={t<string>('Prev Page')}
+              isDisabled={currPgIndex===1}
               onClick={()=> setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}/>
              <Button icon={'plus'} 
               label={t<string>('Next Page')}
+              isDisabled={currPgIndex>countPost}
               onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
              <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
             </Table.Cell>
           </Table.Row>
         </Table>
+        </>)}
       </div>
-
     )
    }
 
@@ -109,12 +111,16 @@ function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, m
               onClick={onClear}
             />
              <Button icon={'home'} 
+              isDisabled={countPost===0}
               onClick={()=> setPgIndex(1)}/>
              <Button icon={'minus'} 
+              isDisabled={countPost===0}
               onClick={()=> setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}/>
              <Button icon={'plus'} 
+              isDisabled={countPost===0}
               onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
              <Button icon={'sign-in-alt'}
+              isDisabled={countPost===0}
               onClick={()=> setPgIndex((countPost>0)? countPost: 1)}/>
              <strong>{t<string>(' | Showing Post: ')}{pgIndex<countPost? pgIndex: countPost}{' thru '}{
              (pgIndex+maxIndex) < countPost? pgIndex+maxIndex: countPost}</strong>
@@ -272,6 +278,7 @@ function ShowAccount(): JSX.Element {
 
   function ShowFeed(): JSX.Element {
     try {
+      setCountPost(0)
       return(
         <div>
           <div>
@@ -333,7 +340,7 @@ function ShowAccount(): JSX.Element {
               <>
                   {(isHex(_feed.message)? (
                             <>
-                            {hexToString(_feed.message).trim()}
+                            {autoCorrect(searchWords, hexToString(_feed.message).trim())}
                             </>
                             ) :'')}{' '}
                   <Label  as='a'
@@ -434,7 +441,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                                 {(_replyFeed.link != '0x') ? (
                                 <>
                                 {(isHex(_replyFeed.message)? (
-                                <>{hexToString(_replyFeed.message).trim()}</>
+                                <>{autoCorrect(searchWords, hexToString(_replyFeed.message).trim())}</>
                                 ) :'')}{' '}
                               <Label  as='a'
                               color='orange'
@@ -447,7 +454,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                             {isHex(_replyFeed.link) ? (
                               <LabelHelp help={withHttp(hexToString(_replyFeed.link).trim())} />
                               ) : ''}</>) : (
-                            <>{(isHex(_replyFeed.message)? hexToString(_replyFeed.message).trim() :'')}{' '}</>
+                            <>{(isHex(_replyFeed.message)? autoCorrect(searchWords, hexToString(_replyFeed.message).trim()) :'')}{' '}</>
                             )}
                           <br /> 
                           </Table.Cell>
