@@ -21,9 +21,13 @@ import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
+
 import FeedDetails from './FeedDetails';
 import PaidFeedDetails from './PaidFeedDetails';
 import StatDetails from './StatDetails';
+import SearchDetails from './SearchDetails';
+import KeywordDetails from './KeywordDetails';
+
 import CallPost from './CallPost';
 import CallEndorse from './CallEndorse';
 import CallStats from './CallStats';
@@ -34,7 +38,7 @@ import JSONhelp from '../shared/geode_social_help.json';
 import JSONnote from '../shared/geode_social_note.json';
 import JSONTitle from '../shared/geode_social_card_titles.json';
 import JSONTier1Help from '../shared/geode_social_tier1_help.json';
-
+import JSONTier2Help from '../shared/geode_social_tier2_help.json';
 
 interface Props {
   className?: string;
@@ -169,6 +173,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const _note: string[] = JSONnote;
   const _title: string[] = JSONTitle;
   const _tierOne: string[] = JSONTier1Help;
+  const _tierTwo: string[] = JSONTier2Help;
 
   return (
     <Card >
@@ -193,9 +198,11 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           />
         )}
         <><br /><br />
-        <Badge color='blue' icon='1'/>
-          {t<string>(_tierOne[messageIndex])}
-          </>
+        {!isClosed && messageIndex < 15 && messageIndex!=12 && (
+          <><Badge color='blue' icon='thumbs-up'/>
+          {t<string>(_tierOne[messageIndex])}</>
+        )}
+        </>
         {!isClosed && (
         <>
         <InputAddress
@@ -231,46 +238,11 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />              
             </>
             )}
-            {messageIndex===0 && (
-              <><Badge color='blue' icon='2'/>
-                {t<string>('Enter your Post, a photo or other link:')}
-              </>)}
-            {messageIndex===1 && (
-              <><Badge color='blue' icon='2'/>
-              {t<string>('Enter your Paid Post, a photo or other link, the Max No. of Paid Endorsers, Keyword for Interests and the sum Total Amount to spend on this Ad Post:')}
-              </>)}
-            {messageIndex===2 && (
-              <><Badge color='blue' icon='2'/>
-              {t<string>('Input the Message ID of the Post to Endorse:')}
-              </>)}
-            {messageIndex===3 && (
-              <><Badge color='blue' icon='2'/>
-              {t<string>('Input the Message ID of the Paid Post to Endorse:')}
-              </>)}
-            {messageIndex===4 && (
-              <><Badge color='blue' icon='2'/>
-              {t<string>('Select the Account to Follow:')}
-              </>)}
-            {messageIndex===5 && (
-              <><Badge color='blue' icon='2'/>
-              {t<string>('Select the Account to Unfollow:')}
-              </>)}
-            {messageIndex===6 && (
-              <><Badge color='blue' icon='2'/>
-              {t<string>('Select the Account to Block:')}
-              </>)}
-            {messageIndex===7 && (
-              <><Badge color='blue' icon='2'/>
-              {t<string>('Select the Account to Unblock:')}
-              </>)}
-            {messageIndex===11 && (
-              <><Badge color='blue' icon='2'/>
-                {t<string>('Enter the Account to Lookup:')}
-              </>)}
-            {messageIndex===13 && (
-              <><Badge color='blue' icon='2'/>
-                {t<string>('Enter the Keyword to Lookup:')}
-              </>)}
+            {messageIndex < 14 && messageIndex!=8 && 
+            messageIndex!=9 && messageIndex!=10 && (
+              <><Badge color='blue' icon='thumbs-up'/>
+              {t<string>(_tierTwo[messageIndex])}</>
+            )}
             <Params
               onChange={setParams}
               params={
@@ -389,7 +361,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             onClick={toggleStats} 
             />          
           </>)}   
-            {messageIndex!=14 && (
+            {messageIndex!=14 && messageIndex!=11 && messageIndex!=13 &&(
             <>{' | '}
             <Button
             icon={(isShowEndorse) ? 'minus' : 'plus'}
@@ -448,7 +420,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         {isStats && (
           <><CallStats /></>
         )}
-        {outcomes.length > 0 && messageIndex===9 && (
+        {outcomes.length > 0 && messageIndex===9 &&  (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
               <>
@@ -473,6 +445,34 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 onClear={_onClearOutcome(index)}
                 isShowEndorsers={isShowEndorse}
                 isShowInterest={isShowInterest}
+                outcome={outcome}
+              />
+              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
+              </>
+            ))}
+            </div>
+        )}
+        {outcomes.length > 0 && messageIndex===11 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <>
+              <SearchDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
+              </>
+            ))}
+            </div>
+        )}
+        {outcomes.length > 0 && messageIndex===13 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <>
+              <KeywordDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
                 outcome={outcome}
               />
               {isTest && (<>{JSON.stringify(outcome.output)}</>)}

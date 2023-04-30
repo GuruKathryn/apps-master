@@ -8,7 +8,7 @@ import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Badge, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { Image, Divider, List, Table, Label } from 'semantic-ui-react'
+import { Divider, List, Table, Label, Image } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
 import AccountHeader from '../shared/AccountHeader';
@@ -36,19 +36,20 @@ interface Props {
     endorsers: string[]
   }
 
-  type FeedObj = {
-    searchedAccount: string,
-    username: string,
-    followers: string[],
-    following: string[],
-    messageList: MessageObj[],
-  }
+//   type FeedObj = {
+//     messageList: MessageObj[],
+//   }
   
   type FeedDetail = {
-  ok: FeedObj
+  ok: MessageObj[]
   }
+
+  // type ProfileSearchIndex = {
+  // index: number
+  // }
+
   
-function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function KeywordDetails ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
     const searchWords: string[] = JSONprohibited;
@@ -57,74 +58,18 @@ function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, m
     const isReply: boolean = true;
     const isReplyToReply: boolean = false;
 
-    const [isShowFollowers, toggleShowFollowers] = useToggle(false);
-    const [isShowFollowing, toggleShowFollowing] = useToggle(false);
+    //const [isShowFollowers, toggleShowFollowers] = useToggle(false);
+    //const [isShowFollowing, toggleShowFollowing] = useToggle(false);
     const [isShowEndorsers, toggleShowEndorse] = useToggle(false);
     const [isShowMessageID, toggleShowMsgId] = useToggle(false);
 
     const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
-    const [pgIndex, setPgIndex] = useState(1);
 
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-    //const isRemove: boolean = true;
-
-   function PagePager(): JSX.Element {
-    const currPgIndex: number = (pgIndex > 0) ? pgIndex : (pgIndex < countPost) ? pgIndex : countPost;
-    const _indexer: number = 25;
-    return(
-      <div>
-        <Table>
-          <Table.Row>
-            <Table.Cell>
-             <Button icon={'minus'} 
-              label={t<string>('Prev Page')}
-              onClick={()=> setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}/>
-             <Button icon={'plus'} 
-              label={t<string>('Next Page')}
-              onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
-             <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
-            </Table.Cell>
-          </Table.Row>
-        </Table>
-      </div>
-
-    )
-   }
-
-   function PageIndexer(): JSX.Element {
-    const currPgIndex: number = (pgIndex > 0) ? pgIndex : (pgIndex < countPost) ? pgIndex : countPost;
-    const _indexer: number = 1;
-    return (
-      <div>
-        <Table>
-          <Table.Row>
-            <Table.Cell>
-            <Button
-              icon='times'
-              label={t<string>('Close')}
-              onClick={onClear}
-            />
-             <Button icon={'home'} 
-              onClick={()=> setPgIndex(1)}/>
-             <Button icon={'minus'} 
-              onClick={()=> setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}/>
-             <Button icon={'plus'} 
-              onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
-             <Button icon={'sign-in-alt'}
-              onClick={()=> setPgIndex((countPost>0)? countPost: 1)}/>
-             <strong>{t<string>(' | Showing Post: ')}{pgIndex<countPost? pgIndex: countPost}{' thru '}{
-             (pgIndex+maxIndex) < countPost? pgIndex+maxIndex: countPost}</strong>
-             <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
-            </Table.Cell>
-          </Table.Row>
-        </Table>
-      </div>
-    )
-   }
 
 
     function autoCorrect(arr: string[], str: string): JSX.Element {
@@ -157,6 +102,12 @@ function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, m
       }
    }
 
+// function blockAccount(_acct: string): boolean {
+//  const _blocked: boolean = (feedDetail.ok.blocked.find(_blk => _blk === _acct))
+//   ? true : false
+//  return(_blocked)
+// }    
+
 function renderLink(_link: string): JSX.Element {
  const ilink: string = isHex(_link)? withHttp(hexToString(_link).trim()): '0x';
  const videoLink: string = (ilink.includes('embed')) ? ilink 
@@ -176,34 +127,80 @@ function renderLink(_link: string): JSX.Element {
  )
 }
 
-function ShowAccount(): JSX.Element {
-  try{
-    const noFollowers: number = feedDetail.ok.followers.length;
-    const noFollowing: number = feedDetail.ok.following.length;
-    const _username: string = feedDetail.ok.searchedAccount.length>0? 
-    hextoHuman(feedDetail.ok.username): '';
-      return (<>
-            <Table stretch verticalAlign='top'>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell verticalAlign='top'>
-                {feedDetail.ok.searchedAccount.length>0 && (
-                  <><h2>
-                    <IdentityIcon size={32} value={feedDetail.ok.searchedAccount} />
-                    {' '}
-                    <AccountName value={feedDetail.ok.searchedAccount} withSidebar={true}/>
-                    {' '}
-                    {_username.trim()!='' && (<><strong>{'@'}{_username}</strong></>)}
-                    <LabelHelp help={t<string>(' Search Result: Account Found! ')} /> 
-                  </h2>
-                  {t<string>('Number of Posts: ')}<strong>{countPost}</strong>
-                  </>
-                )}                
-                </Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
+function ListAccount(): JSX.Element {
+  try {
+    return (
+      <div>
+        <Table>
+          <Table.Row>
+          <Table.Cell>
+            </Table.Cell>
+            <Table.Cell>
+            <IdentityIcon value={from} />
+            <AccountName value={from} withSidebar={true}/>
+            <LabelHelp help={t<string>(' The account calling the information.')} /> 
+            </Table.Cell>
+  
+            <Table.Cell>
+            <strong>{t<string>('Date/Time: ')}</strong>
+            {' '}{when.toLocaleDateString()} 
+            {' '}{when.toLocaleTimeString()} 
+            </Table.Cell>
+            <Table.Cell>
+            <strong>{t<string>(' Key: ')}</strong>
+            {t<string>(' Link to See More: ')}
+            <Label circular color='orange'> Link </Label>  
+            {t<string>(' No. of Endorsements: ')}
+            <Label circular color='blue'>{'#'}</Label>  
+            {t<string>(' See Replies: ')}
+            <Label color='blue'>{'Reply'}</Label>  
+            {t<string>(' Copy Message ID: ')}
+            <CopyInline value={' '} label={''}/>
+            </Table.Cell>
+            <Table.Cell>
+            <Button
+              icon='times'
+              label={t<string>('Close')}
+              onClick={onClear}
+            />
+            </Table.Cell>
+          </Table.Row>
+        </Table>
+      </div>
+    )
+  } catch(error) {
+    console.error(error)
+    //setIsClaim(false)
+    return(
+      <div>
+      <Table>
+        <Table.Row>
+          <Table.Cell>
+          <strong>{t<string>('There are no posts available.')}</strong>
+          </Table.Cell>
+          <Table.Cell>
+          <strong>{t<string>('Date/Time: ')}</strong>
+            {' '}{when.toLocaleDateString()} 
+            {' '}{when.toLocaleTimeString()} 
+          </Table.Cell>
+        </Table.Row>
+      </Table>
+      </div>
+    )
+  }}
+
+  function ShowFeed(): JSX.Element {
+    try {
+      
+      return(
+        <div>
+          <div>
+          <Table stretch>
+          <Table.Header>
             <Table.Row>
-              <Table.Cell verticalAlign='top'>
+              <Table.HeaderCell>
+                  <LabelHelp help={t<string>(' Search result ')} /> 
+              {' '}
               <Badge
                 icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
                 color={(isShowEndorsers) ? 'blue' : 'gray'}
@@ -214,71 +211,13 @@ function ShowAccount(): JSX.Element {
                 color={(isShowMessageID) ? 'blue' : 'gray'}
                 onClick={toggleShowMsgId}/> 
                 {' Show Message IDs | '}
-                <br /><br />
-                {feedDetail.ok.followers.length>0 ? (
-                  <>
-                  <Badge
-                    icon='info'
-                    color={(isShowFollowers) ? 'blue' : 'gray'}
-                    onClick={toggleShowFollowers}/> 
-                {t<string>(' Followers: ')}<strong>{noFollowers}</strong>
-                
-                {isShowFollowers && (
-                  <>
-                  {feedDetail.ok.followers.map(_followers =>
-                  <>{' ('}<AccountName value={_followers} withSidebar={true}/>{') '}
-                  </>)}
-                  </>
-                )}
-                </>) : <>
-                        <Badge icon='info' color='red' />
-                        {'This Account has no Followers'}</> }
-                <br /><br />
-                {feedDetail.ok.following.length>0 ? (
-                <>
-                <Badge
-                icon='info'
-                color={(isShowFollowing) ? 'blue' : 'gray'}
-                onClick={toggleShowFollowing}/> 
-                {t<string>(' Following: ')}<strong>{noFollowing}</strong>
-                {isShowFollowing && (
-                  <>
-                  {feedDetail.ok.following.map(_following =>
-                  <>{' ('}<AccountName value={_following} withSidebar={true}/>{') '}
-                  </>)}
-                  </>
-                )}
-                </>): 
-                <>
-                <Badge icon='info' color='red' />
-                {'This Account is not Following other Accounts'}</> }
-              </Table.Cell>
-            </Table.Row>
-            </Table>
-          </>)
-    }catch(e){
-    console.log(e)
-    return(<>
-    <Table>
-      <Table.Row>
-        <Table.Cell>
-        <strong>{'No Accounts Found'}</strong>      
-        </Table.Cell>
-      </Table.Row>
-    </Table>
-    </>)
-  }
-}
-
-  function ShowFeed(): JSX.Element {
-    try {
-      return(
-        <div>
-          <div>
-          <Table stretch> 
+                {t<string>('Number of Posts: ')}<strong>{countPost}</strong>
+              </Table.HeaderCell>
+              </Table.Row>
+          </Table.Header>
           <Table.Row>
             <Table.Cell verticalAlign='top'>
-              {feedDetail.ok.messageList
+              {feedDetail.ok
                   // filter out duplicates
                   .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                   // filter out all replies
@@ -290,10 +229,9 @@ function ShowAccount(): JSX.Element {
                   //.sort((a, b) => (a.replyTo === b.replyTo)? 1 : -1)
                   .map((_feed, index: number) =>
                   <>
-                  {index >= pgIndex -1 && index < pgIndex + maxIndex && (
+                  {index < maxIndex && (
                   <>
                   <h3> 
-                    <Label color='blue' circular >{'Post '}{index+1}</Label>
                           <strong>{'@'}</strong>
                           <strong>{(isHex(_feed.username)? hexToString(_feed.username).trim() : '')}</strong>
                             {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
@@ -321,6 +259,7 @@ function ShowAccount(): JSX.Element {
                   </List>     
                   </>
                   )}
+              
                   {isShowMessageID && 
                     (<>{(_feed.replyTo != zeroMessageId)
                     ? (<><i>{'reply to: '}{_feed.replyTo}</i><br />
@@ -336,6 +275,7 @@ function ShowAccount(): JSX.Element {
                             {hexToString(_feed.message).trim()}
                             </>
                             ) :'')}{' '}
+
                   <Label  as='a'
                   color='orange'
                   circular
@@ -350,11 +290,14 @@ function ShowAccount(): JSX.Element {
                   ) : (
                   <>{(isHex(_feed.message)? hexToString(_feed.message).trim() :'')}{' '}</>
                   )}
+
                   <br /> 
+                  
                   {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
+                  {setCountPost(index+1)}
                   <Divider />                        
                   </>)}
-            {setCountPost(index+1)}</>
+            </>
           )}
            </Table.Cell>
           </Table.Row>
@@ -372,10 +315,11 @@ function ShowAccount(): JSX.Element {
 }
 
 function ShowReplies(replyMessageId: string): JSX.Element {
+
   try {
       return(
-              <>
-                {feedDetail.ok.messageList
+        <>
+                   {feedDetail.ok
                       // filter out duplicates
                       .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                       // filter out all blocked accts
@@ -430,9 +374,12 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                                     : (<><i>{'message Id: '}{_replyFeed.messageId}</i><br /></>)}
                                     </>)} 
                                     <br />      
+  
                                 {renderLink(_replyFeed.link)}
+                                
                                 {(_replyFeed.link != '0x') ? (
                                 <>
+  
                                 {(isHex(_replyFeed.message)? (
                                 <>{hexToString(_replyFeed.message).trim()}</>
                                 ) :'')}{' '}
@@ -452,6 +399,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                           <br /> 
                           </Table.Cell>
                         </Table.Row>  
+                        
                         </>
                       )}                          
         </>)
@@ -468,12 +416,13 @@ function ShowReplies(replyMessageId: string): JSX.Element {
 return (
     <StyledDiv className={className}>
     <Card>
-        <AccountHeader fromAcct={from} timeDate={when} />
-        <ShowAccount />
-        <PageIndexer />
-        <ShowFeed />
-        <PagePager />
+    <AccountHeader
+        fromAcct={from}
+        timeDate={when}
+        />
+    <ShowFeed />
     </Card>
+    
     </StyledDiv>
   );
 }
@@ -486,4 +435,4 @@ const StyledDiv = styled.div`
     margin: 0.25rem 0.5rem;
   }
 `;
-export default React.memo(SearchDetails);
+export default React.memo(KeywordDetails);

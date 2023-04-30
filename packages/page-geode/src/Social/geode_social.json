@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x25ae4fac430562717a6db68ef407f0dd74f10718c19cf341b7709cc1876ad6bb",
+    "hash": "0xb0d014f16a626c51eaf0e9f3282c4f3625886cd0a38aaafb208f45f780ee2852",
     "language": "ink! 4.0.0",
     "compiler": "rustc 1.70.0-nightly",
     "build_info": {
@@ -677,7 +677,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 29
+          "type": 27
         },
         "selector": "0x1d3df1c6"
       },
@@ -702,7 +702,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 29
+          "type": 27
         },
         "selector": "0x597ba589"
       },
@@ -717,7 +717,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 30
+          "type": 28
         },
         "selector": "0x9cb648f1"
       },
@@ -732,7 +732,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 31
+          "type": 29
         },
         "selector": "0x91a7cae8"
       },
@@ -747,7 +747,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 31
+          "type": 29
         },
         "selector": "0xa8ba74f6"
       },
@@ -772,7 +772,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 32
+          "type": 30
         },
         "selector": "0x15bf38c8"
       },
@@ -797,7 +797,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 29
+          "type": 27
         },
         "selector": "0x3e654784"
       },
@@ -822,7 +822,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 33
+          "type": 31
         },
         "selector": "0x82ae1338"
       },
@@ -847,7 +847,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 29
+          "type": 27
         },
         "selector": "0x5abc0a89"
       },
@@ -872,7 +872,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 34
+          "type": 32
         },
         "selector": "0x96cbb563"
       },
@@ -897,7 +897,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 32
+          "type": 30
         },
         "selector": "0x92fe164c"
       },
@@ -922,7 +922,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 34
+          "type": 32
         },
         "selector": "0x543af8cc"
       },
@@ -947,7 +947,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 32
+          "type": 30
         },
         "selector": "0x9585ffe4"
       },
@@ -972,7 +972,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 34
+          "type": 32
         },
         "selector": "0x2ad515b4"
       },
@@ -997,7 +997,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 32
+          "type": 30
         },
         "selector": "0xf747e8b2"
       },
@@ -1022,7 +1022,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 34
+          "type": 32
         },
         "selector": "0xce711f6b"
       },
@@ -1047,7 +1047,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 32
+          "type": 30
         },
         "selector": "0x34aca3cf"
       },
@@ -1072,7 +1072,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 31
+          "type": 29
         },
         "selector": "0xa3cac767"
       },
@@ -1097,7 +1097,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 32
+          "type": 30
         },
         "selector": "0xfbb26b82"
       },
@@ -1122,7 +1122,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 31
+          "type": 29
         },
         "selector": "0xee3276ac"
       },
@@ -1147,7 +1147,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 32
+          "type": 30
         },
         "selector": "0x9ab1604d"
       },
@@ -1172,7 +1172,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 35
+          "type": 33
         },
         "selector": "0x4a9f334c"
       },
@@ -1197,7 +1197,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 36
+          "type": 34
         },
         "selector": "0x1855a13c"
       },
@@ -1222,7 +1222,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 31
+          "type": 29
         },
         "selector": "0xe0811baf"
       },
@@ -1247,7 +1247,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 31
+          "type": 29
         },
         "selector": "0x04e91029"
       }
@@ -2610,14 +2610,24 @@
           "composite": {
             "fields": [
               {
+                "name": "searched_account",
+                "type": 6,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "username",
+                "type": 2,
+                "typeName": "Vec<u8>"
+              },
+              {
                 "name": "followers",
-                "type": 27,
-                "typeName": "Followers"
+                "type": 5,
+                "typeName": "Vec<AccountId>"
               },
               {
                 "name": "following",
-                "type": 28,
-                "typeName": "Following"
+                "type": 5,
+                "typeName": "Vec<AccountId>"
               },
               {
                 "name": "message_list",
@@ -2636,48 +2646,6 @@
     },
     {
       "id": 27,
-      "type": {
-        "def": {
-          "composite": {
-            "fields": [
-              {
-                "name": "followers",
-                "type": 5,
-                "typeName": "Vec<AccountId>"
-              }
-            ]
-          }
-        },
-        "path": [
-          "geode_social",
-          "geode_social",
-          "Followers"
-        ]
-      }
-    },
-    {
-      "id": 28,
-      "type": {
-        "def": {
-          "composite": {
-            "fields": [
-              {
-                "name": "following",
-                "type": 5,
-                "typeName": "Vec<AccountId>"
-              }
-            ]
-          }
-        },
-        "path": [
-          "geode_social",
-          "geode_social",
-          "Following"
-        ]
-      }
-    },
-    {
-      "id": 29,
       "type": {
         "def": {
           "variant": {
@@ -2719,7 +2687,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 28,
       "type": {
         "def": {
           "variant": {
@@ -2761,7 +2729,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 29,
       "type": {
         "def": {
           "variant": {
@@ -2803,7 +2771,7 @@
       }
     },
     {
-      "id": 32,
+      "id": 30,
       "type": {
         "def": {
           "variant": {
@@ -2845,7 +2813,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 31,
       "type": {
         "def": {
           "variant": {
@@ -2887,7 +2855,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 32,
       "type": {
         "def": {
           "variant": {
@@ -2929,7 +2897,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 33,
       "type": {
         "def": {
           "variant": {
@@ -2971,7 +2939,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 34,
       "type": {
         "def": {
           "variant": {

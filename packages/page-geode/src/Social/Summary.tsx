@@ -4,7 +4,8 @@
 import React from 'react';
 
 import { Badge, Card, CardSummary, SummaryBox } from '@polkadot/react-components';
-
+//import { Label, Image } from 'semantic-ui-react'
+//import b010 from '../shared/geode_app_icon_social.png';
 import { useTranslation } from '../translate';
 //import { formatNumber } from '@polkadot/util';
 
@@ -17,14 +18,19 @@ import { useTranslation } from '../translate';
 
 function Summary (): React.ReactElement {
   const { t } = useTranslation();
-
+  // const imagePNG = b010;
+  // const src = b010;
   // const { t } = useTranslation();
   // const linkCount = 5;
   // const itemCount = 0;
+  //<Image src={'../shared/geode_app_icon_social.png'} />
+  //<img src={'../shared/geode_app_icon_social.png'} />
+  //<Image circular src={'https://i.pinimg.com/originals/1b/bd/da/1bbddaaaa1eebfb725289d0c9cde22fb.jpg'} size='small' />
   return (
     <div>
     <SummaryBox>
-      <CardSummary label={''}>
+      <CardSummary 
+      label={''}>
       {t<string>('Geode Social')}
       </CardSummary>
     </SummaryBox>

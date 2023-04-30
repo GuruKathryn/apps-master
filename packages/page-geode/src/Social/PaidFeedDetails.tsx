@@ -13,6 +13,7 @@ import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
 //import JSONSocialInterests from '../shared/geode_social_interest.json';
 import JSONprohibited from '../shared/geode_prohibited.json';
+import AccountHeader from '../shared/AccountHeader';
 //import { useToggle } from '@polkadot/react-hooks';
 
 interface Props {
@@ -137,68 +138,6 @@ function renderLink(_link: string): JSX.Element {
   )
 }
 
-    function ListAccount(): JSX.Element {
-      try {
-        return (
-          <div>
-            <Table>
-              <Table.Row>
-              <Table.Cell>
-                </Table.Cell>
-                <Table.Cell>
-                <IdentityIcon value={from} />
-                <AccountName value={from} withSidebar={true}/>
-                <LabelHelp help={t<string>(' The account calling the information.')} /> 
-                </Table.Cell>
-      
-                <Table.Cell>
-                <strong>{t<string>('Date/Time: ')}</strong>
-                {' '}{when.toLocaleDateString()} 
-                {' '}{when.toLocaleTimeString()} 
-                </Table.Cell>
-                <Table.Cell>
-                <strong>{t<string>(' Key: ')}</strong>
-                {t<string>(' Link to See More: ')}
-                <Label circular color='orange'> Link </Label>  
-                {t<string>(' No. of Endorsements: ')}
-                <Label circular color='blue'>{'#'}</Label>  
-                {t<string>(' Copy Message ID: ')}
-                <CopyInline value={' '} label={''}/>
-                </Table.Cell>
-                <Table.Cell>
-                <Button
-                  icon='times'
-                  label={t<string>('Close')}
-                  onClick={onClear}
-                />
-                </Table.Cell>
-
-              </Table.Row>
-            </Table>
-          </div>
-        )
-      } catch(error) {
-        console.error(error)
-        //setIsClaim(false)
-        return(
-          <div>
-          <Table>
-            <Table.Row>
-              <Table.Cell>
-              <strong>{t<string>('There are no posts available.')}</strong>
-              </Table.Cell>
-              <Table.Cell>
-              <strong>{t<string>('Date/Time: ')}</strong>
-                {' '}{when.toLocaleDateString()} 
-                {' '}{when.toLocaleTimeString()} 
-              </Table.Cell>
-            </Table.Row>
-          </Table>
-          </div>
-        )
-      }}
-
-
 function ShowFeed(): JSX.Element {
     setCountPost(0)
     try {
@@ -210,11 +149,20 @@ function ShowFeed(): JSX.Element {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>
+                  <Button
+                    icon='times'
+                    label={t<string>('Close')}
+                    onClick={onClear}
+                  />
                   {t<string>(' Number of Posts: ')}
                   <strong>{countPost}</strong>
+                  {t<string>(' | Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong>
+                  <br />
                 </Table.HeaderCell>
+                </Table.Row>
+                <Table.Row>
                 <Table.HeaderCell>
-                  <Badge
+                <Badge
                   icon='info'
                   color={(isShowMyInterest) ? 'blue' : 'gray'}
                   onClick={toggleShowInterest}/> 
@@ -223,11 +171,7 @@ function ShowFeed(): JSX.Element {
                   {isShowMyInterest && (<>{' ('}
                     {hextoHuman(feedDetail.ok.myinterests)}{') '}
                   </>)}
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                  {t<string>(' Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong><br />
-                </Table.HeaderCell>
-                <Table.HeaderCell>
+                  <br /><br />
                   {feedDetail.ok.blocked.length>0 && (
                   <>
                   <Badge
@@ -337,7 +281,10 @@ function ShowFeed(): JSX.Element {
   return (
     <StyledDiv className={className}>
     <Card>
-      <ListAccount />
+    <AccountHeader
+        fromAcct={from}
+        timeDate={when}
+        />
       <ShowFeed />
     </Card>
     </StyledDiv>

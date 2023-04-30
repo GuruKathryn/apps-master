@@ -11,6 +11,7 @@ import { Button, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polk
 import { List, Table, Label, Image, Divider } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
+import AccountHeader from '../shared/AccountHeader';
 
 import JSONprohibited from '../shared/geode_prohibited.json';
 //import { useToggle } from '@polkadot/react-hooks';
@@ -124,73 +125,10 @@ function renderLink(_link: string): JSX.Element {
   )
 }
 
-    function ListAccount(): JSX.Element {
-      try {
-        return (
-          <div>
-            <Table>
-              <Table.Row>
-              <Table.Cell>
-                </Table.Cell>
-                <Table.Cell>
-                <IdentityIcon value={from} />
-                <AccountName value={from} withSidebar={true}/>
-                <LabelHelp help={t<string>(' The account calling the information.')} /> 
-                </Table.Cell>
-      
-                <Table.Cell>
-                <strong>{t<string>('Date/Time: ')}</strong>
-                {' '}{when.toLocaleDateString()} 
-                {' '}{when.toLocaleTimeString()} 
-                </Table.Cell>
-                <Table.Cell>
-                <strong>{t<string>(' Key: ')}</strong>
-                {t<string>(' Link to See More: ')}
-                <Label circular color='orange'> Link </Label>  
-                {t<string>(' No. of Endorsements: ')}
-                <Label circular color='blue'>{'#'}</Label>  
-                {t<string>(' See Replies: ')}
-                <Label color='blue'>{'Reply'}</Label>  
-                {t<string>(' Copy Message ID: ')}
-                <CopyInline value={' '} label={''}/>
-                </Table.Cell>
-                <Table.Cell>
-                <Button
-                  icon='times'
-                  label={t<string>('Close')}
-                  onClick={onClear}
-                />
-                </Table.Cell>
-              </Table.Row>
-            </Table>
-          </div>
-        )
-      } catch(error) {
-        console.error(error)
-        //setIsClaim(false)
-        return(
-          <div>
-          <Table>
-            <Table.Row>
-              <Table.Cell>
-              <strong>{t<string>('There are no posts available.')}</strong>
-              </Table.Cell>
-              <Table.Cell>
-              <strong>{t<string>('Date/Time: ')}</strong>
-                {' '}{when.toLocaleDateString()} 
-                {' '}{when.toLocaleTimeString()} 
-              </Table.Cell>
-            </Table.Row>
-          </Table>
-          </div>
-        )
-      }}
-
-
 function ShowFeed(): JSX.Element {
       setCountPost(0)
+      const maxIndex: number = feedDetail.ok.maxfeed;
       try {
-        const maxIndex: number = feedDetail.ok.maxfeed;
         return(
           <div>
             <div>
@@ -198,10 +136,13 @@ function ShowFeed(): JSX.Element {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>
-                  {t<string>(' Number of Posts: ')}<strong>{countPost}</strong>
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                  {t<string>(' Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong><br />
+                <Button
+                  icon='times'
+                  label={t<string>('Close')}
+                  onClick={onClear}
+                />
+                {t<string>(' Number of Posts: ')}<strong>{countPost}</strong>
+                {t<string>(' |  Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong><br />
                 </Table.HeaderCell>
                 <Table.HeaderCell>
                   {feedDetail.ok.blocked.length>0 && (
@@ -423,7 +364,10 @@ try {
   return (
     <StyledDiv className={className}>
     <Card>
-      <ListAccount />
+    <AccountHeader
+        fromAcct={from}
+        timeDate={when}
+        />
       <ShowFeed />
     </Card>
     </StyledDiv>
