@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { Label } from 'semantic-ui-react';
+import { Image, Table, Label } from 'semantic-ui-react';
 //import { useApi } from '@polkadot/react-hooks';
 import { Card, CardSummary, SummaryBox } from '@polkadot/react-components';
 
@@ -13,15 +13,46 @@ import { Card, CardSummary, SummaryBox } from '@polkadot/react-components';
 export default function Home (): React.ReactElement {
 //  const { isDevelopment } = useApi();
 //  const chainInfo = useChainInfo();
-//const currentCoinPrice = '';
-//const lowTrend = '$0.99';
-//const highTrend = '$1.01';
-//const weeklyChange = '0.00 %';
-//const weeklyTrend = ' ▲ ';
-//const coinName = "GROPO";
-//const infoIcon ='Current Coin market value in USD.\n '
-//const buyGeode = ' Buy Geode! '
-//const infoBuyGeode = ' Coming Soon! '
+
+const ExtensionCard = () => {
+  return(
+      <div>
+          <Table textAlign='center'>
+            <Table.Row>
+              <Table.Cell>
+                <Card >
+                    Get the Polkadot Chrome Extension
+                    <Label circular color='blue'>1</Label>
+                    <Image src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Blue_card.svg/788px-Blue_card.svg.png'
+                           size='small'
+                    ></Image> 
+                     
+                </Card>
+              </Table.Cell>
+              <Table.Cell >
+                <Card>
+                    Get the Polkadot Chrome Extension
+                    <Label circular color='blue'>2</Label>
+                    <Image src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Blue_card.svg/788px-Blue_card.svg.png'
+                           size='small'
+                    ></Image> 
+                </Card>
+              </Table.Cell>
+              <Table.Cell>
+                <Card>
+                    Get the Polkadot Chrome Extension
+                    <Label circular color='blue'>3</Label>
+                    <Image src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Blue_card.svg/788px-Blue_card.svg.png'
+                           size='small'
+                    ></Image> 
+                </Card>
+              </Table.Cell>
+            </Table.Row>
+          </Table>
+      </div>
+  )
+}
+
 const BlockandPurpose = () => {
   return (
       <div>				
@@ -147,6 +178,7 @@ const GoToGitHub = () => {
         <SignUpForAnnouncements />
         <GoToGitHub />
     </Card>
+    
 
     </div>
   );

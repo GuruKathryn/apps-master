@@ -20,8 +20,8 @@ import JSONprohibited from '../shared/geode_prohibited.json';
 interface Props {
     className?: string;
     onClear?: () => void;
-    isShowEndorsers: boolean;
-    isShowMessageID: boolean;
+    //isShowEndorsers?: boolean;
+    //isShowMessageID?: boolean;
     outcome: CallResult;
     //onClose: () => void;
   }
@@ -33,6 +33,7 @@ interface Props {
     username: string,
     message: string,
     link: string,
+    link2: string,
     endorserCount: number,
     replyCount: number,
     timestamp: number,
@@ -49,7 +50,7 @@ interface Props {
   ok: FeedObj
   }
   
-function FeedDetails ({ className = '', onClear, isShowEndorsers, isShowMessageID, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function FeedDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
     const searchWords: string[] = JSONprohibited;
@@ -59,6 +60,9 @@ function FeedDetails ({ className = '', onClear, isShowEndorsers, isShowMessageI
 
     const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
+
+    const [isShowEndorsers, toggleShowEndorsers] = useToggle(false);
+    const [isShowMsgID, toggleShowMsgID] = useToggle(false);
 
     const [isShowBlockedAccounts, toggleShowBlockedAccounts] = useToggle(false);
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -127,7 +131,7 @@ function hextoHuman(_hexIn: string): string {
 function ShowFeed(): JSX.Element {
       setCountPost(0)
       try {
-        const maxIndex: number = feedDetail.ok.maxfeed>0 ? feedDetail.ok.maxfeed: 0;
+        const maxIndex: number = feedDetail.ok.maxfeed>0 ? feedDetail.ok.maxfeed: 10;
         return(
           <div>
             <div>
@@ -143,8 +147,21 @@ function ShowFeed(): JSX.Element {
                 {t<string>(' Number of Posts: ')}<strong>{countPost}</strong>
                 {t<string>(' |  Number of Posts to show: ')}<strong>{maxIndex}</strong>
                 <LabelHelp help={t<string>('Go to User Settings to change the number of Posts to show.')} />
-                
-                  {feedDetail.ok.blocked.length>0 && (
+                </Table.HeaderCell>
+            </Table.Row>
+            <Table.Row>
+                <Table.HeaderCell>
+                {' '}<Badge
+                icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
+                color={(isShowEndorsers) ? 'blue' : 'gray'}
+                onClick={toggleShowEndorsers}/> 
+                {t<string>(' Show Endorsers | ')}
+                <Badge
+                icon={(isShowMsgID) ? 'thumbs-up' : 'thumbs-down'}
+                color={(isShowMsgID) ? 'blue' : 'gray'}
+                onClick={toggleShowMsgID}/> 
+                {t<string>(' Show Message IDs ')}
+                {feedDetail.ok.blocked.length>0 && (
                   <>
                   {' | '}
                   <Badge
@@ -160,6 +177,8 @@ function ShowFeed(): JSX.Element {
                     </>
                   )}
                   </>)}
+
+
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -208,11 +227,14 @@ function ShowFeed(): JSX.Element {
                     </>
                     )}
                 
-                    {isShowMessageID && 
+                    {isShowMsgID && 
                       (<>{(_feed.replyTo != zeroMessageId)
                       ? (<><i>{t<string>('reply to: ')}{_feed.replyTo}</i><br />
-                           <i>{t<string>('message Id: ')}{_feed.messageId}</i><br /></>) 
-                      : (<><i>{t<string>('message Id: ')}{_feed.messageId}</i><br /></>)}
+                           <i>{t<string>('message Id: ')}{_feed.messageId}</i></>) 
+                      : (<><i>{t<string>('message Id: ')}{_feed.messageId}</i></>)
+                      }
+                      <LabelHelp help={t<string>('Copy this Message ID for use with Reply Posts and Endorsements.')} />
+                      <br />
                         </>)} 
                         <br />      
                         {renderLink(_feed.link)}
@@ -222,13 +244,13 @@ function ShowFeed(): JSX.Element {
                     <Label  as='a'
                     color='orange'
                     circular
-                    href={isHex(_feed.link) ? withHttp(hexToString(_feed.link).trim()) : ''} 
+                    href={isHex(_feed.link) ? withHttp(hexToString(_feed.link2).trim()) : ''} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     >{t<string>('Link')}
                     </Label>{' '}
-                    {isHex(_feed.link) ? (
-                        <LabelHelp help={withHttp(hexToString(_feed.link).trim())} />
+                    {isHex(_feed.link2) ? (
+                        <LabelHelp help={withHttp(hexToString(_feed.link2).trim())} />
                         ) : ''}</>
                     ) : (
                     <>{autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}</>
@@ -309,7 +331,7 @@ try {
                                   </>
                                   )}
 
-                                  {isShowMessageID && 
+                                  {isShowMsgID && 
                                   (<><br />{(_replyFeed.replyTo != zeroMessageId)
                                   ? (<><i>{t<string>('reply to: ')}{_replyFeed.replyTo}</i><br />
                                   <i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>) 
@@ -323,13 +345,13 @@ try {
                             <Label  as='a'
                             color='orange'
                             circular
-                            href={isHex(_replyFeed.link) ? withHttp(hexToString(_replyFeed.link).trim()) : ''} 
+                            href={isHex(_replyFeed.link2) ? withHttp(hexToString(_replyFeed.link2).trim()) : ''} 
                             target="_blank" 
                             rel="noopener noreferrer"
                           >{t<string>('Link')}
                           </Label>{' '}
-                          {isHex(_replyFeed.link) ? (
-                            <LabelHelp help={withHttp(hexToString(_replyFeed.link).trim())} />
+                          {isHex(_replyFeed.link2) ? (
+                            <LabelHelp help={withHttp(hexToString(_replyFeed.link2).trim())} />
                             ) : ''}</>) : (
                           <>{autoCorrect(searchWords, hextoHuman(_replyFeed.message))}
                           {' '}</>

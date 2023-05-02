@@ -73,9 +73,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [isPaidPost, togglePaidPost] = useToggle();
   const [isEndorse, toggleEndorse] = useToggle();
   //const [isGetReply, toggleGetReply] = useToggle();
-  const [isShowEndorse, toggleShowEndorse] = useToggle(false);
-  const [isShowMsgID, toggleShowMsgID] = useToggle(false);
-  const [isShowInterest, toggleShowInterest] = useToggle(false);
+  //const [isShowEndorse, toggleShowEndorse] = useToggle(false);
+  //const [isShowMsgID, toggleShowMsgID] = useToggle(false);
+  //const [isShowInterest, toggleShowInterest] = useToggle(false);
   const [isPaidEndorse, togglePaidEndorse] = useToggle(false);
   const [isShowInfo, toggleShowInfo] = useToggle(false);
   const [isStats, toggleStats] = useToggle(false);
@@ -361,32 +361,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             onClick={toggleStats} 
             />          
           </>)}   
-            {messageIndex!=14 && messageIndex!=11 && messageIndex!=13 &&(
-            <>{' | '}
-            <Button
-            icon={(isShowEndorse) ? 'minus' : 'plus'}
-            //isDisabled={!isValid}
-            label={t<string>('Show Endorsers')}
-            onClick={toggleShowEndorse} 
-            />
-            </>
-            )}
-            {messageIndex===9 && (
-            <Button
-              icon={(isShowMsgID) ? 'minus' : 'plus'}
-              //isDisabled={!isValid}
-              label={t<string>('Show Message IDs')}
-              onClick={toggleShowMsgID} 
-            />
-            )}
-            {messageIndex===10 && (
-            <Button
-              icon={(isShowInterest) ? 'minus' : 'plus'}
-              //isDisabled={!isValid}
-              label={t<string>('Show Interest')}
-              onClick={toggleShowInterest} 
-            />
-            )}
         {isShowDeveloper && (<>
           {' | '}
             <Button
@@ -427,8 +401,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <FeedDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                isShowEndorsers={isShowEndorse}
-                isShowMessageID={isShowMsgID}
+                //isShowEndorsers={isShowEndorse}
+                //isShowMessageID={isShowMsgID}
                 outcome={outcome}
               />
               {isTest && (<>{JSON.stringify(outcome.output)}</>)}
@@ -443,8 +417,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <PaidFeedDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                isShowEndorsers={isShowEndorse}
-                isShowInterest={isShowInterest}
+                //isShowEndorsers={isShowEndorse}
+                //isShowInterest={isShowInterest}
                 outcome={outcome}
               />
               {isTest && (<>{JSON.stringify(outcome.output)}</>)}

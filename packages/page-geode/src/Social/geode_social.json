@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xb30eb960b3993904ddfe94089d7fe1fe8d089091ac665652ebd8279f834216e7",
+    "hash": "0xb69db55a656155aafbcb05da3a9154816545f52dc4f39a2ac728b037f12b56cf",
     "language": "ink! 4.0.0",
     "compiler": "rustc 1.70.0-nightly",
     "build_info": {
@@ -89,6 +89,17 @@
           {
             "docs": [],
             "indexed": false,
+            "label": "link2",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 2
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
             "label": "reply_to",
             "type": {
               "displayName": [
@@ -151,6 +162,17 @@
             "docs": [],
             "indexed": false,
             "label": "link",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 2
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "link2",
             "type": {
               "displayName": [
                 "Vec"
@@ -316,7 +338,16 @@
             }
           },
           {
-            "label": "photo_or_other_link",
+            "label": "photo_or_youtube_link",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 2
+            }
+          },
+          {
+            "label": "website_or_document_link",
             "type": {
               "displayName": [
                 "Vec"
@@ -359,7 +390,16 @@
             }
           },
           {
-            "label": "photo_or_other_link",
+            "label": "photo_or_youtube_link",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 2
+            }
+          },
+          {
+            "label": "website_or_document_link",
             "type": {
               "displayName": [
                 "Vec"
@@ -1607,6 +1647,15 @@
                           "layout": {
                             "leaf": {
                               "key": "0x9434c528",
+                              "ty": 2
+                            }
+                          },
+                          "name": "link2"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x9434c528",
                               "ty": 3
                             }
                           },
@@ -1707,6 +1756,15 @@
                             }
                           },
                           "name": "link"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x703aad5d",
+                              "ty": 2
+                            }
+                          },
+                          "name": "link2"
                         },
                         {
                           "layout": {
@@ -2368,6 +2426,11 @@
                 "typeName": "Vec<u8>"
               },
               {
+                "name": "link2",
+                "type": 2,
+                "typeName": "Vec<u8>"
+              },
+              {
                 "name": "endorser_count",
                 "type": 3,
                 "typeName": "u128"
@@ -2513,6 +2576,11 @@
               },
               {
                 "name": "link",
+                "type": 2,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "link2",
                 "type": 2,
                 "typeName": "Vec<u8>"
               },

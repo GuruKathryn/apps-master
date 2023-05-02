@@ -31,6 +31,7 @@ interface Props {
     username: string,
     message: string,
     link: string,
+    link2: string,
     endorserCount: number,
     replyCount: number,
     timestamp: number,
@@ -89,7 +90,7 @@ function SearchDetails ({ className = '', onClear, outcome: { from, message, out
               label={t<string>('Next Page')}
               isDisabled={currPgIndex>countPost}
               onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
-             <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
+             <LabelHelp help={t<string>(' Use these buttons to page through Posts.')} /> 
             </Table.Cell>
           </Table.Row>
         </Table>
@@ -341,13 +342,13 @@ function ShowAccount(): JSX.Element {
                   <Label  as='a'
                   color='orange'
                   circular
-                  href={isHex(_feed.link) ? withHttp(hexToString(_feed.link).trim()) : ''} 
+                  href={isHex(_feed.link2) ? withHttp(hexToString(_feed.link2).trim()) : ''} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   >{t<string>('Link')}
                   </Label>{' '}
-                  {isHex(_feed.link) ? (
-                      <LabelHelp help={withHttp(hexToString(_feed.link).trim())} />
+                  {isHex(_feed.link2) ? (
+                      <LabelHelp help={withHttp(hexToString(_feed.link2).trim())} />
                       ) : ''}</>
                   ) : (
                   <>{autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}</>

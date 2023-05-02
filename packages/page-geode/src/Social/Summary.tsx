@@ -35,10 +35,10 @@ function Summary (): React.ReactElement {
       </CardSummary>
     </SummaryBox>
     <Card>
-        <strong>{t<string>('Follow your favorite accounts and post your own public broadcast messages that cannot be deleted, altered or censored! While you are at it, isnt it time you got paid directly for your time and attention? Let people know what you are interested in seeing and let advertisers pay YOU directly to include their posts in your feed.')}</strong>
+        <strong>{t<string>("Follow your favorite accounts and post your own public broadcast messages that cannot be deleted, altered or censored! While you are at it, isn't it time you got paid directly for your time and attention? Let people know what you are interested in seeing and let advertisers pay YOU directly to include their posts in your feed.")}</strong>
         {' '}
         <Badge icon='info' color={'blue'} /> 
-        <strong>{t<string>('- Use the info Icon Button to get more information for each Menu Selection. ')}{' '}</strong>
+        <strong>{t<string>('- Use the info Icon Buttons to get more information. ')}{' '}</strong>
     </Card>
     </div>
   );

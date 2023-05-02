@@ -20,8 +20,8 @@ import AccountHeader from '../shared/AccountHeader';
 interface Props {
     className?: string;
     onClear?: () => void;
-    isShowEndorsers: boolean;
-    isShowInterest: boolean;
+    //isShowEndorsers?: boolean;
+    //isShowInterest?: boolean;
     outcome: CallResult;
     //onClose: () => void;
   }
@@ -33,6 +33,7 @@ interface Props {
     username: string,
     message: string,
     link: string,
+    link2: string,
     endorserCount: number,
     timestamp: number,
     paidEndorserMax: number,
@@ -53,13 +54,17 @@ interface Props {
   ok: FeedObj
   }
   
-function PaidFeedDetails ({ className = '', onClear, isShowEndorsers, isShowInterest, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function PaidFeedDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
     const searchWords: string[] = JSONprohibited;
     const [countPost, setCountPost] = useState(0);
+
     const [isShowBlockedAccounts, toggleShowBlockedAccounts] = useToggle(false);
     const [isShowMyInterest, toggleShowInterest] = useToggle(false);
+    const [isShowEndorsers, toggleShowEndorsers] = useToggle(false);
+    const [isShowAdInterest, toggleShowAdInterest] = useToggle(false);
+
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
     let _Obj: Object = { "ok": {"maxfeed": 10, "myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64", "blocked": ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy"], "mypaidfeed": [ { "messageId": "0x09d3adb1294121426054d65b1535ccbdcebc44220b8304360aeddbeb5d448eac", "replyTo": "0x0000000000000000000000000000000000000000000000000000000000000000", "fromAcct": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw", "username": "Nala the Wonder Dog", "message": "More Free Puppies, Buy One get Two FREE!", "link": "https://dogsbestlife.com/wp-content/uploads/2022/09/french-bulldog-puppy-scaled.jpeg", "endorserCount": 0, "timestamp": 1682109894001, "paidEndorserMax": 10, "endorserPayment": 100000000000000, "targetInterests": "dogs", totalStaked: 1000000000000000, "endorsers": [ "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw" ] } ] } }
@@ -147,16 +152,18 @@ function ShowFeed(): JSX.Element {
                 <Table.Row>
                 <Table.HeaderCell>
                 <Badge
-                  icon='info'
-                  color={(isShowMyInterest) ? 'blue' : 'gray'}
-                  onClick={toggleShowInterest}/> 
-                  {t<string>('Your Interests: ')}
-                  {isShowMyInterest && feedDetail.ok.myinterests.length>0 && (<>{' ('}
-                    {hextoHuman(feedDetail.ok.myinterests)}{') '}
-                  </>)}
-                  <br /><br />
-                  {feedDetail.ok.blocked.length>0 && (
+                icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
+                color={(isShowEndorsers) ? 'blue' : 'gray'}
+                onClick={toggleShowEndorsers}/> 
+                {t<string>(' Show Endorsers | ')}
+                <Badge
+                icon={(isShowAdInterest) ? 'thumbs-up' : 'thumbs-down'}
+                color={(isShowAdInterest) ? 'blue' : 'gray'}
+                onClick={toggleShowAdInterest}/> 
+                {t<string>(' Show Ad Interests ')}
+                {feedDetail.ok.blocked.length>0 && (
                   <>
+                  {' | '}
                   <Badge
                   icon='info'
                   color={(isShowBlockedAccounts) ? 'blue' : 'gray'}
@@ -166,10 +173,20 @@ function ShowFeed(): JSX.Element {
                     <>
                     {feedDetail.ok.blocked.map(_blkd =>
                     <>{' ('}<AccountName value={_blkd} withSidebar={true}/>{') '}
-                    </>)}<br />
+                    </>)}
                     </>
                   )}
                   </>)}
+                <br /><br />
+                <Badge
+                  icon='info'
+                  color={(isShowMyInterest) ? 'blue' : 'gray'}
+                  onClick={toggleShowInterest}/> 
+                  {t<string>('Your Interests')}
+                  {isShowMyInterest && feedDetail.ok.myinterests.length>0 && (<>{': ('}
+                    {hextoHuman(feedDetail.ok.myinterests)}{') '}
+                  </>)}
+                  <br />
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -210,7 +227,7 @@ function ShowFeed(): JSX.Element {
                     </List>     
                     </>
                     )}
-                {isShowInterest && 
+                {isShowAdInterest && 
                       (<>
                       <br />{t<string>('Ad Target Interest: ')}{hextoHuman(_feed.targetInterests)}
                       </>)} 
@@ -222,13 +239,13 @@ function ShowFeed(): JSX.Element {
                     <Label  as='a'
                     color='orange'
                     circular
-                    href={isHex(_feed.link) ? withHttp(hexToString(_feed.link).trim()) : ''} 
+                    href={isHex(_feed.link2) ? withHttp(hexToString(_feed.link2).trim()) : ''} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     >{t<string>('Link')}
                     </Label>{' '}
-                    {isHex(_feed.link) ? (
-                        <LabelHelp help={withHttp(hexToString(_feed.link).trim())} />
+                    {isHex(_feed.link2) ? (
+                        <LabelHelp help={withHttp(hexToString(_feed.link2).trim())} />
                         ) : ''}</>
                     ) : (
                     <>{(hextoHuman(_feed.message))}{' '}</>

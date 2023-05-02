@@ -31,10 +31,10 @@ function StatDetails ({ className = '', onClear, outcome: { from, message, outpu
     const { t } = useTranslation();
     //const searchWords: string[] = JSONprohibited;
     //const interestWords: string[] = JSONInterests;
-    const [isByUser, toggleByUser] = useToggle(true);
-    const [isByFreq, toggleByFreq] = useToggle(false);
+    const [isByUser, toggleByUser] = useToggle(false);
+    const [isByFreq, toggleByFreq] = useToggle(true);
     const [isByGraph, toggleByGraph] = useToggle(false);
-    const [isShowInfo, toggleShowInfo] = useToggle(false);
+    const [isShowInfo, toggleShowInfo] = useToggle(true);
     const [isFilter, toggleFilter] = useToggle(false);
     const [isUnique, toggleUnique] = useToggle(false);
 
@@ -165,7 +165,7 @@ function ShowStat(): JSX.Element {
             </Table.Header>
             <Table.Row>
               <Table.Cell verticalAlign='top'>
-              <strong>{'Interest Word Analysis :'}</strong>{('Select Analysis Above')}<br /><br />
+              <strong>{'Interest Word Analysis :'}</strong>{(' (Select Analysis Above) ')}<br /><br />
               {t<string>('(1) Total Number of Users In Data: ') } <strong>{maxIndex}</strong><br />
               {t<string>('(2) Total Number of Unique Words/Phrases: ')}<strong>{strObj.length}</strong><br /><br />
               {isByUser && (
@@ -177,11 +177,11 @@ function ShowStat(): JSX.Element {
                     color={(isShowInfo) ? 'blue' : 'gray'}
                     onClick={toggleShowInfo}/> 
 
-                  <strong>{t<string>('Interest Words by User Accounts:')}</strong><br /><br />
+                  <strong>{t<string>(' Interest Words by User Accounts:')}</strong><br /><br />
                   {isShowInfo && (
                     <>
                     <CopyInline value={'copy'} label={''}/>
-                    {t<string>('Use the Copy button to copy the Interest Words from individual Users.')}
+                    {t<string>(' Use the Copy button to copy the Interest Words from individual Users.')}
                     <br /><br />
                     </>
                   )}
@@ -202,7 +202,7 @@ function ShowStat(): JSX.Element {
                     color={(isShowInfo) ? 'blue' : 'gray'}
                     onClick={toggleShowInfo}/> 
 
-                <strong>{t<string>('Graph Analysis to be added in future upgrade.')}</strong><br /><br />
+                <strong>{t<string>(' Graph Analysis to be added in future upgrade.')}</strong><br /><br />
                 <Divider />
                 </>
               )}
@@ -213,14 +213,14 @@ function ShowStat(): JSX.Element {
                     icon='info'
                     color={(isShowInfo) ? 'blue' : 'gray'}
                     onClick={toggleShowInfo}/> 
-                <strong>{t<string>('Frequency Analysis: ')}</strong>{' '}
+                <strong>{t<string>(' Frequency Analysis: ')}</strong>{' '}
                 {isShowFilter && (
                 <>
                 <Badge
                       icon={(isFilter) ? 'thumbs-up': 'thumbs-down'}
                       color={(isFilter) ? 'red' : 'gray'}
                       onClick={toggleFilter}/>
-                      {t<string>(' Sort Alphabetic ')}
+                      {t<string>('  Sort Alphabetic | ')}
                 <Badge
                       icon={(isUnique) ? 'thumbs-up': 'thumbs-down'}
                       color={(isUnique) ? 'red' : 'gray'}
