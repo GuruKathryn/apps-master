@@ -1,4 +1,5 @@
 // Copyright 2017-2023 @polkadot/app-whitelist authors & contributors
+// Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
 //import React from 'react';
@@ -187,20 +188,21 @@ function PageIndexer(): JSX.Element {
             <Table.Row>
               <Table.Cell>
               <h2>{t<string>('Number of Posts Found: ')}<strong>{countPost}</strong>
-                  {t<string>(' for Search Word: ')}<strong>{hextoHuman(feedDetail.ok.search)}</strong></h2>
+                  {t<string>(' for Search Word: ')}
+                  {feedDetail.ok.search.length>0 && (<>
+                    <strong>{hextoHuman(feedDetail.ok.search)}</strong>                  
+                  </>)}</h2>
               {' '}
               <Badge
                 icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
                 color={(isShowEndorsers) ? 'blue' : 'gray'}
                 onClick={toggleShowEndorse}/> 
-                {' Show Endorsers | '}
+                {t<string>(' Show Endorsers | ')}
                 <Badge
                 icon={(isShowMessageID) ? 'thumbs-up' : 'thumbs-down'}
                 color={(isShowMessageID) ? 'blue' : 'gray'}
                 onClick={toggleShowMsgId}/> 
-                {' Show Message IDs | '}
-
-
+                {t<string>(' Show Message IDs | ')}
               </Table.Cell>
             </Table.Row>
           </Table>
@@ -212,7 +214,7 @@ function PageIndexer(): JSX.Element {
           <Table>
             <Table.Row>
               <Table.Cell>
-                <strong>{'No keyword results found'}</strong>      
+                <strong>{t<string>('No keyword results found')}</strong>      
               </Table.Cell>
             </Table.Row>
           </Table>
@@ -228,7 +230,7 @@ function PageIndexer(): JSX.Element {
           <Table stretch>
           <Table.Row>
             <Table.Cell verticalAlign='top'>
-              {feedDetail.ok.messageList
+              {feedDetail.ok.messageList.length> 0 && feedDetail.ok.messageList
                   // filter out duplicates
                   .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                   // filter out all replies
@@ -244,18 +246,17 @@ function PageIndexer(): JSX.Element {
                   <>
                   <h3> 
                           <Label color='blue' circular>{'Post '}{index+1}</Label>                   
-                          <strong>{'@'}</strong>
-                          <strong>{(isHex(_feed.username)? hexToString(_feed.username).trim() : '')}</strong>
+                          <strong>{t<string>('@')}</strong>
+                          <strong>{hextoHuman(_feed.username)}</strong>
                             {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
                             {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                             {' '}{timeStampToDate(_feed.timestamp)}{' '}
                             {' '}{(_feed.replyCount>0)? (
-                            
                             <Label  as='a' 
                               color={(isReply && (index === feedIndex)) ? 'blue' : 'grey'}
                               onClick={() => setFeedIndex(index)}>
 
-                              {' Replies '}{_feed.replyCount}
+                              {t<string>(' Replies ')}{_feed.replyCount}
                             </Label>) : (
                             <Label color='grey'>{' Replies 0'}</Label>)}{t<string>(' ')}
                             <CopyInline value={_feed.messageId} label={''}/>
@@ -263,7 +264,7 @@ function PageIndexer(): JSX.Element {
                    {isShowEndorsers && _feed.endorserCount > 0 && (
                   <>
                   <List divided inverted >
-                    {_feed.endorsers.map((name, i: number) => <List.Item key={name}> 
+                    {_feed.endorsers.length && _feed.endorsers.map((name, i: number) => <List.Item key={name}> 
                       {(i > 0) && (<><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}
                       {' ('}<AccountName value={name} withSidebar={true}/>{') '}{name} 
                       </>)}
@@ -274,20 +275,14 @@ function PageIndexer(): JSX.Element {
               
                   {isShowMessageID && 
                     (<>{(_feed.replyTo != zeroMessageId)
-                    ? (<><i>{'reply to: '}{_feed.replyTo}</i><br />
-                         <i>{'message Id: '}{_feed.messageId}</i><br /></>) 
-                    : (<><i>{'message Id: '}{_feed.messageId}</i><br /></>)}
+                    ? (<><i>{t<string>('reply to: ')}{_feed.replyTo}</i><br />
+                         <i>{t<string>('message Id: ')}{_feed.messageId}</i><br /></>) 
+                    : (<><i>{t<string>('message Id: ')}{_feed.messageId}</i><br /></>)}
                       </>)} 
                       <br />      
                       {renderLink(_feed.link)}
               {(_feed.link != '0x') ? (
-              <>
-                  {(isHex(_feed.message)? (
-                            <>
-                            {hexToString(_feed.message).trim()}
-                            </>
-                            ) :'')}{' '}
-
+                <>{autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}
                   <Label  as='a'
                   color='orange'
                   circular
@@ -300,11 +295,9 @@ function PageIndexer(): JSX.Element {
                       <LabelHelp help={withHttp(hexToString(_feed.link).trim())} />
                       ) : ''}</>
                   ) : (
-                  <>{(isHex(_feed.message)? hexToString(_feed.message).trim() :'')}{' '}</>
+                  <>{autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}</>
                   )}
-
                   <br /> 
-                  
                   {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
                   <Divider />                        
                   </>)}
@@ -331,7 +324,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
   try {
       return(
         <>
-                   {feedDetail.ok.messageList
+                   {feedDetail.ok.messageList.length>0 && feedDetail.ok.messageList
                       // filter out duplicates
                       .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                       // filter out all blocked accts
@@ -370,7 +363,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                                 {isShowEndorsers && _replyFeed.endorserCount > 0 && (
                                     <>
                                     <List divided inverted >
-                                      {_replyFeed.endorsers.map((name, i: number) => <List.Item key={name}> 
+                                      {_replyFeed.endorsers.length>0 && _replyFeed.endorsers.map((name, i: number) => <List.Item key={name}> 
                                       {(i > 0) && (<><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}
                                       {' ('}<AccountName value={name} withSidebar={true}/>{') '}{name} 
                                       </>)}
@@ -381,9 +374,9 @@ function ShowReplies(replyMessageId: string): JSX.Element {
   
                                     {isShowMessageID && 
                                     (<><br />{(_replyFeed.replyTo != zeroMessageId)
-                                    ? (<><i>{'reply to: '}{_replyFeed.replyTo}</i><br />
-                                    <i>{'message Id: '}{_replyFeed.messageId}</i><br /></>) 
-                                    : (<><i>{'message Id: '}{_replyFeed.messageId}</i><br /></>)}
+                                    ? (<><i>{t<string>('reply to: ')}{_replyFeed.replyTo}</i><br />
+                                    <i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>) 
+                                    : (<><i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>)}
                                     </>)} 
                                     <br />      
   
@@ -391,27 +384,23 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                                 
                                 {(_replyFeed.link != '0x') ? (
                                 <>
-  
-                                {(isHex(_replyFeed.message)? (
-                                <>{hexToString(_replyFeed.message).trim()}</>
-                                ) :'')}{' '}
-                              <Label  as='a'
-                              color='orange'
-                              circular
-                              href={isHex(_replyFeed.link) ? withHttp(hexToString(_replyFeed.link).trim()) : ''} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                            >{t<string>('Link')}
+                                  {autoCorrect(searchWords, hextoHuman(_replyFeed.message))}
+                                  <Label  as='a'
+                                   color='orange'
+                                   circular
+                                   href={isHex(_replyFeed.link) ? withHttp(hexToString(_replyFeed.link).trim()) : ''} 
+                                   target="_blank" 
+                                   rel="noopener noreferrer"
+                                >{t<string>('Link')}
                             </Label>{' '}
                             {isHex(_replyFeed.link) ? (
                               <LabelHelp help={withHttp(hexToString(_replyFeed.link).trim())} />
                               ) : ''}</>) : (
-                            <>{(isHex(_replyFeed.message)? hexToString(_replyFeed.message).trim() :'')}{' '}</>
+                            <>{autoCorrect(searchWords, hextoHuman(_replyFeed.message))}{' '}</>
                             )}
                           <br /> 
                           </Table.Cell>
                         </Table.Row>  
-                        
                         </>
                       )}                          
         </>)
@@ -419,7 +408,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
     console.log(e);
       return(
         <>
-        {'No Replies for this message.'}
+        {t<string>('No Replies for this message.')}
         </>
       )
   }
@@ -434,7 +423,6 @@ return (
     <ShowFeed />
     <PagePager />
     </Card>
-    
     </StyledDiv>
   );
 }

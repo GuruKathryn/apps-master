@@ -25,12 +25,6 @@ interface Props {
   type FeedDetail = {
   ok: string[];
   }
-
-  // type objFreq = {
-  //   interest: string;
-  //   freq: number;
-  // }
-
   
 function StatDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
@@ -49,11 +43,7 @@ function StatDetails ({ className = '', onClear, outcome: { from, message, outpu
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
-    //const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-    //console.log(Object.values(feedDetail.ok.myFeed.messageId.reduce((acc,cur)=>Object.assign(acc,{[cur.id]:cur}),{})))
     
-    //[...new Set(feedDetail)];
-
     function autoCorrect(arr: string[], str: string): JSX.Element {
         arr.forEach(w => str = str.replaceAll(w, '****'));
         arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '****'));
@@ -148,7 +138,6 @@ function ShowStat(): JSX.Element {
     const strObj: string[] = removeDuplicates(removeSpaces(JSON.parse(strArr)));
         return(
           <div>
-            <div>
             <Table>
             <Table.Header>
               <Table.Row>
@@ -177,8 +166,8 @@ function ShowStat(): JSX.Element {
             <Table.Row>
               <Table.Cell verticalAlign='top'>
               <strong>{'Interest Word Analysis :'}</strong>{('Select Analysis Above')}<br /><br />
-              {'(1) Total Number of Users In Data: ' } <strong>{maxIndex}</strong><br />
-              {'(2) Total Number of Unique Words/Phrases: '}<strong>{strObj.length}</strong><br /><br />
+              {t<string>('(1) Total Number of Users In Data: ') } <strong>{maxIndex}</strong><br />
+              {t<string>('(2) Total Number of Unique Words/Phrases: ')}<strong>{strObj.length}</strong><br /><br />
               {isByUser && (
                   <>
                   <br />
@@ -188,11 +177,11 @@ function ShowStat(): JSX.Element {
                     color={(isShowInfo) ? 'blue' : 'gray'}
                     onClick={toggleShowInfo}/> 
 
-                  <strong>{'Interest Words by User Accounts:'}</strong><br /><br />
+                  <strong>{t<string>('Interest Words by User Accounts:')}</strong><br /><br />
                   {isShowInfo && (
                     <>
                     <CopyInline value={'copy'} label={''}/>
-                    {'Use the Copy button to copy the Interest Words from individual Users.'}
+                    {t<string>('Use the Copy button to copy the Interest Words from individual Users.')}
                     <br /><br />
                     </>
                   )}
@@ -213,7 +202,7 @@ function ShowStat(): JSX.Element {
                     color={(isShowInfo) ? 'blue' : 'gray'}
                     onClick={toggleShowInfo}/> 
 
-                <strong>{'Graph Analysis to be added in future upgrade.'}</strong><br /><br />
+                <strong>{t<string>('Graph Analysis to be added in future upgrade.')}</strong><br /><br />
                 <Divider />
                 </>
               )}
@@ -224,7 +213,7 @@ function ShowStat(): JSX.Element {
                     icon='info'
                     color={(isShowInfo) ? 'blue' : 'gray'}
                     onClick={toggleShowInfo}/> 
-                <strong>{'Frequency Analysis: '}</strong>{' '}
+                <strong>{t<string>('Frequency Analysis: ')}</strong>{' '}
                 {isShowFilter && (
                 <>
                 <Badge
@@ -242,12 +231,12 @@ function ShowStat(): JSX.Element {
                 {isShowInfo && (
                     <>
                     <CopyInline value={'copy'} label={''}/>
-                    {'Use the Copy button to copy the Interest Words from individual Users.'}
+                    {t<string>('Use the Copy button to copy the Interest Words from individual Users.')}
                     <br /><br />
                     </>
                   )}
 
-                <strong>{'Unique Words: '}</strong>
+                <strong>{t<string>('Unique Words: ')}</strong>
                 {sortDesend(strObj).map((_word, index: number) => (
                   <>
                     {isUnique && (<>{' "'}{_word}{'", '}</>)}
@@ -274,8 +263,7 @@ function ShowStat(): JSX.Element {
               )}
              </Table.Cell>
             </Table.Row>
-        </Table>
-        </div>   
+        </Table>  
       </div>)
           } catch(e) {
       console.log(e);

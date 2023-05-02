@@ -1,4 +1,5 @@
 // Copyright 2017-2023 @polkadot/app-whitelist authors & contributors
+// Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
 //import React from 'react';
@@ -18,7 +19,7 @@ import JSONprohibited from '../shared/geode_prohibited.json';
 interface Props {
     className?: string;
     onClear?: () => void;
-    isAccount?: boolean;
+    //isAccount?: boolean;
     outcome: CallResult;
     //onClose: () => void;
   }
@@ -48,8 +49,8 @@ interface Props {
   ok: FeedObj
   }
   
-function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
-    //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
+function SearchDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+    
     const { t } = useTranslation();
     const searchWords: string[] = JSONprohibited;
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -148,7 +149,6 @@ function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, m
 }
 
     function timeStampToDate(tstamp: number): JSX.Element {
-      // const event = new Date(1681657752005);
       try {
        const event = new Date(tstamp);
        return (
@@ -184,10 +184,9 @@ function renderLink(_link: string): JSX.Element {
 
 function ShowAccount(): JSX.Element {
   try{
-    const noFollowers: number = feedDetail.ok.followers.length;
-    const noFollowing: number = feedDetail.ok.following.length;
-    const _username: string = feedDetail.ok.searchedAccount.length>0? 
-    hextoHuman(feedDetail.ok.username): '';
+    const noFollowers: number = feedDetail.ok.followers.length>0 ? feedDetail.ok.followers.length: 0;
+    const noFollowing: number = feedDetail.ok.following.length>0 ? feedDetail.ok.following.length: 0;
+    const _username: string = feedDetail.ok.searchedAccount.length>0 ? hextoHuman(feedDetail.ok.username): '';
       return (<>
             <Table stretch verticalAlign='top'>
             <Table.Header>
@@ -214,12 +213,12 @@ function ShowAccount(): JSX.Element {
                 icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
                 color={(isShowEndorsers) ? 'blue' : 'gray'}
                 onClick={toggleShowEndorse}/> 
-                {' Show Endorsers | '}
+                {t<string>(' Show Endorsers | ')}
                 <Badge
                 icon={(isShowMessageID) ? 'thumbs-up' : 'thumbs-down'}
                 color={(isShowMessageID) ? 'blue' : 'gray'}
                 onClick={toggleShowMsgId}/> 
-                {' Show Message IDs | '}
+                {t<string>(' Show Message IDs | ')}
                 <br /><br />
                 {feedDetail.ok.followers.length>0 ? (
                   <>
@@ -229,7 +228,7 @@ function ShowAccount(): JSX.Element {
                     onClick={toggleShowFollowers}/> 
                 {t<string>(' Followers: ')}<strong>{noFollowers}</strong>
                 
-                {isShowFollowers && (
+                {isShowFollowers && feedDetail.ok.followers.length>0 && (
                   <>
                   {feedDetail.ok.followers.map(_followers =>
                   <>{' ('}<AccountName value={_followers} withSidebar={true}/>{') '}
@@ -237,8 +236,8 @@ function ShowAccount(): JSX.Element {
                   </>
                 )}
                 </>) : <>
-                        <Badge icon='info' color='red' />
-                        {'This Account has no Followers'}</> }
+                    <Badge icon='info' color='red' />
+                    {t<string>('This Account has no Followers')}</> }
                 <br /><br />
                 {feedDetail.ok.following.length>0 ? (
                 <>
@@ -247,7 +246,7 @@ function ShowAccount(): JSX.Element {
                 color={(isShowFollowing) ? 'blue' : 'gray'}
                 onClick={toggleShowFollowing}/> 
                 {t<string>(' Following: ')}<strong>{noFollowing}</strong>
-                {isShowFollowing && (
+                {isShowFollowing && feedDetail.ok.following.length>0 && (
                   <>
                   {feedDetail.ok.following.map(_following =>
                   <>{' ('}<AccountName value={_following} withSidebar={true}/>{') '}
@@ -257,7 +256,7 @@ function ShowAccount(): JSX.Element {
                 </>): 
                 <>
                 <Badge icon='info' color='red' />
-                {'This Account is not Following other Accounts'}</> }
+                {t<string>('This Account is not following other Accounts')}</> }
               </Table.Cell>
             </Table.Row>
             </Table>
@@ -268,7 +267,7 @@ function ShowAccount(): JSX.Element {
     <Table>
       <Table.Row>
         <Table.Cell>
-        <strong>{'No Accounts Found'}</strong>      
+        <strong>{t<string>('No Accounts Found')}</strong>      
         </Table.Cell>
       </Table.Row>
     </Table>
@@ -285,7 +284,7 @@ function ShowAccount(): JSX.Element {
           <Table stretch> 
           <Table.Row>
             <Table.Cell verticalAlign='top'>
-              {feedDetail.ok.messageList
+              {feedDetail.ok.messageList.length>0 && feedDetail.ok.messageList
                   // filter out duplicates
                   .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                   // filter out all replies
@@ -301,8 +300,8 @@ function ShowAccount(): JSX.Element {
                   <>
                   <h3> 
                     <Label color='blue' circular >{'Post '}{index+1}</Label>
-                          <strong>{'@'}</strong>
-                          <strong>{(isHex(_feed.username)? hexToString(_feed.username).trim() : '')}</strong>
+                          <strong>{t<string>('@')}</strong>
+                          <strong>{hextoHuman(_feed.username)}</strong>
                             {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
                             {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                             {' '}{timeStampToDate(_feed.timestamp)}{' '}
@@ -312,15 +311,15 @@ function ShowAccount(): JSX.Element {
                               color={(isReply && (index === feedIndex)) ? 'blue' : 'grey'}
                               onClick={() => setFeedIndex(index)}>
 
-                              {' Replies '}{_feed.replyCount}
+                              {t<string>(' Replies ')}{_feed.replyCount}
                             </Label>) : (
-                            <Label color='grey'>{' Replies 0'}</Label>)}{t<string>(' ')}
+                            <Label color='grey'>{t<string>(' Replies 0')}</Label>)}{' '}
                             <CopyInline value={_feed.messageId} label={''}/>
                    </h3>
                    {isShowEndorsers && _feed.endorserCount > 0 && (
                   <>
                   <List divided inverted >
-                    {_feed.endorsers.map((name, i: number) => <List.Item key={name}> 
+                    {_feed.endorsers.length>0 && _feed.endorsers.map((name, i: number) => <List.Item key={name}> 
                       {(i > 0) && (<><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}
                       {' ('}<AccountName value={name} withSidebar={true}/>{') '}{name} 
                       </>)}
@@ -330,19 +329,15 @@ function ShowAccount(): JSX.Element {
                   )}
                   {isShowMessageID && 
                     (<>{(_feed.replyTo != zeroMessageId)
-                    ? (<><i>{'reply to: '}{_feed.replyTo}</i><br />
-                         <i>{'message Id: '}{_feed.messageId}</i><br /></>) 
-                    : (<><i>{'message Id: '}{_feed.messageId}</i><br /></>)}
+                    ? (<><i>{t<string>('reply to: ')}{_feed.replyTo}</i><br />
+                         <i>{t<string>('message Id: ')}{_feed.messageId}</i><br /></>) 
+                    : (<><i>{t<string>('message Id: ')}{_feed.messageId}</i><br /></>)}
                       </>)} 
                       <br />      
                       {renderLink(_feed.link)}
               {(_feed.link != '0x') ? (
               <>
-                  {(isHex(_feed.message)? (
-                            <>
-                            {autoCorrect(searchWords, hexToString(_feed.message).trim())}
-                            </>
-                            ) :'')}{' '}
+                  {autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}
                   <Label  as='a'
                   color='orange'
                   circular
@@ -355,7 +350,7 @@ function ShowAccount(): JSX.Element {
                       <LabelHelp help={withHttp(hexToString(_feed.link).trim())} />
                       ) : ''}</>
                   ) : (
-                  <>{(isHex(_feed.message)? hexToString(_feed.message).trim() :'')}{' '}</>
+                  <>{autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}</>
                   )}
                   <br /> 
                   {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
@@ -382,7 +377,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
   try {
       return(
               <>
-                {feedDetail.ok.messageList
+                {feedDetail.ok.messageList.length>0 && feedDetail.ok.messageList
                       // filter out duplicates
                       .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                       // filter out all blocked accts
@@ -399,8 +394,8 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                         <>
                           <Table.Row>
                               <Table.Cell>
-                                <strong>{'Reply'}{' - @'}</strong>
-                                <strong>{(isHex(_replyFeed.username)? hexToString(_replyFeed.username).trim() : '')}</strong>
+                                <strong>{t<string>('Reply - @')}</strong>
+                                <strong>{hextoHuman(_replyFeed.username)}</strong>
                                 {' ('}<AccountName value={_replyFeed.fromAcct} withSidebar={true}/>{') '}
                                 {' '}<Label color='blue' circular>{_replyFeed.endorserCount}</Label>
                                 {' '}{timeStampToDate(_replyFeed.timestamp)}{' '}
@@ -411,9 +406,9 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                                     <Label  as='a' 
                                     color='grey'
                                     onClick={() => setFeedIndex(index)}>
-                                    {' Replies '}{_replyFeed.replyCount}
+                                    {t<string>(' Replies ')}{_replyFeed.replyCount}
                                     </Label>) : (
-                                    <Label color='grey'>{' Replies 0'}</Label>)}{t<string>(' ')}    
+                                    <Label color='grey'>{t<string>(' Replies 0')}</Label>)}{t<string>(' ')}    
                                   </>
                                 )}
                                 <CopyInline value={_replyFeed.messageId} label={''}/>                                
@@ -421,7 +416,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                                 {isShowEndorsers && _replyFeed.endorserCount > 0 && (
                                     <>
                                     <List divided inverted >
-                                      {_replyFeed.endorsers.map((name, i: number) => <List.Item key={name}> 
+                                      {_replyFeed.endorsers.length>0 && _replyFeed.endorsers.map((name, i: number) => <List.Item key={name}> 
                                       {(i > 0) && (<><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}
                                       {' ('}<AccountName value={name} withSidebar={true}/>{') '}{name} 
                                       </>)}
@@ -432,17 +427,15 @@ function ShowReplies(replyMessageId: string): JSX.Element {
   
                                     {isShowMessageID && 
                                     (<><br />{(_replyFeed.replyTo != zeroMessageId)
-                                    ? (<><i>{'reply to: '}{_replyFeed.replyTo}</i><br />
-                                    <i>{'message Id: '}{_replyFeed.messageId}</i><br /></>) 
-                                    : (<><i>{'message Id: '}{_replyFeed.messageId}</i><br /></>)}
+                                    ? (<><i>{t<string>('reply to: ')}{_replyFeed.replyTo}</i><br />
+                                    <i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>) 
+                                    : (<><i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>)}
                                     </>)} 
                                     <br />      
                                 {renderLink(_replyFeed.link)}
                                 {(_replyFeed.link != '0x') ? (
                                 <>
-                                {(isHex(_replyFeed.message)? (
-                                <>{autoCorrect(searchWords, hexToString(_replyFeed.message).trim())}</>
-                                ) :'')}{' '}
+                                {autoCorrect(searchWords, hextoHuman(_replyFeed.message))}{' '}
                               <Label  as='a'
                               color='orange'
                               circular
@@ -454,7 +447,9 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                             {isHex(_replyFeed.link) ? (
                               <LabelHelp help={withHttp(hexToString(_replyFeed.link).trim())} />
                               ) : ''}</>) : (
-                            <>{(isHex(_replyFeed.message)? autoCorrect(searchWords, hexToString(_replyFeed.message).trim()) :'')}{' '}</>
+                            <>
+                            {autoCorrect(searchWords, hextoHuman(_replyFeed.message))}
+                            </>
                             )}
                           <br /> 
                           </Table.Cell>
@@ -466,7 +461,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
     console.log(e);
       return(
         <>
-        {'No Replies for this message.'}
+        {t<string>('No Replies for this message.')}
         </>
       )
   }

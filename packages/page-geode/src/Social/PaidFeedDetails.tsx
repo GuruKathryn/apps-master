@@ -1,4 +1,5 @@
 // Copyright 2017-2023 @polkadot/app-whitelist authors & contributors
+// Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
 //import React from 'react';
@@ -56,32 +57,16 @@ function PaidFeedDetails ({ className = '', onClear, isShowEndorsers, isShowInte
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
     const searchWords: string[] = JSONprohibited;
-    //const interestWords: string[] = JSONSocialInterests;
-    //const [isReply, toggleReply] = useToggle(true);
-
-    //const isReply: boolean = true;
-    //const isReplyToReply: boolean = false;
-
-    //const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
-
-    //const isShowBlockedAccounts: boolean = true;
     const [isShowBlockedAccounts, toggleShowBlockedAccounts] = useToggle(false);
     const [isShowMyInterest, toggleShowInterest] = useToggle(false);
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
-    //const isShowMsgId: boolean = true;
 
-    // example objects      'myInrests': '0x2344424'
-    //{"ok":{"maxfeed":15,"myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64","blocked":[],"mypaidfeed":[]}}
     let _Obj: Object = { "ok": {"maxfeed": 10, "myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64", "blocked": ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy"], "mypaidfeed": [ { "messageId": "0x09d3adb1294121426054d65b1535ccbdcebc44220b8304360aeddbeb5d448eac", "replyTo": "0x0000000000000000000000000000000000000000000000000000000000000000", "fromAcct": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw", "username": "Nala the Wonder Dog", "message": "More Free Puppies, Buy One get Two FREE!", "link": "https://dogsbestlife.com/wp-content/uploads/2022/09/french-bulldog-puppy-scaled.jpeg", "endorserCount": 0, "timestamp": 1682109894001, "paidEndorserMax": 10, "endorserPayment": 100000000000000, "targetInterests": "dogs", totalStaked: 1000000000000000, "endorsers": [ "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw" ] } ] } }
-    //let _Obj: Object = {"ok": {"maxfeed":10, "blocked":["5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL","5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw"], "myfeed": [ {"messageId":"0xb92283bc2400d530a60ee0cd73a992ce73d72af846608205d51427ba55be72af","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x466972737420706f7374","link":"0x68747470733a2f2f6d656469612e6973746f636b70686f746f2e636f6d2f69642f313330333433363033322f70686f746f2f6672656e63682d62756c6c646f672d6f6e2d7468652d67726173732d696e2d7468652d7061726b2d62656175746966756c2d646f672d62726565642d6672656e63682d62756c6c646f672d696e2d617574756d6e2d6f7574646f6f722e6a70673f623d3126733d3137303636376126773d30266b3d323026633d5a574f4b4f624133665939685756512d53505472454b53534c4f5577626442347168567a6a3749633773383d","endorserCount":0,"replyCount":0,"timestamp":1681657752005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]},{"messageId":"0xc76570158d247a1907b01ced4ea2ba29a8c6bff29165d85ca1183e0a35b1fe35","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x5365636f6e6420506f7374","link":"0x68747470733a2f2f74342e667463646e2e6e65742f6a70672f30302f39322f30342f38392f3336305f465f39323034383937395f4d50735a3074466c686477436653515a53463541554979476e30696f7a447a422e6a7067","endorserCount":0,"replyCount":0,"timestamp":1681657794005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]}]}}
     const objOutput: string = stringify(output);
     _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-    //console.log(Object.values(feedDetail.ok.myFeed.messageId.reduce((acc,cur)=>Object.assign(acc,{[cur.id]:cur}),{})))
-    
-    //[...new Set(feedDetail)];
 
     function autoCorrect(arr: string[], str: string): JSX.Element {
         arr.forEach(w => str = str.replaceAll(w, '****'));
@@ -93,7 +78,6 @@ function PaidFeedDetails ({ className = '', onClear, isShowEndorsers, isShowInte
     }
 
     function timeStampToDate(tstamp: number): JSX.Element {
-       // const event = new Date(1681657752005);
        try {
         const event = new Date(tstamp);
         return (
@@ -141,7 +125,7 @@ function renderLink(_link: string): JSX.Element {
 function ShowFeed(): JSX.Element {
     setCountPost(0)
     try {
-      const maxIndex: number = feedDetail.ok.maxfeed;
+      const maxIndex: number = feedDetail.ok.maxfeed>0 ? feedDetail.ok.maxfeed: 0;
       return(
           <div>
             <div>
@@ -156,7 +140,7 @@ function ShowFeed(): JSX.Element {
                   />
                   {t<string>(' Number of Posts: ')}
                   <strong>{countPost}</strong>
-                  {t<string>(' | Number of Posts to show: ')}<strong>{feedDetail.ok.maxfeed}</strong>
+                  {t<string>(' | Number of Posts to show: ')}<strong>{maxIndex}</strong>
                   <br />
                 </Table.HeaderCell>
                 </Table.Row>
@@ -167,8 +151,7 @@ function ShowFeed(): JSX.Element {
                   color={(isShowMyInterest) ? 'blue' : 'gray'}
                   onClick={toggleShowInterest}/> 
                   {t<string>('Your Interests: ')}
-                    
-                  {isShowMyInterest && (<>{' ('}
+                  {isShowMyInterest && feedDetail.ok.myinterests.length>0 && (<>{' ('}
                     {hextoHuman(feedDetail.ok.myinterests)}{') '}
                   </>)}
                   <br /><br />
@@ -179,7 +162,7 @@ function ShowFeed(): JSX.Element {
                   color={(isShowBlockedAccounts) ? 'blue' : 'gray'}
                   onClick={toggleShowBlockedAccounts}/> 
                   {t<string>(' Blocked: ')}<strong>{feedDetail.ok.blocked.length}</strong>
-                  {isShowBlockedAccounts && (
+                  {isShowBlockedAccounts && feedDetail.ok.blocked.length>0 && (
                     <>
                     {feedDetail.ok.blocked.map(_blkd =>
                     <>{' ('}<AccountName value={_blkd} withSidebar={true}/>{') '}
@@ -192,7 +175,7 @@ function ShowFeed(): JSX.Element {
             </Table.Header>
             <Table.Row>
               <Table.Cell verticalAlign='top'>
-                {feedDetail.ok.mypaidfeed
+                {feedDetail.ok.mypaidfeed.length>0 && feedDetail.ok.mypaidfeed
                     // filter out duplicates
                     .filter((value, index, array) => index == array.findIndex(item => item.messageId == value.messageId))
                     // filter out all replies
@@ -206,20 +189,20 @@ function ShowFeed(): JSX.Element {
                     <>
                     {index < maxIndex && (
                     <>
-                    <h3> <strong>{'@'}</strong>
-                         <strong>{(isHex(_feed.username)? hexToString(_feed.username).trim() : '')}</strong>
+                    <h3> <strong>{t<string>('@')}</strong>
+                         <strong>{hextoHuman(_feed.username)}</strong>
                               {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
                               {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                               {' '}{timeStampToDate(_feed.timestamp)}{' '}
-                              <CopyInline value={_feed.messageId} label={''}/>
+                          <CopyInline value={_feed.messageId} label={''}/>
                      </h3>
-                            <i><strong>{'Payment: '}{unitToGeode(_feed.endorserPayment)}{' Geode'}
-                            {', Paid Endorsements Left: '}{_feed.paidEndorserMax-_feed.endorserCount}</strong></i>
+                            <i><strong>{t<string>('Payment: ')}{unitToGeode(_feed.endorserPayment)}{' Geode'}
+                            {t<string>(', Paid Endorsements Left: ')}{_feed.paidEndorserMax-_feed.endorserCount}</strong></i>
                             <br />
                     {isShowEndorsers && _feed.endorserCount > 0 && (
                     <>
                     <List divided inverted >
-                      {_feed.endorsers.map((name, i: number) => <List.Item key={name}> 
+                      {_feed.endorsers.length>0 && _feed.endorsers.map((name, i: number) => <List.Item key={name}> 
                         {(i > 0) && (<><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}
                         {' ('}<AccountName value={name} withSidebar={true}/>{') '}{name} 
                         </>)}
@@ -229,18 +212,13 @@ function ShowFeed(): JSX.Element {
                     )}
                 {isShowInterest && 
                       (<>
-                      <br />{'Ad Target Interest: '}{hextoHuman(_feed.targetInterests)}
+                      <br />{t<string>('Ad Target Interest: ')}{hextoHuman(_feed.targetInterests)}
                       </>)} 
                 <br />      
                 {renderLink(_feed.link)}
                 {(_feed.link != '0x') ? (
                 <>
-                    {(isHex(_feed.message)? (
-                              <>
-                              {hexToString(_feed.message).trim()}
-                              </>
-                              ) :'')}{' '}
-
+                    {hextoHuman(_feed.message)}{' '}
                     <Label  as='a'
                     color='orange'
                     circular
@@ -253,7 +231,7 @@ function ShowFeed(): JSX.Element {
                         <LabelHelp help={withHttp(hexToString(_feed.link).trim())} />
                         ) : ''}</>
                     ) : (
-                    <>{(isHex(_feed.message)? hexToString(_feed.message).trim() :'')}{' '}</>
+                    <>{(hextoHuman(_feed.message))}{' '}</>
                     )}
 
                     <br /> 

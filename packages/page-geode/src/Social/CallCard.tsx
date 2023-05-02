@@ -182,11 +182,11 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           icon='info'
           color={(isShowInfo) ? 'blue' : 'gray'}
           onClick={toggleShowInfo}/> 
-        <strong>{t<string>(' Geode Social ')}</strong>{_title[messageIndex]}
+        <strong>{t<string>(' Geode Social ')}</strong>{t<string>(_title[messageIndex])}
         </h2>
         {isShowInfo && (<>
-          <br />{_help[messageIndex]}<br /><br />
-                {_note[messageIndex]}<br />
+          <br />{t<string>(_help[messageIndex])}<br /><br />
+                {t<string>(_note[messageIndex])}<br />
           </>)}
         {isTest && (
           <InputAddress
@@ -308,7 +308,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               extrinsic={execTx}
               icon='sign-in-alt'
               isDisabled={!isValid || !execTx}
-              label={t('Submit')}
+              label={t<string>('Submit')}
               onStart={onClose}
             />
           )
