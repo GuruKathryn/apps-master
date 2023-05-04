@@ -8,6 +8,8 @@ import { Grid, Segment, Image, Label } from 'semantic-ui-react';
 import { Card, CardSummary, SummaryBox, LabelHelp } from '@polkadot/react-components';
 import styled from 'styled-components';
 import { useTranslation } from '../translate';
+//import { useToggle } from '@polkadot/react-hooks';
+
 import icon_lifeandwork from './geode_app_icon_lifeandwork.png';
 import icon_market from './geode_app_icon_market.png';
 import icon_messaging from './geode_app_icon_messaging.png';
@@ -16,6 +18,7 @@ import icon_social from './geode_app_icon_social.png';
 import icon_sar from './geode_app_icon_sar.png';
 import JSONhelp from './geode_home_info.json';
 
+//import IPAddress from '../shared/IpAddress';
 //import { Link } from 'react-router-dom';
 //import useChainInfo from '../useChainInfo';
 //import Extensions from './Extensions';
@@ -28,6 +31,7 @@ interface Props {
 export default function Home ({ className = ''}: Props): React.ReactElement {
 const { t } = useTranslation();
 const _help: string[] = JSONhelp;
+//const [isShowIP, toggleShowIP] = useToggle(false);
 
 const CardContainer = () => (
   <Grid columns={3}>

@@ -3,9 +3,11 @@
 
 import React from 'react';
 //import { Feed, Icon } from 'semantic-ui-react'
-import { Card } from '@polkadot/react-components';
+import { Card, Badge } from '@polkadot/react-components';
 //import { formatNumber } from '@polkadot/util';
 import { useTranslation } from '../translate';
+import IPAddress from '../shared/IpAddress';
+import { useToggle } from '@polkadot/react-hooks';
 
 // interface Props {
 //   className?: string;
@@ -14,6 +16,7 @@ import { useTranslation } from '../translate';
 
 function Details (): React.ReactElement {
 const { t } = useTranslation();
+const [isShowIP, toggleShowIP] = useToggle(false);
 
   return (
     <div>
@@ -21,7 +24,16 @@ const { t } = useTranslation();
         <strong>{t<string>('Geode Report Suspicious Activity')}</strong>
     </Card>
     <Card>
-    <strong>{t<string>('Coming Soon! Report Illegal Activity in the Ecosystem.')}</strong>  
+    <Badge
+          icon='info'
+          color={(isShowIP) ? 'blue' : 'gray'}
+          onClick={toggleShowIP}/> 
+    {t<string>('Coming Soon! Report Illegal and/or Suspicious Activity in the Ecosystem.')}<br />
+    {isShowIP && (
+      <>
+      <IPAddress />
+      </>
+    )}
     </Card>
     </div>
   );
