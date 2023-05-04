@@ -1,185 +1,264 @@
 // Copyright 2017-2023 @blockandpurpose Home.tsx authors & contributors
+// Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { Image, Table, Label } from 'semantic-ui-react';
+import { Grid, Segment, Image, Label } from 'semantic-ui-react';
 //import { useApi } from '@polkadot/react-hooks';
-import { Card, CardSummary, SummaryBox } from '@polkadot/react-components';
+import { Card, CardSummary, SummaryBox, LabelHelp } from '@polkadot/react-components';
+import styled from 'styled-components';
+import { useTranslation } from '../translate';
+import icon_lifeandwork from './geode_app_icon_lifeandwork.png';
+import icon_market from './geode_app_icon_market.png';
+import icon_messaging from './geode_app_icon_messaging.png';
+import icon_profile from './geode_app_icon_profile.png';
+import icon_social from './geode_app_icon_social.png';
+import icon_sar from './geode_app_icon_sar.png';
+import JSONhelp from './geode_home_info.json';
 
+//import { Link } from 'react-router-dom';
 //import useChainInfo from '../useChainInfo';
 //import Extensions from './Extensions';
 //import NetworkSpecs from './NetworkSpecs';
 
-export default function Home (): React.ReactElement {
-//  const { isDevelopment } = useApi();
-//  const chainInfo = useChainInfo();
-
-const ExtensionCard = () => {
-  return(
-      <div>
-          <Table textAlign='center'>
-            <Table.Row>
-              <Table.Cell>
-                <Card >
-                    Get the Polkadot Chrome Extension
-                    <Label circular color='blue'>1</Label>
-                    <Image src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Blue_card.svg/788px-Blue_card.svg.png'
-                           size='small'
-                    ></Image> 
-                     
-                </Card>
-              </Table.Cell>
-              <Table.Cell >
-                <Card>
-                    Get the Polkadot Chrome Extension
-                    <Label circular color='blue'>2</Label>
-                    <Image src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Blue_card.svg/788px-Blue_card.svg.png'
-                           size='small'
-                    ></Image> 
-                </Card>
-              </Table.Cell>
-              <Table.Cell>
-                <Card>
-                    Get the Polkadot Chrome Extension
-                    <Label circular color='blue'>3</Label>
-                    <Image src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Blue_card.svg/788px-Blue_card.svg.png'
-                           size='small'
-                    ></Image> 
-                </Card>
-              </Table.Cell>
-            </Table.Row>
-          </Table>
-      </div>
-  )
+interface Props {
+  className?: string;
 }
 
-const BlockandPurpose = () => {
-  return (
-      <div>				
-        <a href={"https://blockandpurpose.com"}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-        > 
-        Block and Purpose Home Page </a>
-      </div> 
-  )
-};
+export default function Home ({ className = ''}: Props): React.ReactElement {
+const { t } = useTranslation();
+const _help: string[] = JSONhelp;
 
-const GeodeWhitePaper = () => {
-  return(
-  <div>
-    <a href={"https://blockandpurpose.com/wp-content/uploads/2022/10/Geode-Blockchain-Whitepaper-V2022_10_03.pdf"}
-              target="_blank" 
-              rel="noopener noreferrer"
-    >
-    Geode White Paper
-    </a></div>
-  )
-}
+const CardContainer = () => (
+  <Grid columns={3}>
+    <Grid.Column height={5}>
+      <Segment raised textAlign='center' vertical color='blue' height={5}>
+      <h2>{t<string>('Step ')}
+        <Label color='orange' circular size='huge'>1</Label></h2>
+        <h2><strong>{t<string>(' Get The Polkadot ')}<br />
+                    {t<string>(' Chrome Extension ')}</strong> 
+        <LabelHelp help={t<string>(_help[9]+' '+_help[10])} /> </h2>
+        <br />
+        <Label color='blue' size='large'
+        href={'https://polkadot.js.org/extension/'}
+        target="_blank" 
+        rel="noopener noreferrer">
+        <h2>{t<string>('Click Here')}</h2>
+        </Label>
+      </Segment>
+    </Grid.Column>
 
-const DiscordConnection = () => {
-  return(
-    <div>
-    <a href={"https://discord.com/invite/2v4DPxDQXt"}
-              target="_blank" 
-              rel="noopener noreferrer"
-    >
-    Join Us on Discord
-    </a></div>
-  )
-}
+    <Grid.Column height={5}>
+    <Segment raised textAlign='center' vertical color='blue' height={5}>
+      <h2>{t<string>('Step ')}
+      <Label color='orange' circular size='huge'>2</Label></h2>
+        <h2><strong>{t<string>(' Make a ')}<br />
+                    {t<string>(' Geode Account ')}</strong> 
+        <LabelHelp help={t<string>(_help[11]+' '+_help[12]+' '+_help[8])} /></h2>
+        <br />
+        
+        <Label as='a' color='blue'
+          hRef={'https://youtu.be/jO6ZSHQ8OpI'}
+          target="_blank" 
+          rel="noopener noreferrer">
+          <h2>{t<string>('Watch Video')}</h2>
+        </Label>
+        
+      </Segment>
+    </Grid.Column>
 
-const SignUpForAnnouncements = () => {
-  return(
-    <div>
-    <a href={"https://blockandpurpose.com/announcements/"}
-              target="_blank" 
-              rel="noopener noreferrer"
-    >
-    Sign up for Announcements
-    </a></div>
-  )
-}
-
-const GoToGitHub = () => {
-  return(
-    <div>
-    <a href={"https://github.com/SparticleConcepts"}
-              target="_blank" 
-              rel="noopener noreferrer"    
-    >
-    Go to Geode on GitHub
-    </a></div>
-  )
-}
-
-// const BuyGeode = () => {
-//   return(
-//     <div>
-//     <a href={"https://kathryncolleen.com/studio/geode-blockchain/"}>
-//     </a></div>
-//   )
-// }
-
-  return (
-    <div>
-      <SummaryBox>        
-      <CardSummary label={''}>
-      Welcome to Geode! 
-      </CardSummary> 
-      </SummaryBox>
-      <Card>
-          <strong>GETTING STARTED...</strong><br /><br />
-          <strong>Step 1:</strong>  
-          <a href={'https://polkadot.js.org/extension/'}
-                    target="_blank" 
-                    rel="noopener noreferrer"
-          > <strong> Get The "Polkadot" Chrome Extension </strong></a> <br /><br />
-          <strong>Step 2: Use the extension to make an account</strong>  <br />
-          With great freedom, comes great responsibility. Be sure to write down your secret phrase, account key, password and anything
-          else. There is no centralized server keeping track of your account. That is up to YOU. Keep it safe! If you lose it, you cannot get it
-          back again.<br /><br />
-          <strong>Step 3: Buy some GEODE coin to use</strong> <br />
-          Until GEODE is available on exchanges, you can buy it from people who already have it. This link allows you to buy GEODE
-          directly from Sparticle Concepts LLC, the founders of Geode. This is a personal transaction between you and them. You can also
-          buy GEODE coin from others on the network who are willing to sell. Discuss that directly with them.<br /><br />
-          {'⚠️ IMPORTANT: By making a Geode account and using the applications, you certify that you are at least 18 years of age.'}<br />
-
-      </Card>
-
-      <SummaryBox>        
-      <CardSummary label={''}>
-          Buy Geode
-      </CardSummary> 
-      </SummaryBox>
-
-      <Card>
-      <Label circular color='orange'
+    <Grid.Column height={5}>
+    <Segment raised textAlign='center' vertical color='blue' height={5}>
+    <h2>{t<string>('Step ')}
+      <Label color='orange' circular size='huge'>3</Label></h2>
+        <h2><strong>{t<string>(' Get GEODE Coins ')} <br />
+                    {t<string>(' to Use in the Ecosystem ')}</strong> 
+        <LabelHelp help={t<string>(_help[6]+' '+_help[7])} /></h2>
+        <br />
+        <Label color='blue'
           as='a' 
           href='https://kathryncolleen.com/studio/geode-blockchain/'
           target="_blank" 
           rel="noopener noreferrer"
           >
-            {' Buy '}
+            <h2>{t<string>(' Buy GEODE ')}</h2>
           </Label>
-          - Buy GEODE coin to use the apps here in the ecosystem, to increase your voting power on community decisions, to stake
-          yourself as a validator or nominator, and to buy and sell products and services on the network. The GEODE coin is NOT a
-          currency, security, or an investment of any kind and should not be used for speculation.<br />
-      </Card>
-      <SummaryBox>        
-      <CardSummary label={''}>
-          Geode Links
-      </CardSummary> 
-      </SummaryBox>
-    <Card>
-        <BlockandPurpose />
-        <GeodeWhitePaper />
-        <DiscordConnection />
-        <SignUpForAnnouncements />
-        <GoToGitHub />
-    </Card>
-    
+          <br />
+      </Segment>
+    </Grid.Column>
+  </Grid>
+)
+
+const LinkContainer = () => {
+  return(
+  <div>
+    <Grid columns={6} textAlign={'left'}>
+    <Grid.Row stretched >
+      <Grid.Column width={1}>
+        <Image src={icon_lifeandwork} size='tiny'
+            href={'#/geode/lifeAndWork'}>
+        </Image> 
+      </Grid.Column >
+      <Grid.Column verticalAlign={'top'} textAlign={'left'} width={4}>
+        <h2><strong>{t<string>('Life and Work')}</strong></h2>
+        {_help[0]}
+      </Grid.Column>
+
+      <Grid.Column width={1}>
+      <Image src={icon_profile} size='tiny'
+            href={'#/geode/profile'}>
+        </Image> 
+      </Grid.Column>
+      <Grid.Column verticalAlign={'top'} textAlign={'left'} width={4}>
+        <h2><strong>{t<string>('Profile')}</strong></h2>
+        {_help[1]}
+      </Grid.Column>
+
+      <Grid.Column width={1}>
+      <Image src={icon_social} size='tiny'
+            href={'#/geode/social'}>
+        </Image> 
+      </Grid.Column>
+      <Grid.Column verticalAlign={'top'} textAlign={'left'} width={4}>
+        <h2><strong>{t<string>('Social')}</strong></h2>
+        {_help[3]}
+      </Grid.Column>
+
+      </Grid.Row>
+      <Grid.Row stretched>
+
+      <Grid.Column width={1}>
+      <Image src={icon_messaging} size='tiny'
+            href={'#/geode/messaging'}>
+        </Image> 
+      </Grid.Column>
+      <Grid.Column verticalAlign={'top'} textAlign={'left'} width={4}>
+        <h2><strong>{t<string>('Messaging')}</strong></h2>
+        {_help[4]}
+      </Grid.Column>
+
+      <Grid.Column width={1}>
+      <Image src={icon_market} size='tiny'
+            href={'#/geode/market'}>
+        </Image> 
+      </Grid.Column>
+      <Grid.Column verticalAlign={'top'} textAlign={'left'} width={4}>
+        <h2><strong>{t<string>('Market')}</strong></h2>
+        {_help[2]}
+      </Grid.Column>
+
+      <Grid.Column width={1}>
+      <Image src={icon_sar} size='tiny'
+            href={'#/geode/reporting'}>
+        </Image> 
+      </Grid.Column>
+      <Grid.Column verticalAlign={'top'} textAlign={'left'} width={5}>
+        <h2><strong>{t<string>('Reporting')}</strong></h2>
+        {_help[5]}
+      </Grid.Column>
+      </Grid.Row>
+    </Grid>
+    </div>
+  )
+}
+
+const ButtonContainer = () => {
+  return(
+    <div>
+      <Label as='a' color='orange' size='huge'
+          hRef={'https://blockandpurpose.com/announcements/'}
+          target="_blank" 
+          rel="noopener noreferrer"
+          >
+          <h2>{t<string>(' Announcements ')}</h2>
+      </Label>
+      <Label as='a' color='orange' size='huge'
+          hRef={'https://discord.com/invite/2v4DPxDQXt'}
+          target="_blank" 
+          rel="noopener noreferrer"
+          >
+          <h2>{t<string>(' Discord ')}</h2>
+      </Label>
+      <Label as='a' color='orange' size='huge'
+          hRef={'http://geodechain.com/'}
+          target="_blank" 
+          rel="noopener noreferrer"
+          >
+          <h2>{t<string>(' Help & Info ')}</h2>
+      </Label>
+      <Label as='a' color='orange' size='huge'
+          hRef={'http://geodechain.com/wp-content/uploads/2023/04/Geode-Blockchain-Whitepaper-V2023_03_20.pdf'}
+          target="_blank" 
+          rel="noopener noreferrer"
+          >
+          <h2>{t<string>(' Whitepaper ')}</h2>
+      </Label>
+      <Label as='a' color='orange' size='huge'
+          hRef={'http://geodechain.com/tos/'}
+          target="_blank"
+          rel="noopener noreferrer"
+          >
+          <h2>{t<string>(' TOS ')}</h2>
+      </Label>
+      <Label as='a' color='orange' size='huge'
+          hRef={'https://github.com/SparticleConcepts'}
+          target="_blank" 
+          rel="noopener noreferrer"
+          >
+          <h2>{t<string>(' GitHub ')}</h2>
+      </Label>
 
     </div>
+  )
+}
+
+
+  return (
+  <StyledDiv className={className}>
+    <div>
+      <SummaryBox>        
+        <CardSummary label={''}>
+          {t<string>(' Welcome to Geode! - Getting Started ')}
+        </CardSummary> 
+      </SummaryBox>
+
+      <Card>
+        <CardContainer />
+      </Card>
+    
+      <SummaryBox>        
+        <CardSummary label={''}>
+          {t<string>(' Geode Ecosystem ')}
+        </CardSummary> 
+      </SummaryBox>
+
+      <Card>
+        <LinkContainer/>
+      </Card>
+
+      <SummaryBox>        
+        <CardSummary label={''}>
+          {t<string>(' Useful Links ')}
+        </CardSummary> 
+      </SummaryBox>
+
+      <Card>
+        <ButtonContainer />
+      </Card>
+    </div>
+  </StyledDiv>
+
   );
 }
+
+const StyledDiv = styled.div`
+  align-items: center;
+  display: flex;
+
+  .output {
+    flex: 1 1;
+    margin: 0.25rem 0.5rem;
+  }
+`;
+
+//width="425" height="300" 

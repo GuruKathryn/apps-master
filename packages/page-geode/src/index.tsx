@@ -17,6 +17,7 @@ import Home from './Home/Home';
 import Market from './Market';
 import Social from './Social';
 import Messaging from './Messaging';
+import Reporting from './Reporting';
 
 import { useTranslation } from './translate';
 
@@ -42,7 +43,8 @@ function createPathRef (basePath: string): Record<string, string | string[]> {
     home: `${basePath}/`,
     market: `${basePath}/market`,
     social: `${basePath}/social`,
-    messaging: `${basePath}/messaging`
+    messaging: `${basePath}/messaging`,
+    reporting: `${basePath}/reporting`
   };
 }
 
@@ -73,7 +75,13 @@ function createItemsRef (t: TFunction): TabItem[] {
       // isHidden: true,
       name: 'messaging',
       text: t<string>('Messaging')
+    },
+    {
+      // isHidden: true,
+      name: 'reporting',
+      text: t<string>('Reporting')
     }
+
   ];
 }
 
@@ -96,12 +104,14 @@ function GeodeApp ({ basePath, className }: Props): React.ReactElement<Props> {
       />
       
       <Switch>
+        <Route path={pathRef.current.reporting}><Reporting /></Route>
         <Route path={pathRef.current.lifeAndWork}><LifeAndWork /></Route>
         <Route path={pathRef.current.profile}><Profile /></Route>
         <Route path={pathRef.current.market}><Market /></Route>
         <Route path={pathRef.current.social}><Social /></Route>
         <Route path={pathRef.current.messaging}><Messaging /></Route>
         <Route path={pathRef.current.home}><Home /></Route>
+        
       </Switch>
     
     </main>
