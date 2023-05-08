@@ -10,7 +10,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { useQueue } from '@polkadot/react-hooks';
 import { isString } from '@polkadot/util';
 
-import { Button} from '@polkadot/react-components';
+import { Button, Badge} from '@polkadot/react-components';
 
 import { useTranslation } from '../translate';
 
@@ -51,11 +51,12 @@ function CopyInline ({ children, className = '', icon = 'copy', label, type, val
         onCopy={_onCopy}
         text={value as string}
       >
-            <Button
+            <Badge
               className='icon-button show-on-hover'
               icon={icon}
-              isDisabled={!value}
-              label={label}
+              color={'orange'}
+              //isDisabled={!value}
+              //label={label}
               onClick={NOOP}
             />   
       </CopyToClipboard>

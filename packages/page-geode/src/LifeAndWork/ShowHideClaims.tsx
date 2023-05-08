@@ -19,7 +19,8 @@ import { __RouterContext } from 'react-router';
 import ContractsTable from './ContractsTable';
 //import Output from '@polkadot/app-js/Output';
 //import CopyToClipboard from 'react-copy-to-clipboard';
-//import { useTranslation } from '../translate';
+
+import { useTranslation } from '../translate';
 
 interface Props {
   className?: string;
@@ -27,27 +28,27 @@ interface Props {
   claimId?: string;
   claimant?: string;
   claim?: string;
+  showBool?: boolean;
 }
 
-function Endorsements ({ className = '', onClear, claimId, claimant, claim }: Props): React.ReactElement<Props> | null {
-  //const { t } = useTranslation();
+function ShowHideClaims ({ className = '', onClear, claimId, claimant, claim, showBool }: Props): React.ReactElement<Props> | null {
+  //  const { t } = useTranslation();
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
   //todo: code for allCodes:
     console.log(JSON.stringify(allCodes));
 
-function MakeEndorsement(): JSX.Element {
+function CallContractCard(): JSX.Element {
     return(
         <div>
-            
             <ContractsTable
                         contracts={allContracts}
                         updated={codeTrigger}
-                        initMessageIndex={5}
+                        initMessageIndex={6}
                         claimId={claimId}
                         claimant={claimant}
                         claim={claim}
-                        showBool={true}
+                        showBool={showBool}
              />
         </div>
     )
@@ -56,7 +57,7 @@ function MakeEndorsement(): JSX.Element {
   return (
     <StyledDiv className={className}>
     <>  
-      <MakeEndorsement />
+      <CallContractCard />
     </>
     </StyledDiv>
   );
@@ -72,6 +73,6 @@ const StyledDiv = styled.div`
   }
 `;
 
-export default React.memo(Endorsements);
+export default React.memo(ShowHideClaims);
 
 

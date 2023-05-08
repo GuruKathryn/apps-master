@@ -34,8 +34,9 @@ function Toggle ({ className = '', isDisabled, isRadio, label, onChange, prevent
       className={`${className} ui--Toggle ${value ? 'isChecked' : ''} ${isDisabled ? 'isDisabled' : ''} ${isRadio ? 'isRadio' : ''}`}
       onClick={_onClick}
     >
-      {label && <label>{label}</label>}
+      
       <div className={`ui--Toggle-Slider ${isRadio ? 'highlight--before-border' : ''}`} />
+      {label && <label>{label}</label>}
     </StyledDiv>
   );
 }

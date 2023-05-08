@@ -1,15 +1,15 @@
 // Copyright 2017-2023 @polkadot/app-whitelist authors & contributors
+// Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
 
-import { Badge, Card, CardSummary, SummaryBox } from '@polkadot/react-components';
-//import { Label, Image } from 'semantic-ui-react'
-//import b010 from '../shared/geode_app_icon_social.png';
+import { Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
 import { useTranslation } from '../translate';
 //import { formatNumber } from '@polkadot/util';
+import JSONinfo from '../shared/geode_social_info.json';
+import { useToggle } from '@polkadot/react-hooks';
 
-// import { useTranslation } from '../translate';
 
 // interface Props {
 //   className?: string;
@@ -18,27 +18,55 @@ import { useTranslation } from '../translate';
 
 function Summary (): React.ReactElement {
   const { t } = useTranslation();
-  // const imagePNG = b010;
-  // const src = b010;
-  // const { t } = useTranslation();
-  // const linkCount = 5;
-  // const itemCount = 0;
-  //<Image src={'../shared/geode_app_icon_social.png'} />
-  //<img src={'../shared/geode_app_icon_social.png'} />
-  //<Image circular src={'https://i.pinimg.com/originals/1b/bd/da/1bbddaaaa1eebfb725289d0c9cde22fb.jpg'} size='small' />
-  return (
+  const info: string[] = JSONinfo;
+  const [isShowInfo, toggleShowInfo] = useToggle(true)
+  const [isShowMore, toggleShowMore] = useToggle(false)
+
+  function showAccount(str: string): JSX.Element { 
+   try{
+    return(  <>
+      {str.length>0 && (<>
+        <IdentityIcon value={str} />
+        {' ('}<AccountName value={str} withSidebar={true}/>{') '}
+      </>)}
+      </>
+      )
+   } catch(e) {
+    console.log(e);
+    return(<>
+    {t<string>('No accounts to show')}
+    </>)
+   }
+  }
+
+    return (
     <div>
-    <SummaryBox>
-      <CardSummary 
-      label={''}>
-      {t<string>('Geode Social')}
-      </CardSummary>
+    <SummaryBox>        
+      <CardSummary label={''}>
+        {t<string>('Geode Social')} 
+      </CardSummary> 
     </SummaryBox>
-    <Card>
-        <strong>{t<string>("Follow your favorite accounts and post your own public broadcast messages that cannot be deleted, altered or censored! While you are at it, isn't it time you got paid directly for your time and attention? Let people know what you are interested in seeing and let advertisers pay YOU directly to include their posts in your feed.")}</strong>
-        {' '}
-        <Badge icon='info' color={'blue'} /> 
-        <strong>{t<string>('- Use the info Icon Buttons to get more information. ')}{' '}</strong>
+    <Card> 
+    <Badge
+      icon={'info'}
+           color={(isShowInfo) ? 'blue' : 'gray'}
+           onClick={toggleShowInfo}/> 
+      <strong> {t<string>('Info for Social')} </strong>
+      {isShowInfo && (<>
+        {': '}{t<string>(info[0]+info[1])}       
+      </>)}      
+      <br /><br />
+
+    <Badge
+      icon={(isShowMore)? 'info':'info'}
+           color={(isShowMore) ? 'blue' : 'gray'}
+           onClick={toggleShowMore}/> 
+    <strong>{t<string>('More')}</strong>
+      {isShowMore && (<>
+        {':'}{t<string>(info[2])}{' '}
+        {' '}{showAccount(info[3])}
+        {' '}{showAccount(info[4])}
+      </>)}
     </Card>
     </div>
   );

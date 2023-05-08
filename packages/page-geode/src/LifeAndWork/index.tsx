@@ -8,13 +8,10 @@ import styled from 'styled-components';
 import { Card, Button } from '@polkadot/react-components';
 import { useToggle } from '@polkadot/react-hooks';
 
-//import Codes from '../Codes';
-import CodeAdd from '../Codes/Add';
-import CodeUpload from '../Codes/Upload';
 import { useTranslation } from '../translate';
 import { useCodes } from '../useCodes';
 import { useContracts } from '../useContracts';
-import ContractAdd from './Add';
+
 import ContractsTable from './ContractsTable';
 import ClaimType from './ClaimType';
 
@@ -28,9 +25,6 @@ export default function LifeAndWork ({ className = '' }: Props): React.ReactElem
 const { t } = useTranslation();
 const { allCodes, codeTrigger } = useCodes();
 const { allContracts } = useContracts();
-const [isAddOpen, toggleAdd] = useToggle();
-const [isHashOpen, toggleHash] = useToggle();
-const [isUploadOpen, toggleUpload] = useToggle();
 const [isClaimOpen, toggleClaim] = useToggle();
 const [isResumeOpen, toggleResume] = useToggle();
 const [isSearch, toggleSearch] = useToggle();
@@ -99,19 +93,6 @@ console.log(allCodes);
       updated={codeTrigger}
       initMessageIndex={10}
     />)}
-
-
-    {isUploadOpen && (
-      <CodeUpload onClose={toggleUpload} />
-    )}
-    {isHashOpen && (
-      <CodeAdd onClose={toggleHash} />
-    )}
-    {isAddOpen && (
-      <ContractAdd 
-      onClose={toggleAdd} 
-      defaultAddress={''}/>
-    )}
 
   </StyledDiv>
 

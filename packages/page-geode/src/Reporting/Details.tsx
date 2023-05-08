@@ -6,7 +6,7 @@ import React from 'react';
 import { Card, Badge } from '@polkadot/react-components';
 //import { formatNumber } from '@polkadot/util';
 import { useTranslation } from '../translate';
-import IPAddress from '../shared/IpAddress';
+//import IPAddress from '../shared/IpAddress';
 import { useToggle } from '@polkadot/react-hooks';
 
 // interface Props {
@@ -16,22 +16,18 @@ import { useToggle } from '@polkadot/react-hooks';
 
 function Details (): React.ReactElement {
 const { t } = useTranslation();
-const [isShowIP, toggleShowIP] = useToggle(false);
+const [isShowIP, toggleShowIP] = useToggle(true);
 
   return (
     <div>
-    <Card>
-        <strong>{t<string>('Geode Report Suspicious Activity')}</strong>
-    </Card>
-    <Card>
+   <Card>
     <Badge
           icon='info'
           color={(isShowIP) ? 'blue' : 'gray'}
           onClick={toggleShowIP}/> 
-    {t<string>('Coming Soon! Report Illegal and/or Suspicious Activity in the Ecosystem.')}<br />
     {isShowIP && (
       <>
-      <IPAddress />
+        {t<string>('Coming Soon! Report Illegal and/or Suspicious Activity in the Ecosystem.')}<br />
       </>
     )}
     </Card>

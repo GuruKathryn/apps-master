@@ -16,19 +16,25 @@ import { formatNumber } from '@polkadot/util';
 import { useTranslation } from '../translate';
 import ContractAdd from './Add';
 import CallCard from './CallCard';
+import CallModal from './CallModal';
+
 import Contract from './Contract';
 import { getContractForAddress } from './util';
 
 
 // uncomment for test configuration - - - - >
-//import JSONContractAddress from '../shared/geode_contracts_test.json';
+import JSONContractAddress from '../shared/geode_contracts_test.json';
 // uncomment for production chain - - - - >
-import JSONContractAddress from '../shared/geode_contracts.json';
+//import JSONContractAddress from '../shared/geode_contracts.json';
 
 
 export interface Props {
   contracts: string[];
   updated: number;
+  claimId?: string;
+  claim?: string;
+  claimant?: string;
+  showBool?: boolean;
   initMessageIndex: number;
 }
 
@@ -44,7 +50,7 @@ function filterContracts (api: ApiPromise, keyringContracts: string[] = []): Con
     .filter((contract): contract is ContractPromise => !!contract);
 }
 
-function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Props): React.ReactElement<Props> {
+function ContractsTable ({ contracts: keyringContracts, initMessageIndex, claimId, claim, claimant, showBool }: Props): React.ReactElement<Props> {
   const _initIndex: number = (initMessageIndex > -1) ? initMessageIndex: 0;
   let _initContractIndex: number = 0;
   const { t } = useTranslation();
@@ -62,7 +68,9 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   // set default after contract load to chain
   const contractAddress: string = (JSONContractAddress[0])? JSONContractAddress[0] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
 
-
+  //const [isCallModal, toggleCallModal] = useToggle(false);
+  const isCallModal: boolean = (messageIndex===5 || messageIndex===6? true: false);
+  //const isCallModal: boolean = (messageIndex===5 ? true: false);
 
   const headerRef = useRef<[string?, string?, number?][]>([
     [t('Add claims for Life and Work'), 'start'],
@@ -108,6 +116,11 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
       setIndexes({ contractIndex, messageIndex, onCallResult });
       setIsCallOpen(true);
     },
+    []
+  );
+
+  const _toggleCall = useCallback(
+    () => setIsCallOpen((isCallOpen) => !isCallOpen),
     []
   );
 
@@ -170,12 +183,25 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           />
         ))}
       </Table>}
-      {isCallOpen && contract && (
+      {!isCallModal && isCallOpen && contract && (
         <CallCard
           contract={contract}
           messageIndex={messageIndex}
           onCallResult={onCallResult}
           onChangeMessage={_setMessageIndex}
+        />
+      )}
+      {isCallModal && isCallOpen && contract && (
+        <CallModal
+          contract={contract}
+          messageIndex={messageIndex}
+          onCallResult={onCallResult}
+          onChangeMessage={_setMessageIndex}
+          onClose={_toggleCall}
+          claim={claim}
+          claimant={claimant}         
+          claimID={claimId}
+          showBool={showBool}
         />
       )}
     </>

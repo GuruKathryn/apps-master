@@ -14,11 +14,12 @@ interface Props {
     onClear?: () => void;
     fromAcct: string;
     timeDate: Date;
+    callFrom?: number;
     //outcome: CallResult;
     //onClose: () => void;
   }
   
-function AccountHeader ({ className = '', onClear, fromAcct, timeDate }: Props): React.ReactElement<Props> | null {
+function AccountHeader ({ className = '', onClear, fromAcct, timeDate, callFrom }: Props): React.ReactElement<Props> | null {
     const { t } = useTranslation();
     const [isShowInfo, toggleShowInfo] = useToggle(false);
 
@@ -52,6 +53,18 @@ function ListAccount(): JSX.Element {
         </Item.Content>
         {isShowInfo && (
               <>
+                {callFrom===1 ? (<>
+                  <strong>{t<string>(' Key: ')}</strong>
+                {t<string>(' Link to See More: ')}
+                <Label circular color='orange'> Link </Label>  
+                {t<string>(' No. of Endorsements: ')}
+                <Label circular color='blue'>{'#'}</Label>  
+                {t<string>(' Endorse a Claim: ')}
+                <Badge icon='thumbs-up' color='orange' /> 
+                {t<string>(' Hide/Show a Claim: ')}
+                <Badge icon='copy' color='orange' /> 
+                </>) : 
+                (<>
                 <strong>{t<string>(' Key: ')}</strong>
                 {t<string>(' Link to See More: ')}
                 <Label circular color='orange'> Link </Label>  
@@ -61,6 +74,9 @@ function ListAccount(): JSX.Element {
                 <Label color='blue'>{'Reply'}</Label>  
                 {t<string>(' Copy Message ID: ')}
                 <CopyInline value={' '} label={''}/>
+                
+                
+                </>)}
               </>
             )}
 

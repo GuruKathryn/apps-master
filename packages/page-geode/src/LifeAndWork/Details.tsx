@@ -1,20 +1,23 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
 
-import { Table, List, Label, Divider } from 'semantic-ui-react'
+import { Grid, Table, List, Label } from 'semantic-ui-react'
 
 import type { CallResult } from './types';
 import { useToggle } from '@polkadot/react-hooks';
 
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { AccountName, Badge, Button, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Toggle, AccountName, Badge,  LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import CopyInline from '../shared/CopyInline';
 import JSONprohibited from '../shared/geode_prohibited.json';
 
+import Endorsements from './Endorsements';
+import ShowHideClaims from './ShowHideClaims';
+import AccountHeader from '../shared/AccountHeader';
 
 interface Props {
   className?: string;
@@ -46,59 +49,165 @@ type ClaimList = {
 
 function Details ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
-  const [isModalOpen, toggleModal] = useToggle();
-  const claimIdRef: string[] = [' ', 'work history', 'education', 'expertise', 'good deeds', 'ip', '', '', ' - Get Resume', '', '', '', ' - Search', '', '', '', '', '', ''];
-  const [isClaim, setIsClaim] = useState(false);
+  const claimIdRef: string[] = [' ', 'work history', 'education', 'expertise', 'good deeds', 'intellectual property', '', '', '', '', '', '', '', '', '', '', '', '', ''];
   const searchWords: string[] = JSONprohibited;
+  const [isShowEndorse, toggleShowEndorse] = useToggle(false);
+  const [isShowHide, toggleShowHide] = useToggle(false);
+  const [isShowForm, toggleShowForm] = useToggle(false);
+  const [isShowClaimId, toggleShowClaimId] = useToggle(false);
+  const [isShowLinkAddr, toggleShowLinkAddr] = useToggle(false);
+  const [isShowHidden, toggleShowHidden] = useToggle(false);
+  //const [toShowBool, toggleToShowBool] = useToggle(false);
 
- let _Obj2: Object = {"ok":[{"claimtype":3,"claimant":"5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc","claim":"0x49276d20616e206578706572742047726f706f","claimId":"0x4a3252d1668288f51bb269a6c27c11fca6b227a79db2ec2e726180a1f845f02f","endorserCount":0,"link":"0x68747470733a2f2f646576656c6f7065722e6d6f7a696c6c612e6f72672f656e2d55532f646f63732f5765622f4150492f46696c65526561646572","show":true,"endorsers":["5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc"]}]}
+  const [claimToEndorse, setClaimToEndorse] = useState(['','','','']);
+  const [claimToHide, setClaimToHide] = useState(['','','','']);
+
   const objOutput2: string = stringify(output);
-  _Obj2 = JSON.parse(objOutput2);
+  const _Obj2 = JSON.parse(objOutput2);
   const claimDetail: ClaimDetail = Object.create(_Obj2);
+  
 
   function autoCorrect(arr: string[], str: string): JSX.Element {
     arr.forEach(w => str = str.replaceAll(w, '****'));
-    arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '@***'));
-    arr.forEach(w => str = str.replaceAll(w.charAt(0) + w.slice(1).toUpperCase, '*@**'));        
+    arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '****'));
+    arr.forEach(w => str = str.replaceAll(w.charAt(0) + w.slice(1).toUpperCase, '****'));        
     arr.forEach(w => str = str.replaceAll(w.toUpperCase(), '****'));
     return (
     <>{t<string>(str)}</>)
 }
 
-  const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
+const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
 
-//const isShowTest: boolean = true;
+const _resetEndorse = useCallback(
+  () => {setClaimToEndorse([])
+         toggleShowForm()},
+  []
+);
+
+const _resetShowHide = useCallback(
+  () => {setClaimToHide(['', '', '', ''])
+         toggleShowHide()
+         toggleShowHidden()},
+  []
+)
+
 
 function ListClaims(props:ClaimList): JSX.Element {
   if (claimDetail.ok) {
     return(
       <div>
       <List divided inverted relaxed >
-        {claimDetail.ok.filter(_type => _type.claimtype===props.claimIndex && _type.show).map((_out, index: number) => 
+        {claimDetail.ok.filter(_type => _type.claimtype===props.claimIndex ).map((_out, index: number) => 
         <List.Item> 
-              {isAccount && (
+          {!_out.show && isShowHidden && (from===_out.claimant) && (<>
+              <Label  
+                color='grey'
+                >{isHex(_out.claim) ? autoCorrect(searchWords, hexToString(_out.claim)) : ' '}</Label> {' '}                  
+              <Label circular color='blue'> {_out.endorserCount} </Label> 
+              <Label circular color='red'>{'Hidden'}</Label>  
+
+          {isShowHide && (<>
+                <Label as='a' 
+                       color='blue' 
+                       circular
+                       onClick={() => setClaimToHide([
+                        _out.claimId, 
+                        _out.claim, 
+                        _out.claimant,
+                        'true' ])}                       
+                       >{'Show'}
+                       </Label>                            
+              </>)}
+          </>)}
+
+          {_out.show && isAccount && (
               <>
               <IdentityIcon value={_out.claimant} />
               <AccountName value={_out.claimant} withSidebar={true}/>
               <br /><br />
               </>)}
-              <CopyInline value={_out.claimId} label={''}/>
-              <Label  
+
+          {_out.show && (<>
+                <Label  
                 color='grey'
                 >{isHex(_out.claim) ? autoCorrect(searchWords, hexToString(_out.claim)) : ' '}</Label> {' '}                  
-              <Label circular color='teal'> {_out.endorserCount} </Label> 
-              {hexToString(_out.link)!='' && (
+              <Label circular color='blue'> {_out.endorserCount} </Label> 
+              </>)}
+              
+          {_out.show && hexToString(_out.link)!='' && (
               <>
-              <Label  as='a'
+              {!isShowLinkAddr && (<>
+                <Label  as='a'
                 color='orange'
                 circular
                 href={isHex(_out.link) ? withHttp(hexToString(_out.link).trim()) : ' '}
                 target="_blank" 
                 rel="noopener noreferrer"
                 >{'Link'}
-              </Label>
+              </Label>              
+              </>)}
               </>
               )}
+
+          {_out.show && isShowHide && (<>
+            <Label as='a' 
+                       color='red' 
+                       circular
+                       onClick={() => setClaimToHide([
+                        _out.claimId, 
+                        _out.claim, 
+                        _out.claimant,
+                        'false' ])}                       
+                       >{'Hide'}
+                       </Label>                            
+              </>)}
+
+          {_out.show && isShowForm && (<>
+                <Badge
+                    icon='thumbs-up'
+                    color='orange'
+                    onClick={() => setClaimToEndorse([
+                        _out.claimId, 
+                        _out.claim, 
+                        _out.claimant,
+                        claimIdRef[_out.claimtype] ])}/>                            
+              </>)}
+              
+          {_out.show && isShowClaimId && (<>
+                <br /><br />
+                <CopyInline value={_out.claimId} label={''} />
+                <strong>{' ClaimId: '}</strong>{_out.claimId}{' '}
+              </>)}
+
+          {_out.show && isShowLinkAddr && (<>
+                {hexToString(_out.link)!='' && (
+                  <>
+                    <br />
+                    <Badge color='orange' icon='link'/>{' '}
+                    {isHex(_out.link) ? withHttp(hexToString(_out.link).trim()) : ' '}
+                    <Label  as='a'
+                      color='orange'
+                      circular
+                      href={isHex(_out.link) ? withHttp(hexToString(_out.link).trim()) : ' '}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >{'Link'}
+                    </Label>
+                </>
+              )} 
+              </>)}
+
+          {_out.show && isShowEndorse && (<>
+                <List divided inverted bulleted>
+                  {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
+                  {(i === 0) ? 
+                  <><strong>{t<string>('Claim Endorsements:')}</strong>{t<string>('(self)')} {name}</> : 
+                  <><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}
+                  {' ('}<AccountName value={name} withSidebar={true}/>{') '}
+                  {name} </>}
+              </List.Item>)}
+              </List>     
+              </>)}
         </List.Item>)}
       </List>
       </div>   
@@ -110,9 +219,148 @@ function ListClaims(props:ClaimList): JSX.Element {
 }
 }
 
+function EndorsementCard(): JSX.Element {
+  return(<>
+        {isShowForm && (<>
+        <List>
+          <List.Item>
+              <Badge icon={'thumbs-up'} color={'orange'} />
+                {t<string>('Click the Endorse icon on any Claim to Endorse')}
+          </List.Item>
+          <List.Item>
+            <strong>{t<string>('NOTE: ')}</strong>
+            {t<string>("You can't Endorse your own Claims.  ")}
+          </List.Item>
+        </List>
+        </>)}
+      
+      {claimToEndorse[2]===from && (<>
+        <Label color='orange'>{'WARNING:'}</Label> {' The Endorsing account and the Claim Account Owner are the same.'}
+        <br />
+        </>)}
+          {isShowForm && claimToEndorse[0] && 
+          claimToEndorse[2]!=from && (<>
+            <Endorsements 
+                  claimId={claimToEndorse[0]}
+                  claim={claimToEndorse[1]}
+                  claimant={claimToEndorse[2]}   
+            />
+          </>)}  
+  </>)
+}
+
+function HideClaimCard(): JSX.Element {
+  return(<>
+      {isShowHide && (<>
+        <List>
+          <List.Item>
+          <Label color='blue' circular>{'Show'}</Label>
+          <Label color='red' circular>{'Hide'}</Label>
+            {t<string>(' Click the Show/Hide Buttons on the Claim to Show/Hide')}
+          </List.Item>
+        </List>
+        </>)}
+          {isShowHide && claimToHide[0] && (<>
+            <ShowHideClaims 
+                  claimId={claimToHide[0]}
+                  claim={claimToHide[1]}
+                  claimant={claimToHide[2]}
+                  showBool={(claimToHide[3]==='true')? true: false }
+            />
+          </>)}  
+  </>)
+}
+
+
+function ToggleCard(): JSX.Element {
+  return(
+    <div>
+    <Table>
+      <Table.Row>
+        <Table.Cell>
+        <Grid columns={5} divided>
+          <Grid.Row>
+            <Grid.Column>
+              <Toggle
+                className=''
+                label={t<string>('Endorse Claims')}
+                onChange={_resetEndorse}
+                value={isShowForm}
+                isDisabled={isShowHide}
+              />
+              <Toggle
+                className=''
+                label={t<string>('Show Endorsements')}
+                onChange={toggleShowEndorse}
+                value={isShowEndorse}
+                isDisabled={isShowForm || isShowHide}
+              />
+            </Grid.Column>
+            {!isAccount && (<>
+              <Grid.Column>
+              <Toggle
+                className=''
+                label={t<string>('Hide/Show Claims')}
+                onChange={_resetShowHide}
+                value={isShowHide}
+                isDisabled={isShowForm}
+              />
+              <Toggle
+                className=''
+                label={t<string>('Show Hidden Claims')}
+                onChange={toggleShowHidden}
+                value={isShowHidden}
+                isDisabled={isShowForm || isShowHide}
+              />
+            </Grid.Column>            
+            </>)}
+            <Grid.Column>
+            <Toggle
+                className=''
+                label={t<string>('Show Link Addresses')}
+                onChange={toggleShowLinkAddr}
+                value={isShowLinkAddr}
+                isDisabled={isShowForm || isShowHide}
+              />
+            <Toggle
+                className=''
+                label={t<string>('Show Claim IDs')}
+                onChange={toggleShowClaimId}
+                value={isShowClaimId}
+                isDisabled={isShowForm || isShowHide}
+              />
+            </Grid.Column>
+        </Grid.Row>
+      </Grid>
+      </Table.Cell>
+      </Table.Row>
+      <Table.Row>
+        <Table.Cell>
+          {isShowForm && <EndorsementCard />}
+
+          {isShowHide && claimDetail.ok[0] && (<>
+            {(from===claimDetail.ok[0].claimant)? (<>
+            <HideClaimCard />
+            </>): (<>
+              <Label color='orange'>{t<string>(' WARNING ')}</Label>
+              {t<string>(" You can't Hide or Show a Claim unless you are the Claim Owner.")}</>)}
+          </>)}
+          {isShowHidden && claimDetail.ok[0] && (<>
+          {(from!=claimDetail.ok[0].claimant) && (<>
+              <Label color='orange'>{t<string>(' WARNING ')}</Label>
+              {t<string>(" This is NOT Your Resume. You can't see hidden claims.")}</>)}
+          </>)}
+          
+        </Table.Cell>
+      </Table.Row>
+    </Table>
+    </div>
+  )
+}
+
 function ListAccount(): JSX.Element {
 try {
-  setIsClaim(true)
+  //setIsClaim(true)
   return (
     <div>
       <Table>
@@ -120,31 +368,14 @@ try {
         <Table.Cell>
           {!isAccount && (
           <>
+          <h2>
           <strong>{t<string>('Resume of: ')}</strong>
-          <IdentityIcon value={claimDetail.ok[0].claimant} />  
-          <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>    
+          <IdentityIcon size={32} value={claimDetail.ok[0].claimant} />  
+          <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/> 
+          <LabelHelp help={t<string>(' Account of the resume. ')} /> 
+          </h2>
           </>
           )}
-          </Table.Cell>
-          <Table.Cell>
-            <strong>{t<string>('Called from: ')}</strong>
-          <IdentityIcon value={from} />
-          <AccountName value={from} withSidebar={true}/>
-          </Table.Cell>
-
-          <Table.Cell>
-          <strong>{t<string>('Date/Time: ')}</strong>
-          {' '}{when.toLocaleDateString()} 
-          {' '}{when.toLocaleTimeString()} 
-          </Table.Cell>
-          <Table.Cell>
-          <strong>{t<string>(' Key: ')}</strong>
-          {t<string>( ' Copy Claim ID: ')}
-          <CopyInline value={'0x'} label={''}/>
-          {t<string>(' No. of Endorsements: ')}
-          <Label circular color='teal'> # </Label>  
-          {t<string>(' Link to See More: ')}
-          <Label circular color='orange'> Link </Label>  
           </Table.Cell>
         </Table.Row>
       </Table>
@@ -152,7 +383,7 @@ try {
   )
 } catch(error) {
   console.error(error)
-  setIsClaim(false)
+  //setIsClaim(false)
   return(
     <>
     <strong>{t<string>('There are no claims available.')}</strong>
@@ -160,140 +391,16 @@ try {
   )
 }}
 
-function ListShownClaims(): JSX.Element {
-  if (claimDetail.ok) {
-    return(
-      <div>
-      <Badge color='blue' icon='thumbs-up' />
-    
-      <strong>{t<string>(' Claim(s) Shown: ')}</strong>   
-      <LabelHelp help={t<string>('  Claim Details. Copy the ClaimId below to Endorse, Hide or Show Claims.')} />   <br /> 
-      
-      <List divided inverted relaxed >
-        {claimDetail.ok.filter(_type => _type.show).map((_out, index: number) => 
-        <List.Item> 
-            {isAccount ? (
-            <>
-              <IdentityIcon value={_out.claimant} />
-              <AccountName value={_out.claimant} withSidebar={false}/>
-              <strong>{t<string>(' | account Id: ')}</strong>{_out.claimant}
-              <LabelHelp help={t<string>('  Copy Address and add to your Address Book.')} />   
-              <br /><br />
-            </>    
-            ) : (
-              <><Label color='grey' circular>{t<string>('Claim ')}{index+1}{' '}</Label></>
-            )}
-        <Label color='grey'
-          >{isHex(_out.claim) ? autoCorrect(searchWords, hexToString(_out.claim)) : ' '}</Label> 
-        <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
-        <Label circular color='teal'> {_out.endorserCount} </Label>
-        <br /><br />
-        <Badge color='orange' icon='copy' />
-        <strong>{' ClaimId: '}</strong>{_out.claimId}{' '}
-        <CopyInline value={_out.claimId} label={''}/>
-        <LabelHelp help={t<string>('  This is the claim ID. Copy and use this ID number to Endorse, Hide and Show Claims. ')} /> 
-        <br />
-        {hexToString(_out.link)!='' && (
-          <>
-              <Badge color='orange' icon='link'/>{' '}
-              {isHex(_out.link) ? withHttp(hexToString(_out.link).trim()) : ' '}
-              <Label  as='a'
-                color='orange'
-                circular
-                href={isHex(_out.link) ? withHttp(hexToString(_out.link).trim()) : ' '}
-                target="_blank" 
-                rel="noopener noreferrer"
-              >{'Link'}
-              </Label>
-          </>
-      )}
-              <List divided inverted bulleted>
-              {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
-               {(i === 0) ? 
-               <><strong>{t<string>('Claim Endorsements:')}</strong>{t<string>('(self)')} {name}</> : 
-               <><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}{name} </>}
-              </List.Item>)}
-              </List>     
-        <Divider />
-        </List.Item>)}
-      </List>
-      </div>   
-  )
-} else {
-  return(
-    <div>{t<string>(' No Claims to Show ')}</div>
-  )
-}
-}
-
-function ListHiddenClaims(): JSX.Element {
-  if (claimDetail.ok) {
-    return(
-      <div>
-      <Badge color='red' icon='thumbs-down' />
-      <strong>{t<string>(' Claim(s) Hidden:')}</strong>
-      <LabelHelp help={t<string>('  Copy the ClaimId below to Hide or Show. Then click the Hide/Show Claim button at the bottom of the page.')} />   <br /> 
-      <List divided inverted relaxed >
-        {claimDetail.ok.filter(_type => !_type.show).map((_out, index: number) => 
-        <List.Item> 
-          {isAccount ? (
-            <>
-              <IdentityIcon value={_out.claimant} />
-              <AccountName value={_out.claimant} withSidebar={false}/>
-              <strong>{t<string>(' | account Id: ')}</strong>{_out.claimant}
-              <br /><br />
-            </>    
-            ) : (
-              <><Label color='red' circular>{t<string>('Claim ')}{index+1}{' '}</Label></>
-            )}
-        <Label color='grey'
-          >{isHex(_out.claim) ? autoCorrect(searchWords, hexToString(_out.claim)) : ' '}</Label> 
-        <Label circular color='blue'>{claimIdRef[_out.claimtype]}</Label>     
-        <Label circular color='teal'> {_out.endorserCount} </Label>
-        <br /><br />
-        <Badge color='orange' icon='copy' />
-        <strong>{' ClaimId: '}</strong>{_out.claimId}
-        <LabelHelp help={t<string>('  This is the claim ID. Copy and use this ID number to Endorse, Hide and Show Claims. ')} /> 
-        <br />
-        {hexToString(_out.link)!='' && (
-          <>
-              <Badge color='orange' icon='link'/>{' '}
-              {isHex(_out.link) ? hexToString(_out.link) : ' '}
-              <Label  as='a'
-                color='orange'
-                circular
-                href={isHex(_out.link) ? withHttp(hexToString(_out.link).trim()) : ' '}
-                target="_blank" 
-                rel="noopener noreferrer"
-              >{'Link'}
-              </Label>
-          </>
-      )}
-              <List divided inverted bulleted>
-              {_out.endorsers.map((name, i: number) => <List.Item key={name}> 
-               {(i === 0) ? 
-               <><strong>{t<string>('Claim Endorsements:')}</strong>{t<string>('(self)')} {name}</> : 
-               <><Badge color='red' icon='check'/>{name} </>}
-              </List.Item>)}
-              </List>
-        <Divider  />
-        </List.Item>)}
-      </List>
-      </div>   
-  )
-} else {
-  return(
-    <div>{t<string>(' No Claims to Show ')}</div>
-  )
-}
-}
-
-
-
   return (
     <StyledDiv className={className}>
     <Card>  
+        <AccountHeader 
+            fromAcct={from} 
+            timeDate={when} 
+            callFrom={1}/>
         <ListAccount />
+        
+        <ToggleCard />
         <Table verticalAlign='top'>
           <Table.Row>
             <Table.Cell verticalAlign='top'>
@@ -348,51 +455,6 @@ function ListHiddenClaims(): JSX.Element {
             </Table.Cell>
           </Table.Row>
         </Table>
-        {isClaim && (
-        <Table>
-        <Table.Row>
-            <Table.Cell>
-                <Button
-                    icon={(isModalOpen) ? 'minus' : 'plus'}
-                    label={t<string>('Claim Details')}
-                    onClick={toggleModal} 
-                />        
-            </Table.Cell>
-        </Table.Row>
-        </Table>                    
-        )}
-
-        {isModalOpen && (
-            <>
-            <Table>
-              <Table.Row>
-                <Table.Cell verticalAlign='top'>
-                {!isAccount ? (
-                    <>
-                    <strong>{t<string>('Resume of: ')}</strong>
-                    <IdentityIcon value={claimDetail.ok[0].claimant} />
-                    <AccountName value={claimDetail.ok[0].claimant} withSidebar={true}/>
-                    <strong>{t<string>(' | Account Id: ')}</strong>{claimDetail.ok[0].claimant}
-                    </>
-                ) : t<string>('Details of Search Results:')}          
-                </Table.Cell>
-                <Table.Cell verticalAlign='top'>
-                <strong>{t<string>('Date/Time: ')}</strong>
-                {' '}{when.toLocaleDateString()}
-                {' '}{when.toLocaleTimeString()}
-                </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>
-                  <div>
-                    <ListShownClaims />
-                    <ListHiddenClaims />
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            </Table>
-            </>
-        )}
     </Card>
     </StyledDiv>
   );

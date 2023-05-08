@@ -2,13 +2,28 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { Card, CardSummary, SummaryBox } from '@polkadot/react-components';
+import { Toggle, Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
 import { useTranslation } from '../translate';
+import JSONinfo from '../shared/geode_lifeandwork_info.json';
+import { useToggle } from '@polkadot/react-hooks';
 
 
 function Summary (): React.ReactElement {
   const { t } = useTranslation();
-  const summaryOne: string = ' Register your claims of expertise, work history, education/training, good deeds and original intellectual property to the Geode Blockchain. Endorse the authenticity of other users’ claims. Look up resumes by account. Search claims by keyword to discover people and their contributions to the world. ';
+  const info: string[] = JSONinfo;
+  const [isShowInfo, toggleShowInfo] = useToggle(true)
+  const [isShowMore, toggleShowMore] = useToggle(false)
+
+  function showAccount(str: string): JSX.Element { {
+    return(  <>
+      {str.length>0 && (<>
+        <IdentityIcon value={str} />
+        {' ('}<AccountName value={str} withSidebar={true}/>{') '}
+      </>)}
+      </>
+      )
+    }
+  }
 
   return (
     <div>
@@ -18,7 +33,29 @@ function Summary (): React.ReactElement {
       </CardSummary> 
     </SummaryBox>
     <Card> 
-      <strong>  {t<string>(summaryOne)}  </strong> <br />
+    <Badge
+      icon={'info'}
+           color={(isShowInfo) ? 'blue' : 'gray'}
+           onClick={toggleShowInfo}/> 
+      <strong> {t<string>('Info for Life and Work: ')} </strong>
+      {isShowInfo && (<>
+        {info[0]+info[1]}       
+      </>)}      
+      <br /><br />
+
+    {isShowInfo && (<>
+    <Toggle
+            className=''
+            label={t<string>('Recommended Accounts ')}
+            onChange={toggleShowMore}
+            value={isShowMore}
+          />
+      {isShowMore && (<>
+        {' '}{t<string>(info[2])}{' '}
+        {' '}{showAccount(info[3])}
+        {' '}{showAccount(info[4])}
+      </>)}    
+    </>)}
     </Card>
     </div>
   );

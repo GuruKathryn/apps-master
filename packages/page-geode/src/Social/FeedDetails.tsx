@@ -152,12 +152,12 @@ function ShowFeed(): JSX.Element {
             <Table.Row>
                 <Table.HeaderCell>
                 {' '}<Badge
-                icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
+                icon={(isShowEndorsers) ? 'arrow-up' : 'arrow-down'}
                 color={(isShowEndorsers) ? 'blue' : 'gray'}
                 onClick={toggleShowEndorsers}/> 
                 {t<string>(' Show Endorsers | ')}
                 <Badge
-                icon={(isShowMsgID) ? 'thumbs-up' : 'thumbs-down'}
+                icon={(isShowMsgID) ? 'arrow-up' : 'arrow-down'}
                 color={(isShowMsgID) ? 'blue' : 'gray'}
                 onClick={toggleShowMsgID}/> 
                 {t<string>(' Show Message IDs ')}
@@ -376,7 +376,7 @@ try {
   return (
     <StyledDiv className={className}>
     <Card>
-      <AccountHeader fromAcct={from} timeDate={when} />
+      <AccountHeader fromAcct={from} timeDate={when} callFrom={0}/>
       <ShowFeed />
     </Card>
     </StyledDiv>
