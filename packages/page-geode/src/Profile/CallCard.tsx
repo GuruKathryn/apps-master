@@ -50,12 +50,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
   const [isViaCall, toggleViaCall] = useToggle();
-  const [isMenu, setIsMenu] = useState(false);
+  //const [isMenu, setIsMenu] = useState(false);
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
-  const [isTest, setIsTest] = useToggle();
+  //const [isTest, setIsTest] = useToggle();
   
+  const isTest: boolean = false;
   //const isTestData: boolean = false; //takes out code elements we only see for test
 
   useEffect((): void => {
@@ -110,7 +111,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
       if (!accountId || !message || !value || !weight) {
         return;
       }
-      {setIsMenu(true)}
+      //{setIsMenu(true)}
       contract
         .query[message.method](
           accountId,
@@ -291,17 +292,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />
           )
         }
-        {isMenu && (
-          <>
-        {' | '}
-            <Button
-              icon={(isTest) ? 'minus' : 'plus'}
-              //isDisabled={!isValid}
-              label={t<string>('Developer')}
-              onClick={setIsTest} 
-            />
-          </>
-        )} 
+
         </Card>
 
         {outcomes.length > 0 && messageIndex < 2 && (

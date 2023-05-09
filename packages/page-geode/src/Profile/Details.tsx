@@ -10,6 +10,7 @@ import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Table, Label, Image } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
+import AccountHeader from '../shared/AccountHeader';
 
 import JSONprohibited from '../shared/geode_prohibited.json';
 
@@ -49,9 +50,9 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
     const searchWords: string[] = JSONprohibited;
 
     //let _Obj1: Object = {"ok":[{"account":"5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc","display_name":"0x49276d20616e206578706572742047726f706f","location":"0x4a3252d1668288f51bb269a6c27c11fca6b227a79db2ec2e726180a1f845f02f","tags":"0x","bio":"0x68747470733a2f2f646576656c6f7065722e6d6f7a696c6c612e6f72672f656e2d55532f646f63732f5765622f4150492f46696c65526561646572","photo_url":"0x","website_url1":"0x", "website_url2":"0x", "website_url3":"0x", "life_and_work": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc", "social": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc", "private_messaging": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc", "marketplace": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc", "more_info": "0x", "make_private": false}]};
-    let _Obj: Object = { Ok: { "account": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "displayName": "test q", "location": "test w", "tags": "test r", "bio": "0x", "photoUrl": "0x", "websiteUrl1": "0x", "websiteUrl2": "0x", "websiteUrl3": "0x", "lifeAndWork": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "social": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "privateMessaging": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "marketplace": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "moreInfo": "0x", "makePrivate": false } }
+    //let _Obj: Object = { Ok: { "account": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "displayName": "test q", "location": "test w", "tags": "test r", "bio": "0x", "photoUrl": "0x", "websiteUrl1": "0x", "websiteUrl2": "0x", "websiteUrl3": "0x", "lifeAndWork": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "social": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "privateMessaging": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "marketplace": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "moreInfo": "0x", "makePrivate": false } }
     const objOutput: string = stringify(output);
-    _Obj = JSON.parse(objOutput);
+    const _Obj = JSON.parse(objOutput);
     const profileDetail: ProfileDetail = Object.create(_Obj);
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
 
@@ -66,63 +67,21 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
     }
 
     function ListAccount(): JSX.Element {
-      try {
-        //setIsClaim(true)
-        return (
+      return(
           <div>
             <Table>
               <Table.Row>
               <Table.Cell>
-                </Table.Cell>
-                <Table.Cell>
-                <LabelHelp help={t<string>(' The account calling the information.')} /> 
-                <strong>{t<string>(' Called from: ')}</strong>
-                <IdentityIcon value={from} />
-                <AccountName value={from} withSidebar={true}/>
-                </Table.Cell>
-      
-                <Table.Cell>
-                <strong>{t<string>('Date/Time: ')}</strong>
-                {' '}{when.toLocaleDateString()} 
-                {' '}{when.toLocaleTimeString()} 
-                </Table.Cell>
-                <Table.Cell>
-                <strong>{t<string>(' Key: ')}</strong>
-                {t<string>(' Link to See More: ')}
-                <Label circular color='orange'> Link </Label>  
-                </Table.Cell>
-                <Table.Cell>
-                <Button
+              <Button
                   icon='times'
                   label={t<string>('Close')}
                   onClick={onClear}
                 />
-                </Table.Cell>
-
+              </Table.Cell>
               </Table.Row>
             </Table>
           </div>
-        )
-      } catch(error) {
-        console.error(error)
-        //setIsClaim(false)
-        return(
-          <div>
-          <Table>
-            <Table.Row>
-              <Table.Cell>
-              <strong>{t<string>('There are no profiles available.')}</strong>
-              </Table.Cell>
-              <Table.Cell>
-              <strong>{t<string>('Date/Time: ')}</strong>
-                {' '}{when.toLocaleDateString()} 
-                {' '}{when.toLocaleTimeString()} 
-              </Table.Cell>
-            </Table.Row>
-          </Table>
-          </div>
-        )
-      }}
+      )}
       
 function ShowProfile(): JSX.Element {
       try {
@@ -275,23 +234,11 @@ function ShowProfile(): JSX.Element {
                     <br />
                     </>
                 )}
-
-
                 <h3><LabelHelp help={t<string>(' Additional Profile Information. ')} />
                 <strong>{t<string>(' More Info: ')}</strong></h3>
                 {isHex(profileDetail.ok.moreInfo) ? 
                       autoCorrect(searchWords, hexToString(profileDetail.ok.moreInfo)) : ' '}
                 <br />    
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell verticalAlign='top'>
-            </Table.Cell>
-            <Table.Cell verticalAlign='top'>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell verticalAlign='top'>
             </Table.Cell>
           </Table.Row>
       </Table>
@@ -311,6 +258,10 @@ function ShowProfile(): JSX.Element {
   return (
     <StyledDiv className={className}>
     <Card>
+    <AccountHeader 
+            fromAcct={from} 
+            timeDate={when} 
+            callFrom={2}/>
       <ListAccount />
       <ShowProfile />
     </Card>

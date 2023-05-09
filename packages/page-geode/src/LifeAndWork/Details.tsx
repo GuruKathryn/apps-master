@@ -57,7 +57,6 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
   const [isShowClaimId, toggleShowClaimId] = useToggle(false);
   const [isShowLinkAddr, toggleShowLinkAddr] = useToggle(false);
   const [isShowHidden, toggleShowHidden] = useToggle(false);
-  //const [toShowBool, toggleToShowBool] = useToggle(false);
 
   const [claimToEndorse, setClaimToEndorse] = useState(['','','','']);
   const [claimToHide, setClaimToHide] = useState(['','','','']);
@@ -66,7 +65,6 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
   const _Obj2 = JSON.parse(objOutput2);
   const claimDetail: ClaimDetail = Object.create(_Obj2);
   
-
   function autoCorrect(arr: string[], str: string): JSX.Element {
     arr.forEach(w => str = str.replaceAll(w, '****'));
     arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '****'));
@@ -85,12 +83,11 @@ const _resetEndorse = useCallback(
 );
 
 const _resetShowHide = useCallback(
-  () => {setClaimToHide(['', '', '', ''])
+  () => {setClaimToHide([])
          toggleShowHide()
-         toggleShowHidden()},
+        },
   []
 )
-
 
 function ListClaims(props:ClaimList): JSX.Element {
   if (claimDetail.ok) {
@@ -99,7 +96,7 @@ function ListClaims(props:ClaimList): JSX.Element {
       <List divided inverted relaxed >
         {claimDetail.ok.filter(_type => _type.claimtype===props.claimIndex ).map((_out, index: number) => 
         <List.Item> 
-          {!_out.show && isShowHidden && (from===_out.claimant) && (<>
+          {!_out.show && (isShowHidden || isShowHide) && (from===_out.claimant) && (<>
               <Label  
                 color='grey'
                 >{isHex(_out.claim) ? autoCorrect(searchWords, hexToString(_out.claim)) : ' '}</Label> {' '}                  
@@ -220,6 +217,7 @@ function ListClaims(props:ClaimList): JSX.Element {
 }
 
 function EndorsementCard(): JSX.Element {
+  try {
   return(<>
         {isShowForm && (<>
         <List>
@@ -247,16 +245,23 @@ function EndorsementCard(): JSX.Element {
             />
           </>)}  
   </>)
+  } catch(e) {
+    console.log(e)
+    return(
+      <>{' - No Claims to Endorse'}</>
+    )
+  }
 }
 
 function HideClaimCard(): JSX.Element {
+  try {
   return(<>
       {isShowHide && (<>
         <List>
           <List.Item>
           <Label color='blue' circular>{'Show'}</Label>
           <Label color='red' circular>{'Hide'}</Label>
-            {t<string>(' Click the Show/Hide Buttons on the Claim to Show/Hide')}
+            {t<string>(' Click the Show/Hide Buttons on the Claim to Show or Hide')}
           </List.Item>
         </List>
         </>)}
@@ -269,98 +274,111 @@ function HideClaimCard(): JSX.Element {
             />
           </>)}  
   </>)
+  }catch(e){
+    console.log(e)
+    return(
+      <>{' There are no claims to Hide/Show.'}</>
+    )
+  }
 }
 
-
 function ToggleCard(): JSX.Element {
-  return(
-    <div>
-    <Table>
-      <Table.Row>
-        <Table.Cell>
-        <Grid columns={5} divided>
-          <Grid.Row>
-            <Grid.Column>
-              <Toggle
-                className=''
-                label={t<string>('Endorse Claims')}
-                onChange={_resetEndorse}
-                value={isShowForm}
-                isDisabled={isShowHide}
-              />
-              <Toggle
-                className=''
-                label={t<string>('Show Endorsements')}
-                onChange={toggleShowEndorse}
-                value={isShowEndorse}
-                isDisabled={isShowForm || isShowHide}
-              />
-            </Grid.Column>
-            {!isAccount && (<>
-              <Grid.Column>
-              <Toggle
-                className=''
-                label={t<string>('Hide/Show Claims')}
-                onChange={_resetShowHide}
-                value={isShowHide}
-                isDisabled={isShowForm}
-              />
-              <Toggle
-                className=''
-                label={t<string>('Show Hidden Claims')}
-                onChange={toggleShowHidden}
-                value={isShowHidden}
-                isDisabled={isShowForm || isShowHide}
-              />
-            </Grid.Column>            
-            </>)}
-            <Grid.Column>
-            <Toggle
-                className=''
-                label={t<string>('Show Link Addresses')}
-                onChange={toggleShowLinkAddr}
-                value={isShowLinkAddr}
-                isDisabled={isShowForm || isShowHide}
-              />
-            <Toggle
-                className=''
-                label={t<string>('Show Claim IDs')}
-                onChange={toggleShowClaimId}
-                value={isShowClaimId}
-                isDisabled={isShowForm || isShowHide}
-              />
-            </Grid.Column>
-        </Grid.Row>
-      </Grid>
-      </Table.Cell>
-      </Table.Row>
-      <Table.Row>
-        <Table.Cell>
-          {isShowForm && <EndorsementCard />}
-
-          {isShowHide && claimDetail.ok[0] && (<>
-            {(from===claimDetail.ok[0].claimant)? (<>
-            <HideClaimCard />
-            </>): (<>
-              <Label color='orange'>{t<string>(' WARNING ')}</Label>
-              {t<string>(" You can't Hide or Show a Claim unless you are the Claim Owner.")}</>)}
-          </>)}
-          {isShowHidden && claimDetail.ok[0] && (<>
-          {(from!=claimDetail.ok[0].claimant) && (<>
-              <Label color='orange'>{t<string>(' WARNING ')}</Label>
-              {t<string>(" This is NOT Your Resume. You can't see hidden claims.")}</>)}
-          </>)}
-          
-        </Table.Cell>
-      </Table.Row>
-    </Table>
-    </div>
-  )
+    try{
+      return(
+        <div>
+        <Table>
+          <Table.Row>
+            <Table.Cell>
+            <Grid columns={5} divided>
+              <Grid.Row>
+                <Grid.Column>
+                  <Toggle
+                    className=''
+                    label={t<string>('Endorse Claims')}
+                    onChange={_resetEndorse}
+                    value={isShowForm}
+                    isDisabled={isShowHide}
+                  />
+                  <Toggle
+                    className=''
+                    label={t<string>('Show Endorsements')}
+                    onChange={toggleShowEndorse}
+                    value={isShowEndorse}
+                    isDisabled={isShowForm || isShowHide}
+                  />
+                </Grid.Column>
+                {!isAccount && (<>
+                  <Grid.Column>
+                  <Toggle
+                    className=''
+                    label={t<string>('Hide/Show Claims')}
+                    onChange={_resetShowHide}
+                    value={isShowHide}
+                    isDisabled={isShowForm}
+                  />
+                  <Toggle
+                    className=''
+                    label={t<string>('Show Hidden Claims')}
+                    onChange={toggleShowHidden}
+                    value={isShowHidden}
+                    isDisabled={isShowForm || isShowHide}
+                  />
+                </Grid.Column>            
+                </>)}
+                <Grid.Column>
+                <Toggle
+                    className=''
+                    label={t<string>('Show Link Addresses')}
+                    onChange={toggleShowLinkAddr}
+                    value={isShowLinkAddr}
+                    isDisabled={isShowForm || isShowHide}
+                  />
+                <Toggle
+                    className=''
+                    label={t<string>('Show Claim IDs')}
+                    onChange={toggleShowClaimId}
+                    value={isShowClaimId}
+                    isDisabled={isShowForm || isShowHide}
+                  />
+                </Grid.Column>
+            </Grid.Row>
+          </Grid>
+          </Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              {isShowForm && <EndorsementCard />}
+              {isShowHide && claimDetail.ok[0] && (<>
+                {(from===claimDetail.ok[0].claimant)? (<>
+                <HideClaimCard />
+                </>): (<>
+                  <Label color='orange'>{t<string>(' WARNING ')}</Label>
+                  {t<string>(" You can't Hide or Show a Claim unless you are the Claim Owner.")}</>)}
+              </>)}
+              {isShowHidden && claimDetail.ok[0] && (<>
+              {(from!=claimDetail.ok[0].claimant) && (<>
+                  <Label color='orange'>{t<string>(' WARNING ')}</Label>
+                  {t<string>(" This is NOT Your Resume. You can't see hidden claims.")}</>)}
+              </>)}
+              
+            </Table.Cell>
+          </Table.Row>
+        </Table>
+        </div>
+          )
+    }catch(e){
+      console.log(e)
+      return(
+        <>
+        {'- Make Claims for this Account.'}
+        </>
+      )        
+    }
+  
 }
 
 function ListAccount(): JSX.Element {
 try {
-  //setIsClaim(true)
   return (
     <div>
       <Table>
@@ -383,7 +401,6 @@ try {
   )
 } catch(error) {
   console.error(error)
-  //setIsClaim(false)
   return(
     <>
     <strong>{t<string>('There are no claims available.')}</strong>

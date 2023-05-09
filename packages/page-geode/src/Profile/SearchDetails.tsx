@@ -7,7 +7,7 @@ import { useTranslation } from '../translate';
 import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Table, Label, Image } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 
@@ -43,9 +43,9 @@ interface Props {
   ok: ProfileObj[]
   }
 
-  type ProfileSearchIndex = {
-  index: number
-  }
+  // type ProfileSearchIndex = {
+  // index: number
+  // }
 
   
 function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
@@ -68,15 +68,33 @@ function SearchDetails ({ className = '', onClear, isAccount, outcome: { from, m
         return (
         <>{t<string>(str)}</>)
     }
-      
+    
+    function ListAccount(): JSX.Element {
+      return(
+          <div>
+            <Table>
+              <Table.Row>
+              <Table.Cell>
+              <Button
+                  icon='times'
+                  label={t<string>('Close')}
+                  onClick={onClear}
+                />
+              </Table.Cell>
+              </Table.Row>
+            </Table>
+          </div>
+      )}
+
+
+
+
 function ShowProfile(): JSX.Element {
 try{
-  
   return(
     <div>
     {profileDetail.ok.filter(_t => !_t.makePrivate).map((_out, index: number) => 
       <div>
-      <Card>
       <Table stretch>
       <Table.Header>
         <Table.Row>
@@ -211,18 +229,7 @@ try{
             <br />    
         </Table.Cell>
       </Table.Row>
-      <Table.Row>
-        <Table.Cell verticalAlign='top'>
-        </Table.Cell>
-        <Table.Cell verticalAlign='top'>
-        </Table.Cell>
-      </Table.Row>
-      <Table.Row>
-        <Table.Cell verticalAlign='top'>
-        </Table.Cell>
-      </Table.Row>
   </Table>
-  </Card>
   </div>   
   )
 }
@@ -232,7 +239,7 @@ try{
   //setIsClaim(false)
   return(
     <div>
-      <Card>
+
     <Table>
       <Table.Row>
         <Table.Cell>
@@ -245,14 +252,17 @@ try{
         </Table.Cell>
       </Table.Row>
     </Table>
-    </Card>
+
     </div>
   )
 }}
 
 return (
     <StyledDiv className={className}>
+    <Card>
+    <ListAccount />
     <ShowProfile />
+    </Card>
     </StyledDiv>
   );
 }

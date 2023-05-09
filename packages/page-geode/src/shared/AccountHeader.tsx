@@ -53,29 +53,30 @@ function ListAccount(): JSX.Element {
         </Item.Content>
         {isShowInfo && (
               <>
-                {callFrom===1 ? (<>
-                  <strong>{t<string>(' Key: ')}</strong>
+                <strong>{t<string>(' Key: ')}</strong>
+                {(callFrom===1 || callFrom===2) && (<>
                 {t<string>(' Link to See More: ')}
                 <Label circular color='orange'> Link </Label>  
+                </>)}
+                {callFrom===1 && (<>
                 {t<string>(' No. of Endorsements: ')}
                 <Label circular color='blue'>{'#'}</Label>  
                 {t<string>(' Endorse a Claim: ')}
                 <Badge icon='thumbs-up' color='orange' /> 
-                {t<string>(' Hide/Show a Claim: ')}
+                {t<string>(' Copy a Claim ID: ')}
                 <Badge icon='copy' color='orange' /> 
-                </>) : 
-                (<>
-                <strong>{t<string>(' Key: ')}</strong>
-                {t<string>(' Link to See More: ')}
-                <Label circular color='orange'> Link </Label>  
+                </>)}
+                {callFrom===2 && (<>
+                {t<string>(' Copy a Address: ')}
+                <Badge icon='copy' color='orange' /> 
+                </>)}
+                {callFrom===3 && (<>
                 {t<string>(' No. of Endorsements: ')}
                 <Label circular color='blue'>{'#'}</Label>  
                 {t<string>(' See Replies: ')}
                 <Label color='blue'>{'Reply'}</Label>  
                 {t<string>(' Copy Message ID: ')}
-                <CopyInline value={' '} label={''}/>
-                
-                
+                <CopyInline value={' '} label={''}/>                
                 </>)}
               </>
             )}
@@ -84,7 +85,6 @@ function ListAccount(): JSX.Element {
     )
   } catch(error) {
     console.error(error)
-    //setIsClaim(false)
     return(
       <div>
           <strong>{t<string>('There are no posts available.')}</strong>

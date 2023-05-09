@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
+import { Toggle, Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
 import { useTranslation } from '../translate';
 //import { formatNumber } from '@polkadot/util';
 import JSONinfo from '../shared/geode_profile_info.json';
@@ -57,16 +57,20 @@ function Summary (): React.ReactElement {
       </>)}      
       <br /><br />
 
-    <Badge
-      icon={(isShowMore)? 'info':'info'}
-           color={(isShowMore) ? 'blue' : 'gray'}
-           onClick={toggleShowMore}/> 
-    <strong>{t<string>('More')}</strong>
+      {isShowInfo && (<>
+    <Toggle
+            className=''
+            label={t<string>('Recommended Accounts ')}
+            onChange={toggleShowMore}
+            value={isShowMore}
+          />
       {isShowMore && (<>
-        {':'}{t<string>(info[2])}{' '}
+        <LabelHelp help={t<string>('Click on the Icon or Open the Side Car for Copying the Account Address.')} />
+        {' '}{t<string>(info[2])}{' '}
         {' '}{showAccount(info[3])}
         {' '}{showAccount(info[4])}
-      </>)}
+      </>)}    
+    </>)}
     </Card>
     </div>
   );

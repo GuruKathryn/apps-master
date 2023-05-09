@@ -51,6 +51,7 @@ function Summary (): React.ReactElement {
             value={isShowMore}
           />
       {isShowMore && (<>
+        <LabelHelp help={t<string>('Click on the Icon or Open the Side Car for Copying the Account Address.')} />
         {' '}{t<string>(info[2])}{' '}
         {' '}{showAccount(info[3])}
         {' '}{showAccount(info[4])}
