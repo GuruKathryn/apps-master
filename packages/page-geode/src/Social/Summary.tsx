@@ -4,22 +4,17 @@
 
 import React from 'react';
 
-import { Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
+import { Toggle, Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
 import { useTranslation } from '../translate';
 //import { formatNumber } from '@polkadot/util';
 import JSONinfo from '../shared/geode_social_info.json';
 import { useToggle } from '@polkadot/react-hooks';
 
 
-// interface Props {
-//   className?: string;
-//   hashes?: string[];
-// }
-
 function Summary (): React.ReactElement {
   const { t } = useTranslation();
   const info: string[] = JSONinfo;
-  const [isShowInfo, toggleShowInfo] = useToggle(true)
+  //const [isShowInfo, toggleShowInfo] = useToggle(true)
   const [isShowMore, toggleShowMore] = useToggle(false)
 
   function showAccount(str: string): JSX.Element { 
@@ -47,26 +42,23 @@ function Summary (): React.ReactElement {
       </CardSummary> 
     </SummaryBox>
     <Card> 
-    <Badge
-      icon={'info'}
-           color={(isShowInfo) ? 'blue' : 'gray'}
-           onClick={toggleShowInfo}/> 
+    <Badge icon={'info'} color={'blue'}/> 
       <strong> {t<string>('Info for Social')} </strong>
-      {isShowInfo && (<>
-        {': '}{t<string>(info[0]+info[1])}       
-      </>)}      
+      {': '}{t<string>(info[0]+info[1])}             
       <br /><br />
-
-    <Badge
-      icon={(isShowMore)? 'info':'info'}
-           color={(isShowMore) ? 'blue' : 'gray'}
-           onClick={toggleShowMore}/> 
-    <strong>{t<string>('More')}</strong>
+    <Toggle
+            className=''
+            label={t<string>('Recommended Accounts ')}
+            onChange={toggleShowMore}
+            value={isShowMore}
+          />
       {isShowMore && (<>
-        {':'}{t<string>(info[2])}{' '}
+        <LabelHelp help={t<string>('Click on the Icon or Open the Side Car for Copying the Account Address.')} />
+        {' '}{t<string>(info[2])}{' '}
         {' '}{showAccount(info[3])}
         {' '}{showAccount(info[4])}
-      </>)}
+      </>)}    
+    
     </Card>
     </div>
   );

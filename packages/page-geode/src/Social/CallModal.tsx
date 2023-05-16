@@ -1,5 +1,6 @@
 // Copyright 2017-2022 @polkadot/app-contracts authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+import { Segment, Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -10,10 +11,10 @@ import type { CallResult } from './types';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
+import { Expander, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
-import { isHex, hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
+import { isHex, stringToHex, hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
 
 
 import { InputMegaGas, Params } from '../shared';
@@ -24,10 +25,10 @@ import { getCallMessageOptions } from './util';
 
 interface Props {
   className?: string;
-  claimID?: string;
-  claimant?: string;
-  claim?: string;
-  showBool?: boolean;
+  messageId: string;
+  fromAcct?: string;
+  username?: string;
+  postMessage: string;
   contract: ContractPromise;
   messageIndex: number;
   onCallResult?: (messageIndex: number, result?: ContractCallOutcome | void) => void;
@@ -37,7 +38,7 @@ interface Props {
 
 const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 
-function CallModal ({ className = '', claimID, claimant, claim, showBool, contract, messageIndex, onCallResult, onChangeMessage, onClose }: Props): React.ReactElement<Props> | null {
+function CallModal ({ className = '', messageId, fromAcct, username, postMessage, contract, messageIndex, onCallResult, onChangeMessage, onClose }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
   const message = contract.abi.messages[messageIndex];
@@ -48,19 +49,27 @@ function CallModal ({ className = '', claimID, claimant, claim, showBool, contra
   const [outcomes, setOutcomes] = useState<CallResult[]>([]);
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   let [params, setParams] = useState<unknown[]>([]);
+  
   const [isViaCall, toggleViaCall] = useToggle();
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
+  const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000';
+  const isReply: boolean = (messageId===zeroMessageId)? false: true; 
+  // NOTE!:
+  // messageIndex === 0 :Post or Reply
+  // messageIndex === 2 :Endorse a Public Feed Post
 
+  // for test
   const isShow: boolean = false;
-  const isShowParams: boolean = false;
-  //const myValue = claimID;
+  const isShowParams: boolean = true;
 
   function hextoHuman(_hexIn: string): string {
     const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
     return(_Out)
   }
+
+
 
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -139,31 +148,62 @@ function CallModal ({ className = '', claimID, claimant, claim, showBool, contra
     [accountId, contract.query, message, messageIndex, onCallResult, outcomes, params, value, weight]
   );
 
+  // const _onClearOutcome = useCallback(
+  //   (outcomeIndex: number) =>
+  //     () => setOutcomes([...outcomes.filter((_, index) => index !== outcomeIndex)]),
+  //   [outcomes]
+  // );
+
+ 
+
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));
 
   return (
+    <>
     <Modal
       className={[className || '', 'app--contracts-Modal'].join(' ')}
-      header={t<string>('Geode Call Card')}
+      header={(messageIndex===2)? 
+              t<string>('Geode - Make an Endorsement'):
+              (postMessage)? t<string>('Geode - Make a Reply'):
+                             t<string>('Geode - Make a Post')}
       onClose={onClose}
     >
       <Modal.Content>
-        {messageIndex !== null && messageIndex === 5 && (<>
-          <h2><strong>{t<string>('Life and Work - Endorse a Claim')}</strong></h2><br />
-            <strong>{t<string>('Instructions for Endorsing Claims: ')}</strong><br />
-            {'(1) '}{t<string>('Make Sure the (account to use) is NOT the owner of the claims')}<br /> 
-            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}<br /><br />
+      <Expander 
+         className='paramsExpander'
+         isOpen={true}
+         summary={'Information: '}>
+        {messageIndex !== null && messageIndex === 2 && (<>
+          
+          <h2><strong>{t<string>('Social - Endorse a Post')}</strong></h2><br />
+            <strong>{t<string>('Instructions for Endorsing a Post: ')}</strong><br />
+            {'(1) '}{t<string>('Make Sure the (account to use) is NOT the owner of the Post')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
             {t<string>('⚠️ Please Note: You can not endorse your own claims.')}
           </>)}
-          {messageIndex !== null && messageIndex === 6 && (<>
-            <h2><strong>{t<string>('Life and Work - Hide and Show Your Claims')}{' '}</strong></h2><br />
-            <strong>{t<string>('Instructions for Hiding and Showing Claims: ')}</strong><br />
-            {'(1) '}{t<string>('Make Sure the (account to use) is the owner of the claims')}<br /> 
-            {'(2) '}{t<string>('Set the (setShow: bool) field to either no (Hide) or yes (Show)')}<br />
-            {'(3) '}{t<string>('Click Submit Button to sign and submit this transaction')}<br /><br />
-            {t<string>('⚠️ Please Note: You must be the account owner to show or hide a claim.')}<br />
+          {messageIndex !== null && messageIndex === 0 && !postMessage && (<>
+            <h2><strong>{t<string>('Social - Make a Post ')}{' '}</strong></h2><br />
+            <strong>{t<string>('Instructions for Posting: ')}</strong><br />
+            {'(1) '}{t<string>('Call from Account - Your Account for Post Originator. ')}<br /> 
+            {'(2) '}{t<string>('Enter your Post message in (newMessage) text field. ')}<br />
+            {'(3) '}{t<string>('Photo or YouTube Link -  Enter a valid Photo or YouTube Link.')}<br />
+            {'(4) '}{t<string>('Website or Document Link - Enter your Website or Document Link for further information.')}<br />
+            <br /><br />
+            {t<string>("⚠️ Please Note: Don't Forget to Click Submit when done! ")}<br /><br />
           </>)}
+          {messageIndex !== null && messageIndex === 0 && postMessage && (<>
+            <h2><strong>{t<string>('Social - Reply to a Post ')}{' '}</strong></h2><br />
+            <strong>{t<string>('Instructions for Replying to a Post: ')}</strong><br />
+            {'(1) '}{t<string>('Call from Account - Your Account for Post Originator. ')}<br /> 
+            {'(2) '}{t<string>('Enter your Post message in (newMessage) text field. ')}<br />
+            {'(3) '}{t<string>('Photo or YouTube Link -  Enter a valid Photo or YouTube Link.')}<br />
+            {'(4) '}{t<string>('Website or Document Link - Enter your Website or Document Link for further information.')}<br />
+            <br /><br />
+            {t<string>("⚠️ Please Note: Don't Forget to Click Submit when done! ")}<br /><br />
+          </>)}
+        </Expander>
         
         {isShow && (<>
           <InputAddress
@@ -202,41 +242,115 @@ function CallModal ({ className = '', claimID, claimant, claim, showBool, contra
               value={messageIndex}
             />            
             </>)}
+        {isShow && (
+        <>
+          <Expander 
+            className='paramsExpander'
+            isOpen={false}
+            summary={'See Params List'}>
             {isShowParams && (<>
               <Params
               onChange={setParams}
-              params={
-                message
-                  ? message.args
-                  : undefined
-              }
+              params={message? message.args: undefined}
               registry={contract.abi.registry}
             />            
             </>)}
-          </>
+          </Expander>   
+        </>
+        )}
+        </>
         )}
 
-        {messageIndex===5 ? (<>
-          {'Claim ID : '}{JSON.stringify(params = [claimID])}
-          </>) : (<>
-          {'Claim ID : '}{JSON.stringify(params = [claimID, showBool])}
+
+        {messageIndex===0 && (<>
+        {isReply? (
+        <>
+        {t<string>('Reply Message: ')}
+          <Input            
+            label='' 
+            type="text"
+            value={params[0]}
+            onChange={(e) => {
+              params[0] = e.target.value;
+              params[3] = messageId;
+              setParams([...params]);
+            }}
+          />
+          </>
+        ):
+        <>
+          {t<string>('Post Message: ')}
+          <Input  
+          label='' 
+          type="text"
+          //value={params[0]}
+          onChange={(e) => {
+            params[0] = stringToHex(e.target.value);
+            params[3] = messageId;
+            setParams([...params]);
+          }}/>
+        </>}
+        {t<string>('Photo or YouTube Link: ')}
+        <Input  
+            inverted
+            label=''
+            type='text'
+                //placeholder='' 
+                //name='postPhoto'
+                //value={postPhoto}
+                //onChange={e => setPostPhoto(e.target.value.trim())}
+            onChange={(e) => {
+                  params[1] = stringToHex(e.target.value.trim());
+                  setParams([...params]);}}/>
+        {t<string>('WebSite Link: ')}
+        <Input  
+            inverted
+            label=''
+            type='text'
+                //placeholder='' 
+                //name='postWebsite'
+                //value={postWebSite}
+                //onChange={e => setPostWebSite(e.target.value.trim())}
+                onChange={(e) => {
+                  params[2] = stringToHex(e.target.value.trim());
+                  setParams([...params]);}}/>
         </>)}
-    
-        
-        <h3>
-        <strong>{' Claimant: '}</strong>
-        {claimant && (
+        <Expander 
+            className='outputExpander'
+            isOpen={false}
+            summary={'See Outputs'}>
+ 
+            {'Message Index: '}{messageIndex}<br />
+            {JSON.stringify(params[0])}<br />
+            {JSON.stringify(params[1])}<br />
+            {JSON.stringify(params[2])}<br />
+            {JSON.stringify(params[3])}<br />
+        </Expander>
+
+        {messageIndex===2 && (<>
+          <br />{'Message ID : '}{JSON.stringify(params=[messageId])}
+          <h3>
+        <strong>{' Owner of Post: '}</strong>
+        {fromAcct && (
               <>
-              <IdentityIcon value={claimant} />
-              <AccountName value={claimant} withSidebar={true}/>
+              <IdentityIcon size={32} value={fromAcct} />
+              <AccountName value={fromAcct} withSidebar={true}/>
+              </>)}        
+        {username && (
+              <>
+              {' @'}{hextoHuman(username)}
+              </>)}  
               <br /><br />
-        </>)}  
-        {claim && (<>
-          <strong>{' Claim: '}{hextoHuman(claim)}</strong> <br />     
+        {postMessage && (<>
+          <strong>{' Post: '}{hextoHuman(postMessage)}</strong> <br />     
         </>)} 
         </h3>
-        <br />
- 
+        <br />        
+        </>)}
+
+
+         
+      
         {message.isPayable && (
           <InputBalance
             //help={t<string>('The allotted value for this contract, i.e. the amount transferred to the contract as part of this call.')}
@@ -279,7 +393,7 @@ function CallModal ({ className = '', claimID, claimant, claim, showBool, contra
             <Button
               icon='sign-in-alt'
               isDisabled={!isValid}
-              label={t<string>('Read')}
+              label={t<string>('View')}
               onClick={_onSubmitRpc}
             />
           )
@@ -289,14 +403,15 @@ function CallModal ({ className = '', claimID, claimant, claim, showBool, contra
               extrinsic={execTx}
               icon='sign-in-alt'
               isDisabled={!isValid || !execTx}
-              label={t('Execute')}
+              label={t('Submit')}
               onStart={onClose}
             />
           )
         }
       </Modal.Actions>
     </Modal>
-  );
+
+  </>);
 }
 
 export default React.memo(styled(CallModal)`

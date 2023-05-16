@@ -2,6 +2,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
+import { Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -12,7 +13,7 @@ import type { CallResult } from './types';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton, LabelHelp } from '@polkadot/react-components';
+import { Expander, Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton, LabelHelp } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
@@ -71,16 +72,17 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [isCalled, toggleIsCalled] = useToggle(false);
   const [isPubPost, togglePubPost] = useToggle();
   const [isPaidPost, togglePaidPost] = useToggle();
-  const [isEndorse, toggleEndorse] = useToggle();
+  //const [isEndorse, toggleEndorse] = useToggle();
   //const [isGetReply, toggleGetReply] = useToggle();
   //const [isShowEndorse, toggleShowEndorse] = useToggle(false);
   //const [isShowMsgID, toggleShowMsgID] = useToggle(false);
   //const [isShowInterest, toggleShowInterest] = useToggle(false);
   const [isPaidEndorse, togglePaidEndorse] = useToggle(false);
-  const [isShowInfo, toggleShowInfo] = useToggle(false);
+  //const [isShowInfo, toggleShowInfo] = useToggle(false);
   const [isStats, toggleStats] = useToggle(false);
   //const isTestData: boolean = false; //takes out code elements we only see for test
   const isShowDeveloper: boolean = false;
+  const isNoPost: boolean = false;
   
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -168,26 +170,27 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
-  const isClosed = (isCalled && messageIndex === 14);
+  const isClosed = (isCalled && messageIndex === 14 );
   const _help: string[] = JSONhelp;
   const _note: string[] = JSONnote;
   const _title: string[] = JSONTitle;
   const _tierOne: string[] = JSONTier1Help;
   const _tierTwo: string[] = JSONTier2Help;
 
+  
   return (
     <Card >
         <h2>
-        <Badge
-          icon='info'
-          color={(isShowInfo) ? 'blue' : 'gray'}
-          onClick={toggleShowInfo}/> 
+        <Badge icon='info' color={'blue'} /> 
         <strong>{t<string>(' Geode Social ')}</strong>{t<string>(_title[messageIndex])}
         </h2>
-        {isShowInfo && (<>
-          <br />{t<string>(_help[messageIndex])}<br /><br />
-                {t<string>(_note[messageIndex])}<br />
-          </>)}
+        <Expander 
+            className='viewInfo'
+            isOpen={true}
+            summary={<strong>{t<string>('Info')}</strong>}>
+            {t<string>(_help[messageIndex])}<br /><br />
+            {t<string>(_note[messageIndex])}
+        </Expander>
         {isTest && (
           <InputAddress
           //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
@@ -198,10 +201,21 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           />
         )}
         <><br /><br />
-        {!isClosed && messageIndex < 15 && messageIndex!=12 && (
-          <><Badge color='blue' icon='thumbs-up'/>
-          {t<string>(_tierOne[messageIndex])}</>
-        )}
+        <Expander 
+            className='viewPosts'
+            isOpen={false}
+            summary={'More Info'}>
+            {!isClosed && messageIndex < 15 && messageIndex!=12 && (
+            <><Badge color='blue' icon='info'/>
+            {t<string>(_tierOne[messageIndex])}</>
+            )}<br />
+            {messageIndex < 14 && 
+            messageIndex!=9 && messageIndex!=10 && (
+              <><Badge color='blue' icon='info'/>
+              {t<string>(_tierTwo[messageIndex])}</>
+            )}
+
+        </Expander>
         </>
         {!isClosed && (
         <>
@@ -221,7 +235,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         />
         </>
         )}  
-
+      
         {messageIndex !== null && (
           <>
             {isTest && (
@@ -238,12 +252,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />              
             </>
             )}
-            {messageIndex < 14 && messageIndex!=8 && 
-            messageIndex!=9 && messageIndex!=10 && (
-              <><Badge color='blue' icon='thumbs-up'/>
-              {t<string>(_tierTwo[messageIndex])}</>
-            )}
-            <Params
+            
+            {messageIndex!=8 && (<>
+              <Params
               onChange={setParams}
               params={
                 message
@@ -251,9 +262,52 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                   : undefined
               }              
               registry={contract.abi.registry}
-            />
+            />            
+            </>)}
+            
           </>
         )}
+
+      {messageIndex===8 && (<>
+               <Input
+        label={t<string>('Username: ')} 
+        type="text"
+        value={params[0]}
+        onChange={(e) => {
+          params[0] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        <Input
+        label={t<string>('My Interests: ')} 
+        type="text"
+        value={params[1]}
+        onChange={(e) => {
+          params[1] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        <Input
+        label={t<string>('Number of Posts to Show: ' )} 
+        type="text"
+        value={params[2]}
+        onChange={(e) => {
+          params[2] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        <Input
+        label={t<string>('Number of Paid Posts to Show: ')} 
+        type="text"
+        value={params[3]}
+        onChange={(e) => {
+          params[3] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+    </>)}
+
+
         {message.isPayable && (
           <InputBalance
             //help={t<string>('The allotted value for this contract, i.e. the amount transferred to the contract as part of this call.')}
@@ -291,6 +345,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}        
         </>
         )}
+      
       <Card>
       {!isClosed && (
         <>
@@ -317,7 +372,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}
         {isMenu && (
         <>
-          {messageIndex===9 && (
+          {isNoPost && messageIndex===9 && (
             <>{' | '}
             <Button
             icon={(isPubPost) ? 'minus' : 'plus'}
@@ -337,14 +392,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />
           </>
           )}
-          {messageIndex===9 && (<>
-            <Button
-            icon={(isEndorse) ? 'minus' : 'plus'}
-            //isDisabled={!isValid}
-            label={t<string>('Endorse')}
-            onClick={toggleEndorse} 
-            />          
-          </>)}   
           {messageIndex===10 && (<>
             <Button
             icon={(isPaidEndorse) ? 'minus' : 'plus'}
@@ -383,13 +430,11 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             isPost={false}
           /></>
         )}
-        {isEndorse && (
-          <><CallEndorse
-          isPost={true} /></>
-        )}
+        
         {isPaidEndorse && (
           <><CallEndorse
-          isPost={false} /></>
+          isPost={false}
+          /></>
         )}
         {isStats && (
           <><CallStats /></>
@@ -404,6 +449,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 //isShowEndorsers={isShowEndorse}
                 //isShowMessageID={isShowMsgID}
                 outcome={outcome}
+                onClose={isCalled}
               />
               {isTest && (<>{JSON.stringify(outcome.output)}</>)}
               </>
@@ -468,6 +514,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             ))}
             </div>
         )}
+        
         </Card>
   );
 }

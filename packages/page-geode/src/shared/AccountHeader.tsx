@@ -4,7 +4,7 @@
 import React from 'react';
 import { useTranslation } from '../translate';
 import styled from 'styled-components';
-import { Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Toggle, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Item, Label } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
@@ -30,10 +30,6 @@ function ListAccount(): JSX.Element {
         <Item.Content>
           <Item.Header>
           <h2>
-          <Badge
-                icon={'info'}
-                color={(isShowInfo) ? 'blue' : 'gray'}
-                onClick={toggleShowInfo}/>
 
              <IdentityIcon size={32} value={fromAcct} />
              {' '}
@@ -51,9 +47,12 @@ function ListAccount(): JSX.Element {
           
           </Item.Description>
         </Item.Content>
+        <br />
+        <Toggle
+            className='info-toggle'
+            label={<><strong>{t<string>(' Key: ')}</strong>
         {isShowInfo && (
               <>
-                <strong>{t<string>(' Key: ')}</strong>
                 {(callFrom===1 || callFrom===2) && (<>
                 {t<string>(' Link to See More: ')}
                 <Label circular color='orange'> Link </Label>  
@@ -71,15 +70,28 @@ function ListAccount(): JSX.Element {
                 <Badge icon='copy' color='orange' /> 
                 </>)}
                 {callFrom===3 && (<>
+                {t<string>(' Link to See More: ')}
+                <Label circular color='orange'> Link </Label>
                 {t<string>(' No. of Endorsements: ')}
                 <Label circular color='blue'>{'#'}</Label>  
                 {t<string>(' See Replies: ')}
-                <Label color='blue'>{'Reply'}</Label>  
+                <Label color='orange' circular >{'Replies #'}</Label>  
+                {t<string>(' Endorse a Post: ')}
+                <Badge icon='thumbs-up' color='blue' />
                 {t<string>(' Copy Message ID: ')}
-                <CopyInline value={' '} label={''}/>                
+                <CopyInline value={' '} label={''}/>  
+                {t<string>('Reply to a Post')}
+                <Label color='orange' circular>{'Reply'}</Label>              
                 </>)}
               </>
             )}
+            
+            
+            
+                      </>}
+            onChange={toggleShowInfo}
+            value={isShowInfo}
+            />
 
       </div>
     )

@@ -3,18 +3,21 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //import React from 'react';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
 import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Button, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Expander, Toggle, Button, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { List, Table, Label, Image, Divider } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
 import AccountHeader from '../shared/AccountHeader';
 
 import JSONprohibited from '../shared/geode_prohibited.json';
+import CallEndorse from './CallEndorse';
+import CallPost from './CallPost';
+
 //import { useToggle } from '@polkadot/react-hooks';
 
 interface Props {
@@ -23,7 +26,8 @@ interface Props {
     //isShowEndorsers?: boolean;
     //isShowMessageID?: boolean;
     outcome: CallResult;
-    //onClose: () => void;
+    onClose: boolean;
+    //called: boolean;
   }
   
   type MessageObj = {
@@ -50,17 +54,24 @@ interface Props {
   ok: FeedObj
   }
   
-function FeedDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function FeedDetails ({ className = '', onClear, onClose, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
     const searchWords: string[] = JSONprohibited;
     
-    const isReply: boolean = true;
-    const isReplyToReply: boolean = false;
-
-    const [feedIndex, setFeedIndex] = useState(0);
+    //const isReply: boolean = true;
+    //const isReplyToReply: boolean = false;
+    const isTest: boolean = true;
+    //const [endorseIndex, setEndorseIndex] = useState(0);
+    
+    //const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
-
+    const [postToEndorse, setPostToEndorse] = useState(['','','','']);
+    
+    const [isEndorse, setEndorse] =useState(false);
+    const [isReply, setReply] = useState(false);
+    const [isPost, setPost] = useState(false);
+    //const [isCalled, setCalled] = useState(false);
     const [isShowEndorsers, toggleShowEndorsers] = useToggle(false);
     const [isShowMsgID, toggleShowMsgID] = useToggle(false);
 
@@ -128,13 +139,73 @@ function hextoHuman(_hexIn: string): string {
   return(_Out)
 }
 
+const _testCard = () => {
+return(<>
+                    {isTest && (<>
+                      <Expander 
+                        className='outputExpander'
+                        isOpen={false}
+                        summary={'See Outputs'}>
+
+                      {'cleared: '}
+                      <Badge icon={onClose? 'thumbs-up': 'thumbs-down'}
+                             color={onClose? 'green': 'red'} /> 
+                      {'endorse: '}
+                      <Badge icon={isEndorse? 'thumbs-up': 'thumbs-down'}
+                             color={isEndorse? 'blue': 'red'} /> 
+                      {'reply: '}
+                      <Badge icon={isReply? 'copy': 'thumbs-down'}
+                             color={isReply? 'blue': 'red'} /> 
+                      {'post: '}
+                      <Badge icon={isPost? 'info': 'thumbs-down'}
+                             color={isPost? 'blue': 'red'} /> 
+                      {postToEndorse[0]}<br />
+                      {postToEndorse[1]}<br />
+                      {postToEndorse[2]}<br />
+                      {postToEndorse[3]}<br />            
+                      </Expander></>)
+                    }
+</>)}
+
+const _reset = useCallback(
+  () => {setEndorse(false);
+         setReply(false);
+         setPost(false);
+        },
+  []
+)
+
+const _makeEndorse = useCallback(
+  () => {setEndorse(true);
+         setReply(false);
+         setPost(false);
+        },
+  []
+)
+
+const _makePost = useCallback(
+  () => {setEndorse(false);
+    setReply(false);
+    setPost(true);
+   },
+[]
+)
+
+const _makeReply = useCallback(
+  () => {setEndorse(false);
+    setReply(true);
+    setPost(false);
+   },
+[]
+)
+
 function ShowFeed(): JSX.Element {
       setCountPost(0)
       try {
         const maxIndex: number = feedDetail.ok.maxfeed>0 ? feedDetail.ok.maxfeed: 10;
         return(
           <div>
-            <div>
+          
             <Table stretch>
             <Table.Header>
               <Table.Row>
@@ -144,6 +215,12 @@ function ShowFeed(): JSX.Element {
                   label={t<string>('Close')}
                   onClick={onClear}
                 />
+                <Button
+                  icon={isPost? 'minus': 'plus'}
+                  label={t<string>('Post')}
+                  onClick={() => {!isPost? _makePost(): _reset()}}
+                />
+
                 {t<string>(' Number of Posts: ')}<strong>{countPost}</strong>
                 {t<string>(' |  Number of Posts to show: ')}<strong>{maxIndex}</strong>
                 <LabelHelp help={t<string>('Go to User Settings to change the number of Posts to show.')} />
@@ -151,16 +228,22 @@ function ShowFeed(): JSX.Element {
             </Table.Row>
             <Table.Row>
                 <Table.HeaderCell>
-                {' '}<Badge
-                icon={(isShowEndorsers) ? 'arrow-up' : 'arrow-down'}
-                color={(isShowEndorsers) ? 'blue' : 'gray'}
-                onClick={toggleShowEndorsers}/> 
-                {t<string>(' Show Endorsers | ')}
-                <Badge
-                icon={(isShowMsgID) ? 'arrow-up' : 'arrow-down'}
-                color={(isShowMsgID) ? 'blue' : 'gray'}
-                onClick={toggleShowMsgID}/> 
-                {t<string>(' Show Message IDs ')}
+                
+                 
+                  <Toggle
+                    className=''
+                    label={<> <Badge icon='check' color={isShowEndorsers? 'blue': 'gray'}/> {t<string>('Show Endorsers ')} </>}
+                    onChange={toggleShowEndorsers}
+                    value={isShowEndorsers}
+                  />
+                
+                  <Toggle
+                    className=''
+                    label={<> <Badge icon='copy' color={isShowMsgID? 'orange': 'gray'}/> {t<string>('Show Message IDs ')} </>}
+                    onChange={toggleShowMsgID}
+                    value={isShowMsgID}
+                  />
+
                 {feedDetail.ok.blocked.length>0 && (
                   <>
                   {' | '}
@@ -177,8 +260,6 @@ function ShowFeed(): JSX.Element {
                     </>
                   )}
                   </>)}
-
-
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -204,17 +285,22 @@ function ShowFeed(): JSX.Element {
                               {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
                               {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                               {' '}{timeStampToDate(_feed.timestamp)}{' '}
-                              {' '}{(_feed.replyCount>0)? (
-                              
-                              <Label  as='a' 
-                                color={(isReply && (index === feedIndex)) ? 'blue' : 'grey'}
-                                onClick={() => setFeedIndex(index)}>
-
-                                {t<string>(' Replies ')}{_feed.replyCount}
-                              </Label>) : (
-                              <Label color='grey'>{t<string>(' Replies 0')}</Label>)}{t<string>(' ')}
-                              <CopyInline value={_feed.messageId} label={''}/>
+                              {' '}
+              
+                              <Badge 
+                                  icon='thumbs-up' 
+                                  color={'blue'}
+                                  onClick={() => {<>
+                                    {setPostToEndorse([
+                                      _feed.messageId,
+                                      _feed.username,
+                                      _feed.fromAcct,
+                                      _feed.message
+                                    ])}
+                                    {!isEndorse? _makeEndorse(): _reset()}</>
+                                  }}/>
                      </h3>
+
                      {isShowEndorsers && _feed.endorserCount > 0 && (
                     <>
                     <List divided inverted >
@@ -228,7 +314,9 @@ function ShowFeed(): JSX.Element {
                     )}
                 
                     {isShowMsgID && 
-                      (<>{(_feed.replyTo != zeroMessageId)
+                      (<>
+                      <CopyInline value={_feed.messageId} label={''}/>
+                      {(_feed.replyTo != zeroMessageId)
                       ? (<><i>{t<string>('reply to: ')}{_feed.replyTo}</i><br />
                            <i>{t<string>('message Id: ')}{_feed.messageId}</i></>) 
                       : (<><i>{t<string>('message Id: ')}{_feed.messageId}</i></>)
@@ -240,7 +328,7 @@ function ShowFeed(): JSX.Element {
                         {renderLink(_feed.link)}
                 {(_feed.link != '0x') ? (
                 <>
-                    {autoCorrect(searchWords, hextoHuman(_feed.message))}
+                    {autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}
                     <Label  as='a'
                     color='orange'
                     circular
@@ -251,22 +339,42 @@ function ShowFeed(): JSX.Element {
                     </Label>{' '}
                     {isHex(_feed.link2) ? (
                         <LabelHelp help={withHttp(hexToString(_feed.link2).trim())} />
-                        ) : ''}</>
+                        ) : ' '}</>
                     ) : (
                     <>{autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}</>
                     )}
-                    <br /> 
-                    {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
+                    {' '}
+
+                    <Label as='a' 
+                           color='orange' 
+                           circular
+                           onClick={() => {<>{setPostToEndorse([
+                            _feed.messageId,
+                            _feed.username,
+                            _feed.fromAcct,
+                            _feed.message
+                          ])}{!isReply? _makeReply(): _reset()}
+                           
+                           </>}}
+                           >{'Reply'}</Label>
                     
+                    <br /><br />
+                    <Expander 
+                    className='replymessage'
+                    isOpen={false}
+                    summary={<Label color='orange' circular> {'Replies: '}{_feed.replyCount}</Label>}>
+                    {ShowReplies(_feed.messageId)}
+                    </Expander>                    
+
                     <Divider />                        
                     </>)}
+
                     {setCountPost(index+1)}
               </>
             )}
              </Table.Cell>
             </Table.Row>
-        </Table>
-        </div>   
+        </Table> 
       </div>)
           } catch(e) {
       console.log(e);
@@ -306,18 +414,20 @@ try {
                               {' '}<Label color='blue' circular>{_replyFeed.endorserCount}</Label>
                               {' '}{timeStampToDate(_replyFeed.timestamp)}{' '}
                               
-                              {isReplyToReply && (
-                              <>
-                              {' '}{(_replyFeed.replyCount>0)? (
-                                  <Label  as='a' 
-                                  color='grey'
-                                  onClick={() => setFeedIndex(index)}>
-                                  {t<string>(' Replies ')}{_replyFeed.replyCount}
-                                  </Label>) : (
-                                  <Label color='grey'>{t<string>(' Replies 0')}</Label>)}{t<string>(' ')}    
-                                </>
-                              )}
-                              <CopyInline value={_replyFeed.messageId} label={''}/>                                
+                              <Badge 
+                                  icon='thumbs-up' 
+                                  color={'blue'}
+                                  onClick={() => {<>
+                                    {setPostToEndorse([
+                                      _replyFeed.messageId,
+                                      _replyFeed.username,
+                                      _replyFeed.fromAcct,
+                                      _replyFeed.message
+                                    ])}
+                                    {!isEndorse? _makeEndorse(): _reset()}</>
+                                  }}/>
+
+                              
                               
                               {isShowEndorsers && _replyFeed.endorserCount > 0 && (
                                   <>
@@ -357,6 +467,7 @@ try {
                           {' '}</>
                           )}
                         <br /> 
+
                         </Table.Cell>
                       </Table.Row>  
                       </>)}
@@ -376,8 +487,36 @@ try {
   return (
     <StyledDiv className={className}>
     <Card>
-      <AccountHeader fromAcct={from} timeDate={when} callFrom={0}/>
+      <AccountHeader fromAcct={from} timeDate={when} callFrom={3}/>
       <ShowFeed />
+      {!isPost && !isReply && isEndorse && postToEndorse[0] && (
+        <CallEndorse
+        isPost={true}
+        messageId={postToEndorse[0]}
+        username={postToEndorse[1]}
+        fromAcct={postToEndorse[2]}
+        postMessage={postToEndorse[3]}
+        />
+      )}
+      {isPost && !isReply && !isEndorse && (
+        <CallPost
+        isPost={true}
+        messageId={zeroMessageId}
+        username={''}
+        fromAcct={''}
+        postMessage={''}
+        />
+      )}
+      {!isPost && isReply && !isEndorse && (
+        <CallPost
+        isPost={true}
+        messageId={postToEndorse[0]}
+        username={postToEndorse[1]}
+        fromAcct={postToEndorse[2]}
+        postMessage={postToEndorse[3]}
+        />
+      )}
+      <_testCard />
     </Card>
     </StyledDiv>
   );
@@ -392,3 +531,5 @@ const StyledDiv = styled.div`
   }
 `;
 export default React.memo(FeedDetails);
+
+

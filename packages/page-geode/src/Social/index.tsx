@@ -133,7 +133,7 @@ console.log(allCodes);
         )}
         {isPost && (
         <><Card>
-          {!isPaidPost && (
+          {isNoPost && !isPaidPost && (
             <><Button
                 icon={(isYourPost) ? 'minus' : 'plus'}
                 label={t('Post')}
@@ -221,12 +221,14 @@ console.log(allCodes);
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={0}
+            //isModal={false}
         />)}
         {isPaidPost && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={1}
+            //isModal={false}
         />)}
 
         {isFollow && (
@@ -234,48 +236,56 @@ console.log(allCodes);
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={4}
+            //isModal={false}
         />)}
         {isUnFollow && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={5}
+            //isModal={false}
         />)}
         {isBlock && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={6}
+            //isModal={false}
         />)}
         {isUnBlock && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={7}
+            //isModal={false}
         />)}
         {isUpdate && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={8}
+            //isModal={false}
         />)}
         {isYourFeed && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={9}
+            //isModal={false}
         />)}
         {isPaidFeed && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={10}
+            //isModal={false}
         />)}
         {isAccountSearch && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={11}
+            //isModal={false}
         />)}
 
 
@@ -284,6 +294,7 @@ console.log(allCodes);
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={13}
+            //isModal={false}
         />)}
 
     </div>

@@ -20,6 +20,7 @@ import Contract from './Contract';
 import { getContractForAddress } from './util';
 // uncomment for test configuration - - - - >
 import JSONContractAddress from '../shared/geode_contracts_test.json';
+import CallModal from './CallModal';
 // uncomment for production chain - - - - >
 //import JSONContractAddress from '../shared/geode_contracts.json';
 
@@ -27,6 +28,11 @@ export interface Props {
   contracts: string[];
   updated: number;
   initMessageIndex: number;
+  messageId?: string;
+  fromAcct?: string;
+  username?: string;
+  postMessage?: string;
+  //called: boolean ;
 }
 
 interface Indexes {
@@ -41,7 +47,7 @@ function filterContracts (api: ApiPromise, keyringContracts: string[] = []): Con
     .filter((contract): contract is ContractPromise => !!contract);
 }
 
-function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Props): React.ReactElement<Props> {
+function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messageId, fromAcct, username, postMessage }: Props): React.ReactElement<Props> {
   const _initIndex: number = (initMessageIndex > -1) ? initMessageIndex: 0;
   let _initContractIndex: number = 0;
   const { t } = useTranslation();
@@ -57,6 +63,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   const isTest: boolean = false;
   // set default after contract load to chain
   const contractAddress: string = (JSONContractAddress[2])? JSONContractAddress[2] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
+  console.log(contractIndex);
 
   const headerRef = useRef<[string?, string?, number?][]>([
     [t('Geode Social'), 'start'],
@@ -105,6 +112,21 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
     []
   );
 
+  // const _resetModal = useCallback(
+  //   () => {setEndorse(false);
+  //          setReply(false);
+  //          setPost(false);
+  //         },
+  //   []
+  // )
+  
+
+  const _toggleCall = useCallback(
+    () => {setIsCallOpen((isCallOpen) => !isCallOpen)
+           },
+    []
+  );
+
   const _setMessageIndex = useCallback(
     (messageIndex: number) => setIndexes((state) => ({ ...state, messageIndex })),
     []
@@ -133,48 +155,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
       )}
       {isTest && contract && (
         <Card>
-            {'(1) Default Geode Social Contract Address: '}{contractAddress}{' | '}
-            {(contractAddress)?
-            <Badge color='green' icon='thumbs-up'/> : 
-            <Badge color='red' icon='x' />}<br />
-            <InputAddress
-              //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
-              label={t<string>('contract to use')}
-              type='contract'
-              value={contractAddress}          
-            />
-            {'(2) Set Contract Address: '}{contract.address.toString()}{' | '}
-            {(contract.address)?
-            <Badge color='green' icon='thumbs-up'/> : 
-            <Badge color='red' icon='x' />}<br />
-            <InputAddress
-              //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
-              label={t<string>('contract to use')}
-              type='contract'
-              value={contract.address}
-            />
-            {'(3) Is API Loaded?: '}
-            {(api)?
-              <Badge color='green' icon='thumbs-up'/> : 
-              <Badge color='red' icon='x' />}<br />
-            {'API size: '}{JSON.stringify(api).length}<br /><br />
-            {'(4) Is Geode Social Contract Loaded?: '}
-            {(contract)?
-              <Badge color='green' icon='thumbs-up'/> : 
-              <Badge color='red' icon='x' />}<br />
-            {'Social contract size: '}{JSON.stringify(contract).length}<br />
-            {'Contract Index: '}{contractIndex}<br /><br />
-            {'(5) All Contracts Loaded?: '}
-            {(contracts)?
-              <Badge color='green' icon='thumbs-up'/> : 
-              <Badge color='red' icon='x' />}<br />
-            {'Social contract size: '}{JSON.stringify(contracts).length}<br /><br />
-            <Button
-              icon={(isTableOpen) ? 'minus' : 'plus'}
-              label={t<string>('View Contracts')}
-              onClick={toggleTable} 
-            />
-            <br />
+          {'Contract Test Code Here!'}
         </Card>)}
 
       {isTableOpen && <Table
@@ -191,7 +172,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           />
         ))}
       </Table>}
-      {isCallOpen && contract && (
+      {isCallOpen && contract && messageIndex!=0 && messageIndex!=2 && (
         <CallCard
           contract={contract}
           messageIndex={messageIndex}
@@ -199,6 +180,20 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           onChangeMessage={_setMessageIndex}
         />
       )}
+      {isCallOpen && contract && (messageIndex ===0 || messageIndex===2) && (
+        <CallModal
+         contract={contract}
+         messageIndex={messageIndex}
+         onCallResult={onCallResult}
+         onChangeMessage={_setMessageIndex}
+         messageId={messageId}
+         fromAcct={fromAcct}
+         username={username}
+         postMessage={postMessage}
+         onClose={_toggleCall}
+         />
+      )
+      }
     </>
   );
 }
