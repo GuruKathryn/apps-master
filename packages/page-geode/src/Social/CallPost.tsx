@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-import {  Table, Label } from 'semantic-ui-react'
+//import {  Table } from 'semantic-ui-react'
 
 //import type { CallResult } from './types';
 import { useContracts } from '../useContracts';
@@ -35,49 +35,44 @@ function CallPost ({ className = '', onClear, isPost, messageId,fromAcct,usernam
 
   //todo: code for allCodes:
     console.log(JSON.stringify(allCodes));
+  
+    function MakePaidPost(): JSX.Element {
+    return(<>
+              <ContractsTable
+                contracts={allContracts}
+                updated={codeTrigger}
+                initMessageIndex={1}
+                        //isModal={false}
+              />                                    
+    </>)
+    }
 
     function MakePost(): JSX.Element {
     return(
         <div>
-        <Table>
-          <Table.Row>
-            <Table.Cell>  
-            {isPost ? (
-                <>
-                    <ContractsTable
-                        contracts={allContracts}
-                        updated={codeTrigger}
-                        initMessageIndex={0}
-                        messageId={messageId}
-                        fromAcct={fromAcct}
-                        username={username}
-                        postMessage={postMessage}   
-                        //isModal={false}            
-                    />                
-                </>
-            ) : (
-                <>
-                    <ContractsTable
-                        contracts={allContracts}
-                        updated={codeTrigger}
-                        initMessageIndex={1}
-                        //isModal={false}
-                    />                                
-                </>
-
-            )}            
-            </Table.Cell>
-          </Table.Row>
-        </Table>
+            <ContractsTable
+              contracts={allContracts}
+              updated={codeTrigger}
+              initMessageIndex={0}
+              messageId={messageId}
+              fromAcct={fromAcct}
+              username={username}
+              postMessage={postMessage}   
+            />                
         </div>
     )
 }
 
   return (
     <StyledDiv className={className}>
-    <Card>  
-      <MakePost />
-    </Card>
+      {isPost ? (
+        <>
+          <MakePost />
+          </>): (<>
+          <Card>
+            <MakePaidPost />
+          </Card>
+        </>)}
     </StyledDiv>
   );
 }

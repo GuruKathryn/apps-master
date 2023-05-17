@@ -35,18 +35,12 @@ function CallStats ({ className = '', onClear }: Props): React.ReactElement<Prop
 
     function CallInterestStats(): JSX.Element {
     return(
-        <div>
-        <Table>
-          <Table.Row>
-            <Table.Cell>  
+        <div> 
                 <ContractsTable
                         contracts={allContracts}
                         updated={codeTrigger}
                         initMessageIndex={14}
                     />                              
-            </Table.Cell>
-          </Table.Row>
-        </Table>
         </div>
     )
 }

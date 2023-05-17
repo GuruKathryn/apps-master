@@ -67,9 +67,7 @@ function CallEndorse ({ className = '', onClear, isPost, messageId, fromAcct, us
 
   return (
     <StyledDiv className={className}>
-    <Card>  
       <MakePost />
-    </Card>
     </StyledDiv>
   );
 }

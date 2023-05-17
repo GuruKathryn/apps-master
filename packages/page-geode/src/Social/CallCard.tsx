@@ -182,29 +182,15 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
     <Card >
         <h2>
         <Badge icon='info' color={'blue'} /> 
-        <strong>{t<string>(' Geode Social ')}</strong>{t<string>(_title[messageIndex])}
+        <strong>{t<string>(' Geode Social ')}</strong>
+        {t<string>(_title[messageIndex])}
         </h2>
         <Expander 
             className='viewInfo'
-            isOpen={true}
-            summary={<strong>{t<string>('Info')}</strong>}>
-            {t<string>(_help[messageIndex])}<br /><br />
-            {t<string>(_note[messageIndex])}
-        </Expander>
-        {isTest && (
-          <InputAddress
-          //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
-          isDisabled
-          label={t<string>('contract to use')}
-          type='contract'
-          value={contract.address}
-          />
-        )}
-        <><br /><br />
-        <Expander 
-            className='viewPosts'
             isOpen={false}
-            summary={'More Info'}>
+            summary={<strong>{t<string>('Instructions: ')}</strong>}>
+            {t<string>(_help[messageIndex])}<br /><br />
+            {t<string>(_note[messageIndex])}<br /><br />
             {!isClosed && messageIndex < 15 && messageIndex!=12 && (
             <><Badge color='blue' icon='info'/>
             {t<string>(_tierOne[messageIndex])}</>
@@ -216,6 +202,16 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             )}
 
         </Expander>
+        {isTest && (
+          <InputAddress
+          //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
+          isDisabled
+          label={t<string>('contract to use')}
+          type='contract'
+          value={contract.address}
+          />
+        )}
+        <><br /><br />
         </>
         {!isClosed && (
         <>
@@ -269,36 +265,32 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}
 
       {messageIndex===8 && (<>
-               <Input
-        label={t<string>('Username: ')} 
-        type="text"
+        {t<string>('Username: ')}<br />
+        <Input label={''} type="text"
         value={params[0]}
         onChange={(e) => {
           params[0] = e.target.value;
           setParams([...params]);
         }}
       />
-        <Input
-        label={t<string>('My Interests: ')} 
-        type="text"
+        {t<string>('My Interests: ')}<br />
+        <Input label={''} type="text"
         value={params[1]}
         onChange={(e) => {
           params[1] = e.target.value;
           setParams([...params]);
         }}
       />
-        <Input
-        label={t<string>('Number of Posts to Show: ' )} 
-        type="text"
+        {t<string>('Number of Posts to Show in my Feed: ')}<br />
+        <Input label={''} type="text"
         value={params[2]}
         onChange={(e) => {
           params[2] = e.target.value;
           setParams([...params]);
         }}
       />
-        <Input
-        label={t<string>('Number of Paid Posts to Show: ')} 
-        type="text"
+        {t<string>('Number of Paid Posts to Show in my Paid Feed: ')}<br />
+        <Input label={''} type="text"
         value={params[3]}
         onChange={(e) => {
           params[3] = e.target.value;
@@ -350,13 +342,14 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
       {!isClosed && (
         <>
         {isViaRpc
-          ? (
+          ? ( <>
               <Button
               icon='sign-in-alt'
               isDisabled={!isValid}
               label={t<string>('View')}
               onClick={_onSubmitRpc} 
-              />                
+              />
+              </>
             ) : (
             <TxButton
               accountId={accountId}

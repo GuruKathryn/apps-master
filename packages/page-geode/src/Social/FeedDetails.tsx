@@ -171,6 +171,7 @@ const _reset = useCallback(
   () => {setEndorse(false);
          setReply(false);
          setPost(false);
+         
         },
   []
 )

@@ -43,8 +43,7 @@ function Summary (): React.ReactElement {
     </SummaryBox>
     <Card> 
     <Badge icon={'info'} color={'blue'}/> 
-      <strong> {t<string>('Info for Social')} </strong>
-      {': '}{t<string>(info[0]+info[1])}             
+      {t<string>(info[0]+info[1])}             
       <br /><br />
     <Toggle
             className=''

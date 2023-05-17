@@ -34,7 +34,7 @@ const { t } = useTranslation();
 const { allCodes, codeTrigger } = useCodes();
 const { allContracts } = useContracts();
 
-const [isFeed, toggleFeed] = useToggle();
+//const [isFeed, toggleFeed] = useToggle();
 const [isPost, togglePost] = useToggle();
 const [isSearch, toggleSearch] = useToggle();
 const [isSettings, toggleSettings] = useToggle();
@@ -54,10 +54,10 @@ const isNoPost: boolean = false;
 
 const refTitle: string[] = 
 [' Display a feed of all public messages and endorsed public messages from all accounts that you follow, sorted by most recent. (Click again to close) ', 
- ' Make a Post or a paid Post. (Click again to close) ', 
+ ' - deleted - Make a Post or a paid Post. (Click again to close) ', 
  ' Look up individual accounts or Search by keyword. ',
  ' Update your settings, follow, unfollow, block and unblock other accounts',
- ' Get your Feed. (Click again to close) ',
+ ' - deleted - Get your Public Feed. (Click again to close) ',
  ' Get your Paid Feed. (Click again to close)',
  ' Make a Post (Click again to close)',
  ' Make a Paid Post (Click again to close)',
@@ -78,59 +78,48 @@ console.log(allCodes);
         <Table >
           <Summary />
             <Card>
-            {!isYourFeed && !isPaidFeed && !isPost && !isSettings && !isSearch && (
-            <><Button
-                icon={(isFeed) ? 'minus' : 'plus'}
-                label={t<string>('Feeds')}
-                onClick={toggleFeed}>
-            </Button></>
-            )}
-            {isNoPost && !isYourPost && !isPaidPost && !isFeed && !isSettings && !isSearch && (
-            <><Button
-                icon={(isPost) ? 'minus' : 'plus'}
-                label={t<string>('Post')}
-                onClick={togglePost}>
-            </Button></>
-            )}
-            {!isAccountSearch && !isKeywordSearch && !isFeed && !isPost && !isSettings && (
-            <><Button
-                icon={(isSearch) ? 'minus' : 'plus'}
-                label={t<string>('Search')}
-                onClick={toggleSearch}>
-            </Button></>
-            )}
-            {!isUpdate && !isFollow && !isUnFollow && !isBlock && !isUnBlock && !isFeed && !isPost && !isSearch && (
-            <><Button
-                icon={(isSettings) ? 'minus' : 'plus'}
-                label={t<string>('Settings')}
-                onClick={toggleSettings}>
-            </Button></>
-            )}
-            {isFeed && (<>{refTitle[0]}</>)}
-            {isPost && (<>{refTitle[1]}</>)}
-            {isSearch && (<>{refTitle[2]}</>)}
-            {isSettings && (<>{refTitle[3]}</>)}
-            </Card>  
-        {isFeed && (
-        <><Card>
-          {!isPaidFeed && (
+            {!isPaidFeed && !isPost && !isSettings && !isSearch && (
             <><Button
                 icon={(isYourFeed) ? 'minus' : 'plus'}
                 label={t('Your Feed')}
                 onClick={toggleYourFeed}>
               </Button></>
           )}
-          {!isYourFeed && (
+            {!isYourFeed && !isPost && !isSettings && !isSearch && (
             <><Button
               icon={(isPaidFeed) ? 'minus' : 'plus'}
               label={t('Paid Feed')}
               onClick={togglePaidFeed}>
             </Button></>
           )}
-          {isYourFeed && (<>{refTitle[4]}</>)}
-          {isPaidFeed && (<>{refTitle[5]}</>)}
-          </Card></>
-        )}
+
+            {isNoPost && !isYourPost && !isPaidPost && !isSettings && !isSearch && (
+            <><Button
+                icon={(isPost) ? 'minus' : 'plus'}
+                label={t<string>('Post')}
+                onClick={togglePost}>
+            </Button></>
+            )}
+            {!isPaidFeed && !isYourFeed && !isAccountSearch && !isKeywordSearch && !isPost && !isSettings && (
+            <><Button
+                icon={(isSearch) ? 'minus' : 'plus'}
+                label={t<string>('Search')}
+                onClick={toggleSearch}>
+            </Button></>
+            )}
+            {!isPaidFeed && !isYourFeed && !isUpdate && !isFollow && !isUnFollow && !isBlock && !isUnBlock && !isPost && !isSearch && (
+            <><Button
+                icon={(isSettings) ? 'minus' : 'plus'}
+                label={t<string>('Settings')}
+                onClick={toggleSettings}>
+            </Button></>
+            )}
+            {isYourFeed && (<>{refTitle[0]}</>)}
+            {isPaidFeed && (<>{refTitle[5]}</>)}
+            {isSearch && (<>{refTitle[2]}</>)}
+            {isSettings && (<>{refTitle[3]}</>)}
+            </Card>  
+
         {isPost && (
         <><Card>
           {isNoPost && !isPaidPost && (

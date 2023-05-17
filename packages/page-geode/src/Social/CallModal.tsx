@@ -1,6 +1,6 @@
 // Copyright 2017-2022 @polkadot/app-contracts authors & contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Segment, Input } from 'semantic-ui-react'
+import { Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -172,8 +172,8 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
       <Modal.Content>
       <Expander 
          className='paramsExpander'
-         isOpen={true}
-         summary={'Information: '}>
+         isOpen={false}
+         summary={'Instructions: '}>
         {messageIndex !== null && messageIndex === 2 && (<>
           
           <h2><strong>{t<string>('Social - Endorse a Post')}</strong></h2><br />
@@ -266,9 +266,7 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
         {isReply? (
         <>
         {t<string>('Reply Message: ')}
-          <Input            
-            label='' 
-            type="text"
+          <Input label='' type="text"
             value={params[0]}
             onChange={(e) => {
               params[0] = e.target.value;
@@ -279,11 +277,8 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
           </>
         ):
         <>
-          {t<string>('Post Message: ')}
-          <Input  
-          label='' 
-          type="text"
-          //value={params[0]}
+        {t<string>('Post Message: ')}
+          <Input label='' type="text"
           onChange={(e) => {
             params[0] = stringToHex(e.target.value);
             params[3] = messageId;
@@ -291,29 +286,15 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
           }}/>
         </>}
         {t<string>('Photo or YouTube Link: ')}
-        <Input  
-            inverted
-            label=''
-            type='text'
-                //placeholder='' 
-                //name='postPhoto'
-                //value={postPhoto}
-                //onChange={e => setPostPhoto(e.target.value.trim())}
-            onChange={(e) => {
-                  params[1] = stringToHex(e.target.value.trim());
-                  setParams([...params]);}}/>
-        {t<string>('WebSite Link: ')}
-        <Input  
-            inverted
-            label=''
-            type='text'
-                //placeholder='' 
-                //name='postWebsite'
-                //value={postWebSite}
-                //onChange={e => setPostWebSite(e.target.value.trim())}
-                onChange={(e) => {
-                  params[2] = stringToHex(e.target.value.trim());
-                  setParams([...params]);}}/>
+          <Input label='' type='text'
+          onChange={(e) => {
+            params[1] = stringToHex(e.target.value.trim());
+            setParams([...params]);}}/>
+        {t<string>('Website Link, Document or other Link: ')}
+          <Input label='' type='text'
+          onChange={(e) => {
+            params[2] = stringToHex(e.target.value.trim());
+            setParams([...params]);}}/>
         </>)}
         <Expander 
             className='outputExpander'
@@ -410,7 +391,6 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
         }
       </Modal.Actions>
     </Modal>
-
   </>);
 }
 
