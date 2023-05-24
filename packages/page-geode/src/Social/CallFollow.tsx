@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
+import { Expander, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
 
 //import {  Table } from 'semantic-ui-react'
 
@@ -22,17 +23,13 @@ import ContractsTable from './ContractsTable';
 interface Props {
   className?: string;
   onClear?: () => void;
-  isPost: boolean;
-  //isModal: boolean;
   messageId?: string;
   fromAcct?: string;
   username?: string;
   postMessage?: string;
-  
-  //called: boolean;
 }
 
-function CallEndorse ({ className = '', onClear, isPost, messageId, fromAcct, username, postMessage }: Props): React.ReactElement<Props> | null {
+function CallFollow ({ className = '', onClear, messageId, fromAcct, username, postMessage }: Props): React.ReactElement<Props> | null {
 //    const { t } = useTranslation();
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
@@ -40,43 +37,27 @@ function CallEndorse ({ className = '', onClear, isPost, messageId, fromAcct, us
     console.log(JSON.stringify(allCodes));
 //    const _onClear = () => onClear;
 
-    function MakePost(): JSX.Element {
+    function MakeAccountFollow(): JSX.Element {
     return(
         <div>
-  
-              {isPost? (<>
+
+
                 <ContractsTable
                         contracts={allContracts}
                         updated={codeTrigger}
-                        initMessageIndex={2}
+                        initMessageIndex={4}
                         messageId={messageId}
                         fromAcct={fromAcct}
                         username={username}
-                        postMessage={postMessage}   
-                        //isModal={true}
-                        //onClear={onClear}
-                        //called={called}            
+                        postMessage={postMessage}            
                     />                       
-              </>) : (<>
-                <ContractsTable
-                        contracts={allContracts}
-                        updated={codeTrigger}
-                        initMessageIndex={3}
-                        messageId={messageId}
-                        fromAcct={fromAcct}
-                        username={username}
-                        postMessage={postMessage}   
-                        //isModal={true}
-                        //called={called}
-                    />                              
-              </>)}
         </div>
     )
 }
 
   return (
     <StyledDiv className={className}>
-      <MakePost />
+      <MakeAccountFollow />
     </StyledDiv>
   );
 }
@@ -91,6 +72,6 @@ const StyledDiv = styled.div`
   }
 `;
 
-export default React.memo(CallEndorse);
+export default React.memo(CallFollow);
 
 

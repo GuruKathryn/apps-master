@@ -53,15 +53,15 @@ function ListAccount(): JSX.Element {
             label={<><strong>{t<string>(' Key: ')}</strong>
         {isShowInfo && (
               <>
-                {(callFrom===1 || callFrom===2) && (<>
+                {(callFrom===1 || callFrom===2 || callFrom===0) && (<>
                 {t<string>(' Link to See More: ')}
                 <Label circular color='orange'> Link </Label>  
                 </>)}
-                {callFrom===1 && (<>
+                {(callFrom===1 || callFrom===0) && (<>
                 {t<string>(' No. of Endorsements: ')}
                 <Label circular color='blue'>{'#'}</Label>  
                 {t<string>(' Endorse a Claim: ')}
-                <Badge icon='thumbs-up' color='orange' /> 
+                <Badge icon='thumbs-up' color='blue' /> 
                 {t<string>(' Copy a Claim ID: ')}
                 <Badge icon='copy' color='orange' /> 
                 </>)}

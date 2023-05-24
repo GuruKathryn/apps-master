@@ -3,16 +3,19 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //import React from 'react';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
 import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Badge, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { Image, Divider, List, Table, Label } from 'semantic-ui-react'
+import { Expander, Toggle, Badge, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Grid, Image, Divider, List, Table, Label } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
 import AccountHeader from '../shared/AccountHeader';
+//import CallFollow from './CallFollow';
+import CallEndorse from './CallEndorse';
+import CallPost from './CallPost';
 
 import JSONprohibited from '../shared/geode_prohibited.json';
 
@@ -56,15 +59,20 @@ function SearchDetails ({ className = '', onClear, outcome: { from, message, out
     const searchWords: string[] = JSONprohibited;
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
     const maxIndex = 25;
-    const isReply: boolean = true;
-    const isReplyToReply: boolean = false;
+    //const isReply: boolean = true;
+    //const isReplyToReply: boolean = false;
 
     const [isShowFollowers, toggleShowFollowers] = useToggle(false);
     const [isShowFollowing, toggleShowFollowing] = useToggle(false);
     const [isShowEndorsers, toggleShowEndorse] = useToggle(false);
     const [isShowMessageID, toggleShowMsgId] = useToggle(false);
 
-    const [feedIndex, setFeedIndex] = useState(0);
+    const [postToEndorse, setPostToEndorse] = useState(['','','','']);
+    const [isEndorse, setEndorse] =useState(false);
+    const [isPostReply, setPostReply] = useState(false);
+    const [isAcctFollow, setAcctFollow] = useState(false);
+
+   // const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
     const [pgIndex, setPgIndex] = useState(1);
 
@@ -114,16 +122,16 @@ function SearchDetails ({ className = '', onClear, outcome: { from, message, out
             />
              <Button icon={'home'} 
               isDisabled={countPost===0}
-              onClick={()=> setPgIndex(1)}/>
+              onClick={()=> {<>{setPgIndex(1)}{_reset()}</>}}/>
              <Button icon={'minus'} 
               isDisabled={countPost===0}
-              onClick={()=> setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}/>
+              onClick={()=> {<>{setPgIndex((currPgIndex-_indexer)>0? currPgIndex-_indexer : 1)}{_reset()}</>}}/>
              <Button icon={'plus'} 
               isDisabled={countPost===0}
-              onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
+              onClick={()=> {<>{setPgIndex(currPgIndex<countPost-1? currPgIndex+_indexer : countPost)}{_reset()}</>}}/>
              <Button icon={'sign-in-alt'}
               isDisabled={countPost===0}
-              onClick={()=> setPgIndex((countPost>0)? countPost: 1)}/>
+              onClick={()=> {<>{setPgIndex((countPost>0)? countPost: 1)}{_reset()}</>}}/>
              <strong>{t<string>(' | Showing Post: ')}{pgIndex<countPost? pgIndex: countPost}{' thru '}{
              (pgIndex+maxIndex) < countPost? pgIndex+maxIndex: countPost}</strong>
              <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
@@ -183,6 +191,39 @@ function renderLink(_link: string): JSX.Element {
  )
 }
 
+const _reset = useCallback(
+  () => {setEndorse(false);
+         setPostReply(false);
+         setAcctFollow(false);
+        },
+  []
+)
+
+const _makeEndorse = useCallback(
+  () => {setEndorse(true);
+         setPostReply(false);
+         setAcctFollow(false);
+        },
+  []
+)
+
+const _makeReply = useCallback(
+  () => {setEndorse(false);
+    setPostReply(true);
+    setAcctFollow(false);
+   },
+[]
+)
+
+const _makeFollow = useCallback(
+  () => {setEndorse(false);
+    setPostReply(false);
+    setAcctFollow(true);
+   },
+[]
+)
+
+
 function ShowAccount(): JSX.Element {
   try{
     const noFollowers: number = feedDetail.ok.followers.length>0 ? feedDetail.ok.followers.length: 0;
@@ -200,7 +241,17 @@ function ShowAccount(): JSX.Element {
                     <AccountName value={feedDetail.ok.searchedAccount} withSidebar={true}/>
                     {' '}
                     {_username.trim()!='' && (<><strong>{'@'}{_username}</strong></>)}
-                    <LabelHelp help={t<string>(' Search Result: Account Found! ')} /> 
+                    {' '}
+
+                    
+                    <Label as='a' circular color='orange'
+                           onClick={() => {_makeFollow()}}
+                      
+
+
+
+                    >{t<string>('Follow')}</Label>
+                    <LabelHelp help={t<string>(' Use the orange Follow button to follow this account. ')} /> 
                   </h2>
                   {t<string>('Number of Posts: ')}<strong>{countPost}</strong>
                   </>
@@ -210,23 +261,33 @@ function ShowAccount(): JSX.Element {
             </Table.Header>
             <Table.Row>
               <Table.Cell verticalAlign='top'>
-              <Badge
-                icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
-                color={(isShowEndorsers) ? 'blue' : 'gray'}
-                onClick={toggleShowEndorse}/> 
-                {t<string>(' Show Endorsers | ')}
-                <Badge
-                icon={(isShowMessageID) ? 'thumbs-up' : 'thumbs-down'}
-                color={(isShowMessageID) ? 'blue' : 'gray'}
-                onClick={toggleShowMsgId}/> 
-                {t<string>(' Show Message IDs | ')}
-                <br /><br />
+               <Grid columns={5} divided>
+                <Grid.Row>
+                  <Grid.Column>
+                  <Toggle
+                    className=''
+                    label={<> <Badge icon='check' color={isShowEndorsers? 'blue': 'gray'}/> {t<string>('Show Endorsers ')} </>}
+                    onChange={()=> <>{toggleShowEndorse()}{_reset()}</>}
+                    value={isShowEndorsers}
+                  />
+                  </Grid.Column>
+                  <Grid.Column>
+                  <Toggle
+                    className=''
+                    label={<> <Badge icon='copy' color={isShowMessageID? 'orange': 'gray'}/> {t<string>('Show Message IDs ')} </>}
+                    onChange={()=> <>{toggleShowMsgId()}{_reset()}</>}
+                    value={isShowMessageID}
+                  />
+                  </Grid.Column>
+                </Grid.Row>
+               </Grid>
+                <br />
                 {feedDetail.ok.followers.length>0 ? (
                   <>
                   <Badge
                     icon='info'
                     color={(isShowFollowers) ? 'blue' : 'gray'}
-                    onClick={toggleShowFollowers}/> 
+                    onClick={()=> <>{toggleShowFollowers()}{_reset()}</>}/> 
                 {t<string>(' Followers: ')}<strong>{noFollowers}</strong>
                 
                 {isShowFollowers && feedDetail.ok.followers.length>0 && (
@@ -245,7 +306,7 @@ function ShowAccount(): JSX.Element {
                 <Badge
                 icon='info'
                 color={(isShowFollowing) ? 'blue' : 'gray'}
-                onClick={toggleShowFollowing}/> 
+                onClick={()=><>{toggleShowFollowing()}{_reset()}</>}/> 
                 {t<string>(' Following: ')}<strong>{noFollowing}</strong>
                 {isShowFollowing && feedDetail.ok.following.length>0 && (
                   <>
@@ -306,16 +367,17 @@ function ShowAccount(): JSX.Element {
                             {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
                             {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                             {' '}{timeStampToDate(_feed.timestamp)}{' '}
-                            {' '}{(_feed.replyCount>0)? (
-                            
-                            <Label  as='a' 
-                              color={(isReply && (index === feedIndex)) ? 'blue' : 'grey'}
-                              onClick={() => setFeedIndex(index)}>
-
-                              {t<string>(' Replies ')}{_feed.replyCount}
-                            </Label>) : (
-                            <Label color='grey'>{t<string>(' Replies 0')}</Label>)}{' '}
-                            <CopyInline value={_feed.messageId} label={''}/>
+                            {' '}
+                            <Badge icon='thumbs-up' color={'blue'}
+                                   onClick={() => {<>
+                                    {setPostToEndorse([
+                                      _feed.messageId,
+                                      _feed.username,
+                                      _feed.fromAcct,
+                                      _feed.message
+                                    ])}
+                                    {_makeEndorse()}</>
+                                  }}/>                            
                    </h3>
                    {isShowEndorsers && _feed.endorserCount > 0 && (
                   <>
@@ -330,9 +392,14 @@ function ShowAccount(): JSX.Element {
                   )}
                   {isShowMessageID && 
                     (<>{(_feed.replyTo != zeroMessageId)
-                    ? (<><i>{t<string>('reply to: ')}{_feed.replyTo}</i><br />
-                         <i>{t<string>('message Id: ')}{_feed.messageId}</i><br /></>) 
-                    : (<><i>{t<string>('message Id: ')}{_feed.messageId}</i><br /></>)}
+                    ? (<><i>{t<string>('reply to: ')}{_feed.replyTo}</i>
+                         {' '}<CopyInline value={_feed.replyTo} label={''}/><br />
+                         <i>{t<string>('message Id: ')}{_feed.messageId}</i>
+                         {' '}<CopyInline value={_feed.messageId} label={''}/><br />
+                         </>) 
+                    : (<><i>{t<string>('message Id: ')}{_feed.messageId}</i>
+                         {' '}<CopyInline value={_feed.messageId} label={''}/><br />
+                         </>)}
                       </>)} 
                       <br />      
                       {renderLink(_feed.link)}
@@ -352,9 +419,29 @@ function ShowAccount(): JSX.Element {
                       ) : ''}</>
                   ) : (
                   <>{autoCorrect(searchWords, hextoHuman(_feed.message))}{' '}</>
-                  )}
-                  <br /> 
-                  {isReply && index === feedIndex && ShowReplies(_feed.messageId)}
+                  )}{' '}
+                    <Label as='a' color={'orange'} circular
+                           onClick={() => {<>{setPostToEndorse([
+                            _feed.messageId,
+                            _feed.username,
+                            _feed.fromAcct,
+                            _feed.message
+                          ])}{_makeReply()}</>}}
+                           >{'Reply'}
+                    </Label>
+                  <br /> <br />
+                  
+                  <Expander 
+                    className='replymessage'
+                    isOpen={false}
+                    summary={<Label color='orange' circular> {'Replies: '}{_feed.replyCount}</Label>}>
+                    {ShowReplies(_feed.messageId)}
+                    </Expander>    
+
+
+
+
+
                   <Divider />                        
                   </>)}
             {setCountPost(index+1)}</>
@@ -400,20 +487,17 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                                 {' ('}<AccountName value={_replyFeed.fromAcct} withSidebar={true}/>{') '}
                                 {' '}<Label color='blue' circular>{_replyFeed.endorserCount}</Label>
                                 {' '}{timeStampToDate(_replyFeed.timestamp)}{' '}
-                                
-                                {isReplyToReply && (
-                                <>
-                                {' '}{(_replyFeed.replyCount>0)? (
-                                    <Label  as='a' 
-                                    color='grey'
-                                    onClick={() => setFeedIndex(index)}>
-                                    {t<string>(' Replies ')}{_replyFeed.replyCount}
-                                    </Label>) : (
-                                    <Label color='grey'>{t<string>(' Replies 0')}</Label>)}{t<string>(' ')}    
-                                  </>
-                                )}
-                                <CopyInline value={_replyFeed.messageId} label={''}/>                                
-                                
+                                <Badge icon='thumbs-up' color={'blue'}
+                                   onClick={() => {<>
+                                    {setPostToEndorse([
+                                      _replyFeed.messageId,
+                                      _replyFeed.username,
+                                      _replyFeed.fromAcct,
+                                      _replyFeed.message
+                                    ])}
+                                    {_makeEndorse()}</>
+                                  }}/>   
+                                  <br />                         
                                 {isShowEndorsers && _replyFeed.endorserCount > 0 && (
                                     <>
                                     <List divided inverted >
@@ -428,9 +512,12 @@ function ShowReplies(replyMessageId: string): JSX.Element {
   
                                     {isShowMessageID && 
                                     (<><br />{(_replyFeed.replyTo != zeroMessageId)
-                                    ? (<><i>{t<string>('reply to: ')}{_replyFeed.replyTo}</i><br />
-                                    <i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>) 
-                                    : (<><i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>)}
+                                    ? (<><i>{t<string>('reply to: ')}{_replyFeed.replyTo}</i>
+                                    {' '}<CopyInline value={_replyFeed.replyTo} label={''}/> <br />
+                                    <i>{t<string>('message Id: ')}{_replyFeed.messageId}</i>
+                                    {' '}<CopyInline value={_replyFeed.messageId} label={''}/><br /></>) 
+                                    : (<><i>{t<string>('message Id: ')}{_replyFeed.messageId}</i>
+                                    {' '}<CopyInline value={_replyFeed.messageId} label={''}/> <br /></>)}
                                     </>)} 
                                     <br />      
                                 {renderLink(_replyFeed.link)}
@@ -452,7 +539,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                             {autoCorrect(searchWords, hextoHuman(_replyFeed.message))}
                             </>
                             )}
-                          <br /> 
+                          <br /><br /> 
                           </Table.Cell>
                         </Table.Row>  
                         </>
@@ -470,12 +557,35 @@ function ShowReplies(replyMessageId: string): JSX.Element {
   
 return (
     <StyledDiv className={className}>
-    <Card>
+    <Card >
         <AccountHeader fromAcct={from} timeDate={when} />
         <ShowAccount />
         <PageIndexer />
         <ShowFeed />
         <PagePager />
+
+        {!isAcctFollow && !isPostReply && isEndorse && postToEndorse[0] && (
+        <CallEndorse
+            isPost={true}
+            messageId={postToEndorse[0]}
+            username={postToEndorse[1]}
+            fromAcct={postToEndorse[2]}
+            postMessage={postToEndorse[3]}
+            onClear={() => _reset()}
+        />
+        )}
+        {!isAcctFollow && isPostReply && !isEndorse && postToEndorse[0] && (
+        <CallPost
+            isPost={true}
+            messageId={postToEndorse[0]}
+            username={postToEndorse[1]}
+            fromAcct={postToEndorse[2]}
+            postMessage={postToEndorse[3]}
+            onClear={() => _reset()}
+        />
+        )}
+ 
+
     </Card>
     </StyledDiv>
   );

@@ -22,6 +22,7 @@ import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
 //import Outcome from './Outcome';
 import { getCallMessageOptions } from './util';
+//import FeedDetails from './FeedDetails';
 
 interface Props {
   className?: string;
@@ -42,6 +43,9 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
   const { t } = useTranslation();
   const { api } = useApi();
   const message = contract.abi.messages[messageIndex];
+ 
+  //const [isCalled, toggleIsCalled] = useToggle(false);
+
   const [accountId, setAccountId] = useAccountId();
   const [estimatedWeight, setEstimatedWeight] = useState<BN | null>(null);
   const [estimatedWeightV2, setEstimatedWeightV2] = useState<WeightV2 | null>(null);
@@ -51,6 +55,8 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
   let [params, setParams] = useState<unknown[]>([]);
   
   const [isViaCall, toggleViaCall] = useToggle();
+  //const [isReload, toggleReload] = useToggle(false);
+
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
@@ -153,7 +159,6 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
   //     () => setOutcomes([...outcomes.filter((_, index) => index !== outcomeIndex)]),
   //   [outcomes]
   // );
-
  
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
@@ -163,7 +168,7 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
     <>
     <Modal
       className={[className || '', 'app--contracts-Modal'].join(' ')}
-      header={(messageIndex===2)? 
+      header={(messageIndex===2 || messageIndex===3)? 
               t<string>('Geode - Make an Endorsement'):
               (postMessage)? t<string>('Geode - Make a Reply'):
                              t<string>('Geode - Make a Post')}
@@ -174,8 +179,7 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
          className='paramsExpander'
          isOpen={false}
          summary={'Instructions: '}>
-        {messageIndex !== null && messageIndex === 2 && (<>
-          
+        {messageIndex !== null && (messageIndex===2 || messageIndex===3) && (<>
           <h2><strong>{t<string>('Social - Endorse a Post')}</strong></h2><br />
             <strong>{t<string>('Instructions for Endorsing a Post: ')}</strong><br />
             {'(1) '}{t<string>('Make Sure the (account to use) is NOT the owner of the Post')}<br /> 
@@ -183,7 +187,7 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
             <br /><br />
             {t<string>('⚠️ Please Note: You can not endorse your own claims.')}
           </>)}
-          {messageIndex !== null && messageIndex === 0 && !postMessage && (<>
+        {messageIndex !== null && messageIndex === 0 && !postMessage && (<>
             <h2><strong>{t<string>('Social - Make a Post ')}{' '}</strong></h2><br />
             <strong>{t<string>('Instructions for Posting: ')}</strong><br />
             {'(1) '}{t<string>('Call from Account - Your Account for Post Originator. ')}<br /> 
@@ -193,7 +197,7 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
             <br /><br />
             {t<string>("⚠️ Please Note: Don't Forget to Click Submit when done! ")}<br /><br />
           </>)}
-          {messageIndex !== null && messageIndex === 0 && postMessage && (<>
+        {messageIndex !== null && messageIndex === 0 && postMessage && (<>
             <h2><strong>{t<string>('Social - Reply to a Post ')}{' '}</strong></h2><br />
             <strong>{t<string>('Instructions for Replying to a Post: ')}</strong><br />
             {'(1) '}{t<string>('Call from Account - Your Account for Post Originator. ')}<br /> 
@@ -296,19 +300,8 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
             params[2] = stringToHex(e.target.value.trim());
             setParams([...params]);}}/>
         </>)}
-        <Expander 
-            className='outputExpander'
-            isOpen={false}
-            summary={'See Outputs'}>
- 
-            {'Message Index: '}{messageIndex}<br />
-            {JSON.stringify(params[0])}<br />
-            {JSON.stringify(params[1])}<br />
-            {JSON.stringify(params[2])}<br />
-            {JSON.stringify(params[3])}<br />
-        </Expander>
 
-        {messageIndex===2 && (<>
+        {(messageIndex===2 || messageIndex===3) && (<>
           <br />{'Message ID : '}{JSON.stringify(params=[messageId])}
           <h3>
         <strong>{' Owner of Post: '}</strong>
@@ -329,9 +322,6 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
         <br />        
         </>)}
 
-
-         
-      
         {message.isPayable && (
           <InputBalance
             //help={t<string>('The allotted value for this contract, i.e. the amount transferred to the contract as part of this call.')}
@@ -379,14 +369,17 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
             />
           )
           : (
-            <TxButton
+            <>
+            { <TxButton
               accountId={accountId}
               extrinsic={execTx}
               icon='sign-in-alt'
               isDisabled={!isValid || !execTx}
-              label={t('Submit')}
+              label={t<string>('Submit')}
               onStart={onClose}
             />
+            }
+            </>
           )
         }
       </Modal.Actions>

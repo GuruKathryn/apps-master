@@ -3,19 +3,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //import React from 'react';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
 import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Button, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { List, Table, Label, Image, Divider } from 'semantic-ui-react'
+import { Toggle, Button, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Grid, List, Table, Label, Image, Divider } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
 //import JSONSocialInterests from '../shared/geode_social_interest.json';
 import JSONprohibited from '../shared/geode_prohibited.json';
 import AccountHeader from '../shared/AccountHeader';
 //import { useToggle } from '@polkadot/react-hooks';
+import CallEndorse from './CallEndorse';
 
 interface Props {
     className?: string;
@@ -64,6 +65,9 @@ function PaidFeedDetails ({ className = '', onClear, outcome: { from, message, o
     const [isShowMyInterest, toggleShowInterest] = useToggle(false);
     const [isShowEndorsers, toggleShowEndorsers] = useToggle(false);
     const [isShowAdInterest, toggleShowAdInterest] = useToggle(false);
+    const [isShowMsgID, toggleShowMsgID] = useToggle(false);
+    const [postToEndorse, setPostToEndorse] = useState(['','','','']);
+    const [isEndorse, setEndorse] =useState(false);
 
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
@@ -127,6 +131,18 @@ function renderLink(_link: string): JSX.Element {
   )
 }
 
+const _reset = useCallback(
+  () => {setEndorse(false);
+        },
+  []
+)
+
+const _makeEndorse = useCallback(
+  () => {setEndorse(true);
+        },
+  []
+)
+
 function ShowFeed(): JSX.Element {
     setCountPost(0)
     try {
@@ -151,42 +167,63 @@ function ShowFeed(): JSX.Element {
                 </Table.Row>
                 <Table.Row>
                 <Table.HeaderCell>
-                <Badge
-                icon={(isShowEndorsers) ? 'thumbs-up' : 'thumbs-down'}
-                color={(isShowEndorsers) ? 'blue' : 'gray'}
-                onClick={toggleShowEndorsers}/> 
-                {t<string>(' Show Endorsers | ')}
-                <Badge
-                icon={(isShowAdInterest) ? 'thumbs-up' : 'thumbs-down'}
-                color={(isShowAdInterest) ? 'blue' : 'gray'}
-                onClick={toggleShowAdInterest}/> 
-                {t<string>(' Show Ad Interests ')}
-                {feedDetail.ok.blocked.length>0 && (
-                  <>
-                  {' | '}
-                  <Badge
-                  icon='info'
-                  color={(isShowBlockedAccounts) ? 'blue' : 'gray'}
-                  onClick={toggleShowBlockedAccounts}/> 
-                  {t<string>(' Blocked: ')}<strong>{feedDetail.ok.blocked.length}</strong>
-                  {isShowBlockedAccounts && feedDetail.ok.blocked.length>0 && (
+                <Grid columns={5} divided>
+                  <Grid.Row>
+                    <Grid.Column>
+
+                      <Toggle
+                        className=''
+                        label={<> <Badge icon='check' color={isShowEndorsers? 'blue': 'gray'}/> {t<string>('Show Endorsers ')} </>}
+                        onChange={()=> {<>{toggleShowEndorsers()}{_reset()}</>}}
+                        value={isShowEndorsers}
+                      />
+                
+                      <Toggle
+                        className=''
+                        label={<> <Badge icon='copy' color={isShowMsgID? 'orange': 'gray'}/> {t<string>('Show Message IDs ')} </>}
+                        onChange={()=> {<>{toggleShowMsgID()}{_reset()}</>}}
+                        value={isShowMsgID}
+                      />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Toggle
+                        className=''
+                        label={<> <Badge icon='thumbs-up' color={isShowAdInterest? 'blue': 'gray'}/> {t<string>('Show Ad Interests ')} </>}
+                        onChange={()=> {<>{toggleShowAdInterest()}{_reset()}</>}}
+                        value={isShowAdInterest}
+                      />
+                      <Toggle
+                        className=''
+                        label={<> <Badge icon='info' color={isShowMyInterest? 'blue': 'gray'}/> {t<string>('Show My Interests ')} </>}
+                        onChange={()=> {<>{toggleShowInterest()}{_reset()}</>}}
+                        value={isShowMyInterest}
+                      />
+                    </Grid.Column>    
+                    {feedDetail.ok.blocked.length>0 && (
                     <>
-                    {feedDetail.ok.blocked.map(_blkd =>
-                    <>{' ('}<AccountName value={_blkd} withSidebar={true}/>{') '}
+                    <Grid.Column>
+                    <Toggle
+                        className=''
+                        label={<> <Badge icon='hand' color={isShowBlockedAccounts? 'red': 'gray'}/> {t<string>('Show Blocked Accounts ')} </>}
+                        onChange={()=> {<>{toggleShowBlockedAccounts()}{_reset()}</>}}
+                        value={isShowBlockedAccounts}
+                      />
+                    
+                    </Grid.Column>            
                     </>)}
-                    </>
-                  )}
+                  </Grid.Row>
+                </Grid>    
+                {isShowMyInterest && feedDetail.ok.myinterests.length>0 && (<>
+                  <br /><Badge icon='info'color={'blue'} />
+                  {t<string>('Your Interests')}{': ('}{hextoHuman(feedDetail.ok.myinterests)}{') '}
+                </>)}
+                {feedDetail.ok.blocked.length>0 && isShowBlockedAccounts &&(<>
+                  <br /><Badge icon='hand'color={'red'}/> 
+                  {t<string>(' Blocked: ')}<strong>{feedDetail.ok.blocked.length}</strong>
+                  {feedDetail.ok.blocked.map(_blkd =>
+                  <>{' ('}<AccountName value={_blkd} withSidebar={true}/>{') '}
                   </>)}
-                <br /><br />
-                <Badge
-                  icon='info'
-                  color={(isShowMyInterest) ? 'blue' : 'gray'}
-                  onClick={toggleShowInterest}/> 
-                  {t<string>('Your Interests')}
-                  {isShowMyInterest && feedDetail.ok.myinterests.length>0 && (<>{': ('}
-                    {hextoHuman(feedDetail.ok.myinterests)}{') '}
-                  </>)}
-                  <br />
+                </>)}
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -211,14 +248,29 @@ function ShowFeed(): JSX.Element {
                               {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
                               {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                               {' '}{timeStampToDate(_feed.timestamp)}{' '}
-                          <CopyInline value={_feed.messageId} label={''}/>
+                        <Badge icon='thumbs-up' color={'blue'}
+                               onClick={() => {<>
+                                    {setPostToEndorse([
+                                      _feed.messageId,
+                                      _feed.username,
+                                      _feed.fromAcct,
+                                      _feed.message
+                                    ])}
+                                    {_makeEndorse()}
+                                    </>
+                          }}/>
+                          <LabelHelp help={t<string>('Use the Thumbs Up button to Endorse Paid Ads and Get Paid! ')} />
                      </h3>
                             <i><strong>{t<string>('Payment: ')}{unitToGeode(_feed.endorserPayment)}{' Geode'}
                             {t<string>(', Paid Endorsements Left: ')}{_feed.paidEndorserMax-_feed.endorserCount}</strong></i>
                             <br />
+                    {isShowMsgID && _feed.messageId && (<>
+                      <br />{' Message ID: '}{_feed.messageId}{' '}
+                      <CopyInline value={_feed.messageId} label={''}/>
+                      <LabelHelp help={t<string>('Use the orange Copy button to copy the Paid Ad Message ID. ')} />
+                    </>)}
                     {isShowEndorsers && _feed.endorserCount > 0 && (
-                    <>
-                    <List divided inverted >
+                      <><List divided inverted >
                       {_feed.endorsers.length>0 && _feed.endorsers.map((name, i: number) => <List.Item key={name}> 
                         {(i > 0) && (<><Badge color='blue' icon='check'/>{t<string>('(endorser No.')}{i}{') '}
                         {' ('}<AccountName value={name} withSidebar={true}/>{') '}{name} 
@@ -229,7 +281,7 @@ function ShowFeed(): JSX.Element {
                     )}
                 {isShowAdInterest && 
                       (<>
-                      <br />{t<string>('Ad Target Interest: ')}{hextoHuman(_feed.targetInterests)}
+                      <br />{t<string>(' Ad Target Interest: ')}<strong>{hextoHuman(_feed.targetInterests)}</strong>
                       </>)} 
                 <br />      
                 {renderLink(_feed.link)}
@@ -276,11 +328,18 @@ function ShowFeed(): JSX.Element {
   return (
     <StyledDiv className={className}>
     <Card>
-    <AccountHeader
-        fromAcct={from}
-        timeDate={when}
-        />
+    <AccountHeader fromAcct={from} timeDate={when} callFrom={0}/>
       <ShowFeed />
+      {isEndorse && postToEndorse[0] && (
+        <CallEndorse
+        isPost={false}
+        messageId={postToEndorse[0]}
+        username={postToEndorse[1]}
+        fromAcct={postToEndorse[2]}
+        postMessage={postToEndorse[3]}
+        onClear={() => _reset()}
+        />
+      )}
     </Card>
     </StyledDiv>
   );

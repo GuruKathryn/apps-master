@@ -72,6 +72,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [isCalled, toggleIsCalled] = useToggle(false);
   const [isPubPost, togglePubPost] = useToggle();
   const [isPaidPost, togglePaidPost] = useToggle();
+  //const [isCardReset, toggleCardReset] = useToggle(false);
   //const [isEndorse, toggleEndorse] = useToggle();
   //const [isGetReply, toggleGetReply] = useToggle();
   //const [isShowEndorse, toggleShowEndorse] = useToggle(false);
@@ -170,7 +171,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
-  const isClosed = (isCalled && messageIndex === 14 );
+  const isClosed = (isCalled && (messageIndex === 9 || messageIndex === 14 || messageIndex===10));
   const _help: string[] = JSONhelp;
   const _note: string[] = JSONnote;
   const _title: string[] = JSONTitle;
@@ -249,7 +250,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </>
             )}
             
-            {messageIndex!=8 && (<>
+            {messageIndex!=1 && messageIndex!=8 && (<>
               <Params
               onChange={setParams}
               params={
@@ -298,6 +299,49 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         }}
       />
     </>)}
+    {messageIndex===1 && (<>
+        {t<string>('Paid Post Message: ')}<br />
+        <Input label={''} type="text"
+        value={params[0]}
+        onChange={(e) => {
+          params[0] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        {t<string>('Photo or YouTube Link: ')}<br />
+        <Input label={''} type="text"
+        value={params[1]}
+        onChange={(e) => {
+          params[1] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        {t<string>('Website or Document Link: ')}<br />
+        <Input label={''} type="text"
+        value={params[2]}
+        onChange={(e) => {
+          params[2] = e.target.value;
+          setParams([...params]);
+        }}
+        />
+        {t<string>('Maximum Number of Paid Endorsers: ')}<br />
+        <Input label={''} type="text"
+        value={params[3]}
+        onChange={(e) => {
+          params[3] = e.target.value;
+          setParams([...params]);
+        }}
+        />
+        {t<string>('Target Interests: ')}<br />
+        <Input label={''} type="text"
+        value={params[4]}
+        onChange={(e) => {
+          params[4] = e.target.value;
+          setParams([...params]);
+        }}
+        />
+        {t<string>('Total Value: ')}<br />
+    </>)}
 
 
         {message.isPayable && (
@@ -338,9 +382,10 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         </>
         )}
       
-      <Card>
+      
       {!isClosed && (
         <>
+        <Card>
         {isViaRpc
           ? ( <>
               <Button
@@ -360,7 +405,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               onStart={onClose}
             />
           )
-        }          
+        }      
+        </Card>    
         </>
         )}
         {isMenu && (
@@ -375,32 +421,22 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />
             </>
           )}
-          {messageIndex===10 && (
-            <>{' | '}
+        {messageIndex===10 && (
+            <><Card>
             <Button
             icon={(isPaidPost) ? 'minus' : 'plus'}
             //isDisabled={!isValid}
             label={t<string>('Paid Post')}
             onClick={togglePaidPost} 
             />
-          </>
-          )}
-          {messageIndex===10 && (<>
-            <Button
-            icon={(isPaidEndorse) ? 'minus' : 'plus'}
-            //isDisabled={!isValid}
-            label={t<string>('Endorse')}
-            onClick={togglePaidEndorse} 
-            />          
-          </>)}   
-          {messageIndex===10 && (<>
             <Button
             icon={(isStats) ? 'minus' : 'plus'}
             //isDisabled={!isValid}
-            label={t<string>('Interest Stats')}
+            label={t<string>('Target Interest Analysis ')}
             onClick={toggleStats} 
             />          
-          </>)}   
+            </Card></>
+          )}
         {isShowDeveloper && (<>
           {' | '}
             <Button
@@ -412,7 +448,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         </>)}
           </>
         )} 
-        </Card>
+        
         {isPubPost && (
           <><CallPost 
             isPost={true}
@@ -443,6 +479,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 //isShowMessageID={isShowMsgID}
                 outcome={outcome}
                 onClose={isCalled}
+              
               />
               {isTest && (<>{JSON.stringify(outcome.output)}</>)}
               </>

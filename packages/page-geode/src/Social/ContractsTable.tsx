@@ -32,6 +32,8 @@ export interface Props {
   fromAcct?: string;
   username?: string;
   postMessage?: string;
+  //isModal?: boolean;
+  //_isCallOpen?: boolean;
   //called: boolean ;
 }
 
@@ -122,8 +124,9 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
   
 
   const _toggleCall = useCallback(
-    () => {setIsCallOpen((isCallOpen) => !isCallOpen)
-           },
+    () => <>
+    {setIsCallOpen((isCallOpen) => !isCallOpen)}
+    </>,
     []
   );
 
@@ -172,7 +175,10 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
           />
         ))}
       </Table>}
-      {isCallOpen && contract && messageIndex!=0 && messageIndex!=2 && (
+      {isCallOpen && contract 
+                  && messageIndex!=0 
+                  && messageIndex!=2 && messageIndex!=3 
+                  && (
         <CallCard
           contract={contract}
           messageIndex={messageIndex}
@@ -180,7 +186,9 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
           onChangeMessage={_setMessageIndex}
         />
       )}
-      {isCallOpen && contract && (messageIndex ===0 || messageIndex===2) && (
+      {isCallOpen && contract 
+                  && (messageIndex ===0 || messageIndex===2 || messageIndex===3) 
+                  && (
         <CallModal
          contract={contract}
          messageIndex={messageIndex}
@@ -194,6 +202,7 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
          />
       )
       }
+
     </>
   );
 }
