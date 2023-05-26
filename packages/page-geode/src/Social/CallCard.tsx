@@ -421,22 +421,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />
             </>
           )}
-        {messageIndex===10 && (
-            <><Card>
-            <Button
-            icon={(isPaidPost) ? 'minus' : 'plus'}
-            //isDisabled={!isValid}
-            label={t<string>('Paid Post')}
-            onClick={togglePaidPost} 
-            />
-            <Button
-            icon={(isStats) ? 'minus' : 'plus'}
-            //isDisabled={!isValid}
-            label={t<string>('Target Interest Analysis ')}
-            onClick={toggleStats} 
-            />          
-            </Card></>
-          )}
         {isShowDeveloper && (<>
           {' | '}
             <Button

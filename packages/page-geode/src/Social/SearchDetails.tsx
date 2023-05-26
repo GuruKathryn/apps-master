@@ -18,6 +18,7 @@ import CallEndorse from './CallEndorse';
 import CallPost from './CallPost';
 
 import JSONprohibited from '../shared/geode_prohibited.json';
+import CallFollow from './CallFollow';
 
 interface Props {
     className?: string;
@@ -244,8 +245,9 @@ function ShowAccount(): JSX.Element {
                     {' '}
 
                     
-                    <Label as='a' circular color='orange'
-                           onClick={() => {_makeFollow()}}
+                    <Label as='a' circular 
+                           color={!isAcctFollow? 'orange' : 'blue'}
+                           onClick={() => {!isAcctFollow? _makeFollow(): _reset()}}
                       
 
 
@@ -560,6 +562,9 @@ return (
     <Card >
         <AccountHeader fromAcct={from} timeDate={when} />
         <ShowAccount />
+        {isAcctFollow && !isPostReply && !isEndorse && (
+          <CallFollow />
+        ) }
         <PageIndexer />
         <ShowFeed />
         <PagePager />

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { Expander, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
+import { Card, Expander, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
 
 //import {  Table } from 'semantic-ui-react'
 
@@ -40,16 +40,10 @@ function CallFollow ({ className = '', onClear, messageId, fromAcct, username, p
     function MakeAccountFollow(): JSX.Element {
     return(
         <div>
-
-
                 <ContractsTable
                         contracts={allContracts}
                         updated={codeTrigger}
                         initMessageIndex={4}
-                        messageId={messageId}
-                        fromAcct={fromAcct}
-                        username={username}
-                        postMessage={postMessage}            
                     />                       
         </div>
     )
@@ -57,7 +51,9 @@ function CallFollow ({ className = '', onClear, messageId, fromAcct, username, p
 
   return (
     <StyledDiv className={className}>
+      <Card>
       <MakeAccountFollow />
+      </Card>
     </StyledDiv>
   );
 }

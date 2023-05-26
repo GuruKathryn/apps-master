@@ -281,11 +281,11 @@ function ShowFeed(): JSX.Element {
                 
                     {isShowMsgID && 
                       (<>
-                      <CopyInline value={_feed.messageId} label={''}/>
+                      
                       {(_feed.replyTo != zeroMessageId)
-                      ? (<><i>{t<string>('reply to: ')}{_feed.replyTo}</i><br />
-                           <i>{t<string>('message Id: ')}{_feed.messageId}</i></>) 
-                      : (<><i>{t<string>('message Id: ')}{_feed.messageId}</i></>)
+                      ? (<><CopyInline value={_feed.replyTo} label={''}/><i>{t<string>('reply to: ')}{_feed.replyTo}</i><br />
+                           <CopyInline value={_feed.messageId} label={''}/><i>{t<string>('message Id: ')}{_feed.messageId}</i></>) 
+                      : (<><CopyInline value={_feed.messageId} label={''}/><i>{t<string>('message Id: ')}{_feed.messageId}</i></>)
                       }
                       <LabelHelp help={t<string>('Copy Message ID. ')} />
                       <br />
@@ -409,9 +409,9 @@ try {
 
                                   {isShowMsgID && 
                                   (<><br />{(_replyFeed.replyTo != zeroMessageId)
-                                  ? (<><i>{t<string>('reply to: ')}{_replyFeed.replyTo}</i><br />
-                                  <i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>) 
-                                  : (<><i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>)}
+                                  ? (<><CopyInline value={_replyFeed.replyTo} label={''}/><i>{t<string>('reply to: ')}{_replyFeed.replyTo}</i><br />
+                                  <CopyInline value={_replyFeed.messageId} label={''}/><i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>) 
+                                  : (<><CopyInline value={_replyFeed.messageId} label={''}/><i>{t<string>('message Id: ')}{_replyFeed.messageId}</i><br /></>)}
                                   </>)} 
                                   <br />      
                               {renderLink(_replyFeed.link)}

@@ -17,6 +17,8 @@ import JSONprohibited from '../shared/geode_prohibited.json';
 import AccountHeader from '../shared/AccountHeader';
 //import { useToggle } from '@polkadot/react-hooks';
 import CallEndorse from './CallEndorse';
+import CallPost from './CallPost';
+import CallStats from './CallStats';
 
 interface Props {
     className?: string;
@@ -68,6 +70,8 @@ function PaidFeedDetails ({ className = '', onClear, outcome: { from, message, o
     const [isShowMsgID, toggleShowMsgID] = useToggle(false);
     const [postToEndorse, setPostToEndorse] = useState(['','','','']);
     const [isEndorse, setEndorse] =useState(false);
+    const [isPaidPost, setPaidPost] =useState(false);
+    const [isTarget, setTarget] =useState(false);
 
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
@@ -133,15 +137,32 @@ function renderLink(_link: string): JSX.Element {
 
 const _reset = useCallback(
   () => {setEndorse(false);
-        },
+         setPaidPost(false);
+         setTarget(false);},
   []
 )
 
 const _makeEndorse = useCallback(
   () => {setEndorse(true);
-        },
+         setPaidPost(false);
+         setTarget(false);},
   []
 )
+
+const _makePaidPost = useCallback(
+  () => {setEndorse(false);
+         setPaidPost(true);
+         setTarget(false);},
+  []
+)
+
+const _makeTarget = useCallback(
+  () => {setEndorse(false);
+         setPaidPost(false);
+         setTarget(true);},
+  []
+)
+
 
 function ShowFeed(): JSX.Element {
     setCountPost(0)
@@ -158,6 +179,16 @@ function ShowFeed(): JSX.Element {
                     icon='times'
                     label={t<string>('Close')}
                     onClick={onClear}
+                  />
+                  <Button
+                    icon={isPaidPost? 'minus': 'plus'}
+                    label={t<string>('Paid Post')}
+                    onClick={()=>{isPaidPost? _reset(): _makePaidPost()}}
+                  />
+                  <Button
+                    icon={isTarget? 'minus': 'plus'}
+                    label={t<string>('Interest Analysis')}
+                    onClick={()=>{isTarget? _reset(): _makeTarget()}}
                   />
                   {t<string>(' Number of Posts: ')}
                   <strong>{countPost}</strong>
@@ -329,8 +360,22 @@ function ShowFeed(): JSX.Element {
     <StyledDiv className={className}>
     <Card>
     <AccountHeader fromAcct={from} timeDate={when} callFrom={0}/>
+      {!isEndorse && !isPaidPost && isTarget && (
+        <CallStats />
+      )}
+      {!isEndorse && isPaidPost && !isTarget &&(
+        <CallPost
+        isPost={false}
+        messageId={postToEndorse[0]}
+        username={postToEndorse[1]}
+        fromAcct={postToEndorse[2]}
+        postMessage={postToEndorse[3]}
+        onClear={() => _reset()}
+        />
+      )}
+      
       <ShowFeed />
-      {isEndorse && postToEndorse[0] && (
+      {isEndorse && !isPaidPost && postToEndorse[0] && !isTarget && (
         <CallEndorse
         isPost={false}
         messageId={postToEndorse[0]}

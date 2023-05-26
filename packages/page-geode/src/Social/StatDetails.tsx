@@ -138,10 +138,10 @@ function ShowStat(): JSX.Element {
     const strObj: string[] = removeDuplicates(removeSpaces(JSON.parse(strArr)));
         return(
           <div>
-            <Table>
-            <Table.Header>
+            <Table stretch>
+            <Table.Header fullWidth>
               <Table.Row>
-                <Table.HeaderCell>
+                <Table.HeaderCell >
                 <>
                 <Button
                   icon={(isByFreq) ? 'minus' : 'plus'}
@@ -163,7 +163,7 @@ function ShowStat(): JSX.Element {
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
-            <Table.Row>
+            <Table.Row >
               <Table.Cell verticalAlign='top'>
               <strong>{'Interest Word Analysis :'}</strong>{(' (Select Analysis Above) ')}<br /><br />
               {t<string>('(1) Total Number of Users In Data: ') } <strong>{maxIndex}</strong><br />

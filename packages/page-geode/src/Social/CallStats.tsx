@@ -47,9 +47,9 @@ function CallStats ({ className = '', onClear }: Props): React.ReactElement<Prop
 
   return (
     <StyledDiv className={className}>
-    <Card>  
+      <Card>
       <CallInterestStats />
-    </Card>
+      </Card>
     </StyledDiv>
   );
 }
