@@ -29,9 +29,9 @@ import StatDetails from './StatDetails';
 import SearchDetails from './SearchDetails';
 import KeywordDetails from './KeywordDetails';
 
-import CallPost from './CallPost';
-import CallEndorse from './CallEndorse';
-import CallStats from './CallStats';
+//import CallPost from './CallPost';
+//import CallEndorse from './CallEndorse';
+//import CallStats from './CallStats';
 
 //import SearchDetails from './SearchDetails';
 import { getCallMessageOptions } from './util';
@@ -64,26 +64,28 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
   const [isViaCall, toggleViaCall] = useToggle();
-  const [isMenu, setIsMenu] = useState(false);
+  //const [isMenu, setIsMenu] = useState(false);
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
-  const [isTest, setIsTest] = useToggle();
+  //const [isTest, setIsTest] = useToggle();
   const [isCalled, toggleIsCalled] = useToggle(false);
-  const [isPubPost, togglePubPost] = useToggle();
-  const [isPaidPost, togglePaidPost] = useToggle();
+  
+  const isTest: boolean = false;
+  //const [isPubPost, togglePubPost] = useToggle();
+  //const [isPaidPost, togglePaidPost] = useToggle();
   //const [isCardReset, toggleCardReset] = useToggle(false);
   //const [isEndorse, toggleEndorse] = useToggle();
   //const [isGetReply, toggleGetReply] = useToggle();
   //const [isShowEndorse, toggleShowEndorse] = useToggle(false);
   //const [isShowMsgID, toggleShowMsgID] = useToggle(false);
   //const [isShowInterest, toggleShowInterest] = useToggle(false);
-  const [isPaidEndorse, togglePaidEndorse] = useToggle(false);
+  //const [isPaidEndorse, togglePaidEndorse] = useToggle(false);
   //const [isShowInfo, toggleShowInfo] = useToggle(false);
-  const [isStats, toggleStats] = useToggle(false);
+  //const [isStats, toggleStats] = useToggle(false);
   //const isTestData: boolean = false; //takes out code elements we only see for test
-  const isShowDeveloper: boolean = false;
-  const isNoPost: boolean = false;
+  //const isShowDeveloper: boolean = false;
+  //const isNoPost: boolean = false;
   
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -137,7 +139,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
       if (!accountId || !message || !value || !weight) {
         return;
       }
-      {setIsMenu(true)}
+      
       {toggleIsCalled()}
       contract
         .query[message.method](
@@ -171,7 +173,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
-  const isClosed = (isCalled && (messageIndex === 9 || messageIndex === 14 || messageIndex===10));
+  const isClosed = (isCalled && (messageIndex === 9 || messageIndex === 14 || messageIndex===10 || messageIndex===11 || messageIndex===13));
   const _help: string[] = JSONhelp;
   const _note: string[] = JSONnote;
   const _title: string[] = JSONTitle;
@@ -250,7 +252,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </>
             )}
             
-            {messageIndex!=1 && messageIndex!=8 && (<>
+            {!isClosed && messageIndex!=1 && messageIndex!=8 && messageIndex!=13 && (<>
               <Params
               onChange={setParams}
               params={
@@ -299,6 +301,19 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         }}
       />
     </>)}
+
+    {!isClosed && messageIndex===13 && (<>
+        {t<string>('Keyword(s) to Search: ')}<br />
+        <Input label={''} type="text"
+        value={params[0]}
+        onChange={(e) => {
+          params[0] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+    </>)}
+
+
     {messageIndex===1 && (<>
         {t<string>('Paid Post Message: ')}<br />
         <Input label={''} type="text"
@@ -409,49 +424,10 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         </Card>    
         </>
         )}
-        {isMenu && (
-        <>
-          {isNoPost && messageIndex===9 && (
-            <>{' | '}
-            <Button
-            icon={(isPubPost) ? 'minus' : 'plus'}
-            //isDisabled={!isValid}
-            label={t<string>('Post')}
-            onClick={togglePubPost} 
-            />
-            </>
-          )}
-        {isShowDeveloper && (<>
-          {' | '}
-            <Button
-              icon={(isTest) ? 'minus' : 'plus'}
-              //isDisabled={!isValid}
-              label={t<string>('Developer')}
-              onClick={setIsTest} 
-            />        
-        </>)}
-          </>
-        )} 
+  
         
-        {isPubPost && (
-          <><CallPost 
-            isPost={true}
-          /></>
-        )}
-        {isPaidPost && (
-          <><CallPost 
-            isPost={false}
-          /></>
-        )}
-        
-        {isPaidEndorse && (
-          <><CallEndorse
-          isPost={false}
-          /></>
-        )}
-        {isStats && (
-          <><CallStats /></>
-        )}
+
+
         {outcomes.length > 0 && messageIndex===9 &&  (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (

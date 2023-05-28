@@ -13,12 +13,11 @@ import { Grid, Image, Divider, List, Table, Label } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
 import AccountHeader from '../shared/AccountHeader';
-//import CallFollow from './CallFollow';
 import CallEndorse from './CallEndorse';
 import CallPost from './CallPost';
+import CallFollow from './CallFollow';
 
 import JSONprohibited from '../shared/geode_prohibited.json';
-import CallFollow from './CallFollow';
 
 interface Props {
     className?: string;
@@ -94,11 +93,11 @@ function SearchDetails ({ className = '', onClear, outcome: { from, message, out
              <Button icon={'minus'} 
               label={t<string>('Prev Page')}
               isDisabled={currPgIndex===1}
-              onClick={()=> setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}/>
+              onClick={()=> {<>{setPgIndex((currPgIndex-_indexer)>0 ? currPgIndex-_indexer : 1)}{_reset()}</>}} />
              <Button icon={'plus'} 
               label={t<string>('Next Page')}
               isDisabled={currPgIndex>countPost}
-              onClick={()=> setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}/>
+              onClick={()=> {<>{setPgIndex(currPgIndex<countPost-1 ? currPgIndex+_indexer : countPost)}{_reset()}</>}}/>
              <LabelHelp help={t<string>(' Use these buttons to page through Posts.')} /> 
             </Table.Cell>
           </Table.Row>
@@ -109,38 +108,49 @@ function SearchDetails ({ className = '', onClear, outcome: { from, message, out
    }
 
    function PageIndexer(): JSX.Element {
-    const currPgIndex: number = (pgIndex > 0) ? pgIndex : (pgIndex < countPost) ? pgIndex : countPost;
-    const _indexer: number = 1;
-    return (
-      <div>
-        <Table>
-          <Table.Row>
-            <Table.Cell>
-            <Button
-              icon='times'
-              label={t<string>('Close')}
-              onClick={onClear}
-            />
-             <Button icon={'home'} 
-              isDisabled={countPost===0}
-              onClick={()=> {<>{setPgIndex(1)}{_reset()}</>}}/>
-             <Button icon={'minus'} 
-              isDisabled={countPost===0}
-              onClick={()=> {<>{setPgIndex((currPgIndex-_indexer)>0? currPgIndex-_indexer : 1)}{_reset()}</>}}/>
-             <Button icon={'plus'} 
-              isDisabled={countPost===0}
-              onClick={()=> {<>{setPgIndex(currPgIndex<countPost-1? currPgIndex+_indexer : countPost)}{_reset()}</>}}/>
-             <Button icon={'sign-in-alt'}
-              isDisabled={countPost===0}
-              onClick={()=> {<>{setPgIndex((countPost>0)? countPost: 1)}{_reset()}</>}}/>
-             <strong>{t<string>(' | Showing Post: ')}{pgIndex<countPost? pgIndex: countPost}{' thru '}{
-             (pgIndex+maxIndex) < countPost? pgIndex+maxIndex: countPost}</strong>
-             <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
-            </Table.Cell>
-          </Table.Row>
-        </Table>
-      </div>
-    )
+    try {
+      const _rtnIsFollowing: boolean = feedDetail.ok.followers.includes(from);
+      const currPgIndex: number = (pgIndex > 0) ? pgIndex : (pgIndex < countPost) ? pgIndex : countPost;
+      const _indexer: number = 1;  
+      return (
+        <div>
+          <Table>
+            <Table.Row>
+              <Table.Cell>
+              <Button
+                icon='times'
+                label={t<string>('Close')}
+                onClick={onClear}
+              />
+               <Button icon={'home'} 
+                isDisabled={countPost===0}
+                onClick={()=> {<>{setPgIndex(1)}{_reset()}</>}}/>
+               <Button icon={'minus'} 
+                isDisabled={countPost===0}
+                onClick={()=> {<>{setPgIndex((currPgIndex-_indexer)>0? currPgIndex-_indexer : 1)}{_reset()}</>}}/>
+               <Button icon={'plus'} 
+                isDisabled={countPost===0}
+                onClick={()=> {<>{setPgIndex(currPgIndex<countPost-1? currPgIndex+_indexer : countPost)}{_reset()}</>}}/>
+               <Button icon={'sign-in-alt'}
+                isDisabled={countPost===0}
+                onClick={()=> {<>{setPgIndex((countPost>0)? countPost: 1)}{_reset()}</>}}/>
+               {!_rtnIsFollowing && (<>
+                {' | '}
+               <Button icon={isAcctFollow? 'minus': 'plus'} label={'Follow'}
+                onClick={()=>{!isAcctFollow? _makeFollow(): _reset()}}/>               
+               </>)}
+               <strong>{t<string>(' | Showing Post: ')}{pgIndex<countPost? pgIndex: countPost}{' thru '}{
+               (pgIndex+maxIndex) < countPost? pgIndex+maxIndex: countPost}</strong>
+               <LabelHelp help={t<string>(' Use these buttons to page through your Posts.')} /> 
+              </Table.Cell>
+            </Table.Row>
+          </Table>
+        </div>
+      )  
+    } catch(e) {
+      console.log(e)
+      return(<>{'Nothing to show.'}</>)
+    }
    }
 
 
@@ -230,7 +240,8 @@ function ShowAccount(): JSX.Element {
     const noFollowers: number = feedDetail.ok.followers.length>0 ? feedDetail.ok.followers.length: 0;
     const noFollowing: number = feedDetail.ok.following.length>0 ? feedDetail.ok.following.length: 0;
     const _username: string = feedDetail.ok.searchedAccount.length>0 ? hextoHuman(feedDetail.ok.username): '';
-      return (<>
+    const _rtnIsFollowing: boolean = feedDetail.ok.followers.includes(from);
+    return (<>
             <Table stretch verticalAlign='top'>
             <Table.Header>
               <Table.Row>
@@ -243,17 +254,16 @@ function ShowAccount(): JSX.Element {
                     {' '}
                     {_username.trim()!='' && (<><strong>{'@'}{_username}</strong></>)}
                     {' '}
-
-                    
-                    <Label as='a' circular 
+                    {_rtnIsFollowing? (<>
+                      <Label color='blue' circular>{'Following'}</Label>
+                    </>): (<>
+                      <Label as='a' circular 
                            color={!isAcctFollow? 'orange' : 'blue'}
                            onClick={() => {!isAcctFollow? _makeFollow(): _reset()}}
-                      
-
-
-
                     >{t<string>('Follow')}</Label>
-                    <LabelHelp help={t<string>(' Use the orange Follow button to follow this account. ')} /> 
+                    <LabelHelp help={t<string>(' Use the orange Follow button to follow this account. Click again to Close the Modal. ')} /> 
+                    
+                    </>)}
                   </h2>
                   {t<string>('Number of Posts: ')}<strong>{countPost}</strong>
                   </>
@@ -297,6 +307,7 @@ function ShowAccount(): JSX.Element {
                   {feedDetail.ok.followers.map(_followers =>
                   <>{' ('}<AccountName value={_followers} withSidebar={true}/>{') '}
                   </>)}
+
                   </>
                 )}
                 </>) : <>
@@ -363,7 +374,6 @@ function ShowAccount(): JSX.Element {
                   {index >= pgIndex -1 && index < pgIndex + maxIndex && (
                   <>
                   <h3> 
-                    <Label color='blue' circular >{'Post '}{index+1}</Label>
                           <strong>{t<string>('@')}</strong>
                           <strong>{hextoHuman(_feed.username)}</strong>
                             {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
@@ -439,11 +449,6 @@ function ShowAccount(): JSX.Element {
                     summary={<Label color='orange' circular> {'Replies: '}{_feed.replyCount}</Label>}>
                     {ShowReplies(_feed.messageId)}
                     </Expander>    
-
-
-
-
-
                   <Divider />                        
                   </>)}
             {setCountPost(index+1)}</>
@@ -560,7 +565,7 @@ function ShowReplies(replyMessageId: string): JSX.Element {
 return (
     <StyledDiv className={className}>
     <Card >
-        <AccountHeader fromAcct={from} timeDate={when} />
+        <AccountHeader fromAcct={from} timeDate={when} callFrom={3}/>
         <ShowAccount />
         {isAcctFollow && !isPostReply && !isEndorse && (
           <CallFollow />

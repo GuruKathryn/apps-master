@@ -2,7 +2,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
-
+import { Input } from 'semantic-ui-react'
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
@@ -160,7 +160,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         <h2><strong>{'Make an Experience Claim'}</strong></h2>
         </>)}
         {messageIndex===2 && (<>
-        <h2><strong>{'Make an Enducation Claim'}</strong></h2>
+        <h2><strong>{'Make an Education Claim'}</strong></h2>
         </>)}
 
         {messageIndex===1 && (<>
@@ -193,6 +193,10 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           <><br /><br />
           <Badge color='blue' icon='1'/>
           {t<string>('Select which of your Accounts is asking for this Resume:')}
+          </>)}
+        {isCalled && messageIndex===10 && (<>
+          <Badge color='blue' icon='1'/>
+          {t<string>('Select the Account to Use for Search: ')}
           </>)}
         {isCalled && (
           <>
@@ -235,12 +239,11 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               {t<string>('Select the Account whose Resume you want to view:')}
               </>)}
 
-            {isCalled && messageIndex<5 && (
-              <>
-                <Badge color='blue' icon='2'/>
-                {t<string>('Enter Your keywords, description and link to See More:')}
-              </>)}
-            <Params
+          {messageIndex!=0 && messageIndex!=1 
+                           && messageIndex!=2 
+                           && messageIndex!=3 
+                           && messageIndex!=10 && (<>
+              <Params
               onChange={setParams}
               params={
                 message
@@ -249,8 +252,104 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               }              
               registry={contract.abi.registry}
             />
+          
+          </>)}
           </>
         )}
+
+{messageIndex===0 && (<>
+        <Badge color='blue' icon='2'/>
+        {t<string>('Enter Your Expertise Keywords and/or Description : ')}<br />
+        <Input label={''} type="text"
+        value={params[0]}
+        onChange={(e) => {
+          params[0] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        <Badge color='blue' icon='3'/>
+        {t<string>('Link to Additional Expertise Information: ')}<br />
+        <Input label={''} type="text"
+        value={params[1]}
+        onChange={(e) => {
+          params[1] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+    </>)}
+    {messageIndex===1 && (<>
+        <Badge color='blue' icon='2'/>
+        {t<string>('Enter Your Work History Keywords and/or Description : ')}<br />
+        <Input label={''} type="text"
+        value={params[0]}
+        onChange={(e) => {
+          params[0] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        <Badge color='blue' icon='3'/>
+        {t<string>('Link to Additional Work History Information: ')}<br />
+        <Input label={' '} type="text"
+        value={params[1]}
+        onChange={(e) => {
+          params[1] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+    </>)}
+    {messageIndex===2 && (<>
+        <Badge color='blue' icon='2'/>
+        {t<string>('Enter Your Education Keywords and/or Description : ')}<br />
+        <Input label={''} type="text"
+        value={params[0]}
+        onChange={(e) => {
+          params[0] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        <Badge color='blue' icon='3'/>
+        {t<string>('Link to Additional Education Information: ')}<br />
+        <Input label={' '} type="text"
+        value={params[1]}
+        onChange={(e) => {
+          params[1] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+    </>)}
+    {messageIndex===3 && (<>
+        <Badge color='blue' icon='2'/>
+        {t<string>('Enter Your Good Deed Keywords and/or Description : ')}<br />
+        <Input label={''} type="text"
+        value={params[0]}
+        onChange={(e) => {
+          params[0] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+        <Badge color='blue' icon='3'/>
+        {t<string>('Link to Additional Good Deed Information: ')}<br />
+        <Input label={' '} type="text"
+        value={params[1]}
+        onChange={(e) => {
+          params[1] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+    </>)}
+    {isCalled && messageIndex===10 && (<>
+        <Badge color='blue' icon='2'/>
+        {t<string>('Enter Keywords to Search : ')}<br />
+        <Input label={''} type="text"
+        value={params[0]}
+        onChange={(e) => {
+          params[0] = e.target.value;
+          setParams([...params]);
+        }}
+      />
+    </>)}
+
+
         {message.isPayable && (
           <InputBalance
             //help={t<string>('The allotted value for this contract, i.e. the amount transferred to the contract as part of this call.')}

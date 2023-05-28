@@ -7,8 +7,8 @@ import { useTranslation } from '../translate';
 import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Button, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { Table, Label, Image, Divider } from 'semantic-ui-react'
+import { Toggle, Card, Button, Badge, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
+import { Segment, Grid, Table, Label, Divider } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
 //import JSONInterests from '../shared/geode_social_interest.json';
@@ -34,11 +34,11 @@ function StatDetails ({ className = '', onClear, outcome: { from, message, outpu
     const [isByUser, toggleByUser] = useToggle(false);
     const [isByFreq, toggleByFreq] = useToggle(true);
     const [isByGraph, toggleByGraph] = useToggle(false);
-    const [isShowInfo, toggleShowInfo] = useToggle(true);
+    //const [isShowInfo, toggleShowInfo] = useToggle(true);
     const [isFilter, toggleFilter] = useToggle(false);
     const [isUnique, toggleUnique] = useToggle(false);
 
-    const isShowFilter = (isByFreq && isShowInfo);
+    const isShowFilter = (isByFreq);
     
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
@@ -138,6 +138,7 @@ function ShowStat(): JSX.Element {
     const strObj: string[] = removeDuplicates(removeSpaces(JSON.parse(strArr)));
         return(
           <div>
+            <Segment raised color='grey'>
             <Table stretch>
             <Table.Header fullWidth>
               <Table.Row>
@@ -171,20 +172,11 @@ function ShowStat(): JSX.Element {
               {isByUser && (
                   <>
                   <br />
-                  <Badge color='blue' icon='thumbs-up'/>
-                  <Badge
-                    icon='info'
-                    color={(isShowInfo) ? 'blue' : 'gray'}
-                    onClick={toggleShowInfo}/> 
-
+                  <Badge icon='info' color={'blue'} />
                   <strong>{t<string>(' Interest Words by User Accounts:')}</strong><br /><br />
-                  {isShowInfo && (
-                    <>
                     <CopyInline value={'copy'} label={''}/>
                     {t<string>(' Use the Copy button to copy the Interest Words from individual Users.')}
                     <br /><br />
-                    </>
-                  )}
                   
                   {feedDetail.ok.map((_word, index: number) => 
                     <>
@@ -197,44 +189,42 @@ function ShowStat(): JSX.Element {
               {isByGraph && (
                 <>
                 <Badge color='red' icon='thumbs-up'/>
-                <Badge
-                    icon='info'
-                    color={(isShowInfo) ? 'blue' : 'gray'}
-                    onClick={toggleShowInfo}/> 
-
                 <strong>{t<string>(' Graph Analysis to be added in future upgrade.')}</strong><br /><br />
                 <Divider />
                 </>
               )}
               {isByFreq && (
                 <>
-                <Badge color='blue' icon='thumbs-up'/>
-                <Badge
-                    icon='info'
-                    color={(isShowInfo) ? 'blue' : 'gray'}
-                    onClick={toggleShowInfo}/> 
+                <Badge icon='info' color={'blue'} />
                 <strong>{t<string>(' Frequency Analysis: ')}</strong>{' '}
                 {isShowFilter && (
                 <>
-                <Badge
-                      icon={(isFilter) ? 'thumbs-up': 'thumbs-down'}
-                      color={(isFilter) ? 'red' : 'gray'}
-                      onClick={toggleFilter}/>
-                      {t<string>('  Sort Alphabetic | ')}
-                <Badge
-                      icon={(isUnique) ? 'thumbs-up': 'thumbs-down'}
-                      color={(isUnique) ? 'red' : 'gray'}
-                      onClick={toggleUnique}/>
-                      {t<string>(' Show Unique Words ')}</> 
-                    )}
                 <br /><br />
-                {isShowInfo && (
-                    <>
+                <Grid columns={5} divided>
+                  <Grid.Row>
+                    <Grid.Column>
+                      <Toggle className=''
+                        label={<> <Badge icon='check' color={isFilter? 'blue': 'gray'}/> {t<string>(' Sort Alphabetic ')} </>}
+                        onChange={toggleFilter}
+                        value={isFilter}
+                      />
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Toggle className=''
+                        label={<> <Badge icon='check' color={isUnique? 'blue': 'gray'}/> {t<string>(' Show Unique Words ')} </>}
+                        onChange={toggleUnique}
+                        value={isUnique}
+                      />
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+                </> 
+                )}
+                <br /><br />
+
                     <CopyInline value={'copy'} label={''}/>
                     {t<string>('Use the Copy button to copy the Interest Words from individual Users.')}
                     <br /><br />
-                    </>
-                  )}
 
                 <strong>{t<string>('Unique Words: ')}</strong>
                 {sortDesend(strObj).map((_word, index: number) => (
@@ -258,27 +248,31 @@ function ShowStat(): JSX.Element {
                 
           </Table.Cell>
         </Table>        
-        <Divider />
+        
                 </>
               )}
              </Table.Cell>
             </Table.Row>
         </Table>  
+        </Segment>
+
       </div>)
           } catch(e) {
       console.log(e);
       return(
         <div>
-          <Card>{t<string>('No Social Data')}</Card>
+          <>{t<string>('No Social Data')}</>
         </div>
       )
     }
 }
 
+
     
   return (
     <StyledDiv className={className}>
     <Card>
+      
       <ShowStat />
     </Card>
     </StyledDiv>

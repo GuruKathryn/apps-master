@@ -11,7 +11,6 @@ import { useToggle } from '@polkadot/react-hooks';
 function Summary (): React.ReactElement {
   const { t } = useTranslation();
   const info: string[] = JSONinfo;
-  const [isShowInfo, toggleShowInfo] = useToggle(true)
   const [isShowMore, toggleShowMore] = useToggle(false)
 
   function showAccount(str: string): JSX.Element { {
@@ -24,7 +23,6 @@ function Summary (): React.ReactElement {
       )
     }
   }
-
   return (
     <div>
     <SummaryBox>        
@@ -33,17 +31,10 @@ function Summary (): React.ReactElement {
       </CardSummary> 
     </SummaryBox>
     <Card> 
-    <Badge
-      icon={'info'}
-           color={(isShowInfo) ? 'blue' : 'gray'}
-           onClick={toggleShowInfo}/> 
+    <Badge icon={'info'} color={'blue'}/> 
       <strong> {t<string>('Info for Life and Work: ')} </strong>
-      {isShowInfo && (<>
-        {info[0]+info[1]}       
-      </>)}      
+        {info[0]+info[1]}            
       <br /><br />
-
-    {isShowInfo && (<>
     <Toggle
             className=''
             label={t<string>('Recommended Accounts ')}
@@ -56,7 +47,6 @@ function Summary (): React.ReactElement {
         {' '}{showAccount(info[3])}
         {' '}{showAccount(info[4])}
       </>)}    
-    </>)}
     </Card>
     </div>
   );

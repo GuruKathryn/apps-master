@@ -2,6 +2,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
+import { Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -223,6 +224,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 <Badge color='blue' icon='2'/>
                 {t<string>('Enter Your keywords, description and link to See More:')}
               </>)}
+
+            
             <Params
               onChange={setParams}
               params={
@@ -234,6 +237,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />
           </>
         )}
+
         {message.isPayable && (
           <InputBalance
             //help={t<string>('The allotted value for this contract, i.e. the amount transferred to the contract as part of this call.')}

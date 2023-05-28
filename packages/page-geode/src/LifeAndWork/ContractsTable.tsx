@@ -63,7 +63,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex, claimI
   const [isTableOpen, toggleTable] = useToggle();
   const [isLoadContract, toggleIsLoad] = useToggle();
   // set to true to test contracts functionality
-  const isTest: boolean = false;
+  //const isTest: boolean = false;
   console.log(contractIndex);
   // set default after contract load to chain
   const contractAddress: string = (JSONContractAddress[0])? JSONContractAddress[0] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
@@ -150,24 +150,6 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex, claimI
             onClose={toggleIsLoad} 
             defaultAddress ={contractAddress}/>
       )}
-      {isTest && contract && (
-        <Card>
-            {'test code here!: '}{contractAddress}{' | '}
-            {(contractAddress)?
-            <Badge color='green' icon='thumbs-up'/> : 
-            <Badge color='red' icon='x' />}<br />
-            {'Is API Loaded?: '}
-            {(api)?
-              <Badge color='green' icon='thumbs-up'/> : 
-              <Badge color='red' icon='x' />}<br />
-            {'Life & Work contract size: '}{JSON.stringify(contracts).length}<br /><br />
-            <Button
-              icon={(isTableOpen) ? 'minus' : 'plus'}
-              label={t<string>('View Contracts')}
-              onClick={toggleTable} 
-            />
-            <br />
-        </Card>)}
 
       {isTableOpen && <Table
         empty={t<string>('No contracts available')}
