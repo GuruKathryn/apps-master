@@ -17,7 +17,6 @@ import { Expander, Badge, Card, Button, Dropdown, InputAddress, InputBalance, To
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
-//import { Table } from 'semantic-ui-react'
 
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
@@ -29,11 +28,6 @@ import StatDetails from './StatDetails';
 import SearchDetails from './SearchDetails';
 import KeywordDetails from './KeywordDetails';
 
-//import CallPost from './CallPost';
-//import CallEndorse from './CallEndorse';
-//import CallStats from './CallStats';
-
-//import SearchDetails from './SearchDetails';
 import { getCallMessageOptions } from './util';
 import JSONhelp from '../shared/geode_social_help.json';
 import JSONnote from '../shared/geode_social_note.json';
@@ -64,28 +58,12 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
   const [isViaCall, toggleViaCall] = useToggle();
-  //const [isMenu, setIsMenu] = useState(false);
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
-  //const [isTest, setIsTest] = useToggle();
   const [isCalled, toggleIsCalled] = useToggle(false);
   
   const isTest: boolean = false;
-  //const [isPubPost, togglePubPost] = useToggle();
-  //const [isPaidPost, togglePaidPost] = useToggle();
-  //const [isCardReset, toggleCardReset] = useToggle(false);
-  //const [isEndorse, toggleEndorse] = useToggle();
-  //const [isGetReply, toggleGetReply] = useToggle();
-  //const [isShowEndorse, toggleShowEndorse] = useToggle(false);
-  //const [isShowMsgID, toggleShowMsgID] = useToggle(false);
-  //const [isShowInterest, toggleShowInterest] = useToggle(false);
-  //const [isPaidEndorse, togglePaidEndorse] = useToggle(false);
-  //const [isShowInfo, toggleShowInfo] = useToggle(false);
-  //const [isStats, toggleStats] = useToggle(false);
-  //const isTestData: boolean = false; //takes out code elements we only see for test
-  //const isShowDeveloper: boolean = false;
-  //const isNoPost: boolean = false;
   
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -194,15 +172,10 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             summary={<strong>{t<string>('Instructions: ')}</strong>}>
             {t<string>(_help[messageIndex])}<br /><br />
             {t<string>(_note[messageIndex])}<br /><br />
-            {!isClosed && messageIndex < 15 && messageIndex!=12 && (
-            <><Badge color='blue' icon='info'/>
-            {t<string>(_tierOne[messageIndex])}</>
-            )}<br />
-            {messageIndex < 14 && 
-            messageIndex!=9 && messageIndex!=10 && (
-              <><Badge color='blue' icon='info'/>
-              {t<string>(_tierTwo[messageIndex])}</>
-            )}
+            <Badge color='blue' icon='info'/>
+            {t<string>(_tierOne[messageIndex])}<br />
+            <Badge color='blue' icon='info'/>
+            {t<string>(_tierTwo[messageIndex])}
 
         </Expander>
         {isTest && (
@@ -263,7 +236,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               registry={contract.abi.registry}
             />            
             </>)}
-            
           </>
         )}
 
@@ -355,7 +327,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           setParams([...params]);
         }}
         />
-        {t<string>('Total Value: ')}<br />
+        {t<string>('Total Geode to spend across all Endorsers: ')}<br />
     </>)}
 
 
@@ -424,10 +396,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         </Card>    
         </>
         )}
-  
-        
-
-
         {outcomes.length > 0 && messageIndex===9 &&  (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
@@ -435,8 +403,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <FeedDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                //isShowEndorsers={isShowEndorse}
-                //isShowMessageID={isShowMsgID}
                 outcome={outcome}
                 onClose={isCalled}
               
@@ -453,8 +419,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <PaidFeedDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                //isShowEndorsers={isShowEndorse}
-                //isShowInterest={isShowInterest}
                 outcome={outcome}
               />
               {isTest && (<>{JSON.stringify(outcome.output)}</>)}

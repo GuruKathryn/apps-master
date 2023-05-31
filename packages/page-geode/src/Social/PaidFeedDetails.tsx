@@ -279,8 +279,14 @@ function ShowFeed(): JSX.Element {
                               {' ('}<AccountName value={_feed.fromAcct} withSidebar={true}/>{') '}
                               {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                               {' '}{timeStampToDate(_feed.timestamp)}{' '}
-                        <Badge icon='thumbs-up' color={'blue'}
-                               onClick={() => {<>
+
+                              {(_feed.fromAcct===from || _feed.endorsers.includes(from))? (<>
+                                <Badge icon='thumbs-up' color='gray'/>
+                              </>) : (<>
+                                <Badge 
+                                  icon='thumbs-up' 
+                                  color={'blue'}
+                                  onClick={() => {<>
                                     {setPostToEndorse([
                                       _feed.messageId,
                                       _feed.username,
@@ -289,7 +295,8 @@ function ShowFeed(): JSX.Element {
                                     ])}
                                     {_makeEndorse()}
                                     </>
-                          }}/>
+                                  }}/>                              
+                              </>)}
                           <LabelHelp help={t<string>('Use the Thumbs Up button to Endorse Paid Ads and Get Paid! ')} />
                      </h3>
                             <i><strong>{t<string>('Payment: ')}{unitToGeode(_feed.endorserPayment)}{' Geode'}

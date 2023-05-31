@@ -160,14 +160,18 @@ function ListClaims(props:ClaimList): JSX.Element {
               </>)}
 
           {_out.show && isShowForm && (<>
-                <Badge
-                    icon='thumbs-up'
-                    color='orange'
+              {_out.endorsers.includes(from)? (<>
+                <Badge icon='thumbs-up' color='gray' />
+              </>): 
+              (<>
+                <Badge icon='thumbs-up' color='blue'
                     onClick={() => setClaimToEndorse([
                         _out.claimId, 
                         _out.claim, 
                         _out.claimant,
-                        claimIdRef[_out.claimtype] ])}/>                            
+                        claimIdRef[_out.claimtype] ])}/>              
+              </>)}
+                            
               </>)}
               
           {_out.show && isShowClaimId && (<>
@@ -222,7 +226,7 @@ function EndorsementCard(): JSX.Element {
         {isShowForm && (<>
         <List>
           <List.Item>
-              <Badge icon={'thumbs-up'} color={'orange'} />
+              <Badge icon={'thumbs-up'} color={'blue'} />
                 {t<string>('Click the Endorse icon on any Claim to Endorse')}
           </List.Item>
           <List.Item>

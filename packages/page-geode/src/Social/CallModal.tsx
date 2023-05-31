@@ -185,13 +185,13 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
             {'(1) '}{t<string>('Make Sure the (account to use) is NOT the owner of the Post')}<br /> 
             {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
-            {t<string>('⚠️ Please Note: You can not endorse your own claims.')}
+            {t<string>('⚠️ Please Note: You can not endorse your own posts.')}
           </>)}
         {messageIndex !== null && messageIndex === 0 && !postMessage && (<>
             <h2><strong>{t<string>('Social - Make a Post ')}{' '}</strong></h2><br />
             <strong>{t<string>('Instructions for Posting: ')}</strong><br />
-            {'(1) '}{t<string>('Call from Account - Your Account for Post Originator. ')}<br /> 
-            {'(2) '}{t<string>('Enter your Post message in (newMessage) text field. ')}<br />
+            {'(1) '}{t<string>('Call from Account - This is Your Account. ')}<br /> 
+            {'(2) '}{t<string>('Enter your Post message in the text field. ')}<br />
             {'(3) '}{t<string>('Photo or YouTube Link -  Enter a valid Photo or YouTube Link.')}<br />
             {'(4) '}{t<string>('Website or Document Link - Enter your Website or Document Link for further information.')}<br />
             <br /><br />
@@ -201,7 +201,7 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
             <h2><strong>{t<string>('Social - Reply to a Post ')}{' '}</strong></h2><br />
             <strong>{t<string>('Instructions for Replying to a Post: ')}</strong><br />
             {'(1) '}{t<string>('Call from Account - Your Account for Post Originator. ')}<br /> 
-            {'(2) '}{t<string>('Enter your Post message in (newMessage) text field. ')}<br />
+            {'(2) '}{t<string>('Enter your Post message in the text field. ')}<br />
             {'(3) '}{t<string>('Photo or YouTube Link -  Enter a valid Photo or YouTube Link.')}<br />
             {'(4) '}{t<string>('Website or Document Link - Enter your Website or Document Link for further information.')}<br />
             <br /><br />

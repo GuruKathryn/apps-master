@@ -13,35 +13,21 @@ import { useContracts } from '../useContracts';
 import ContractsTable from './ContractsTable';
 
 import Summary from './Summary';
-//import Details from './Details';
-//import NewsFeed from './NewsFeed';
-//import NewsArticles from './NewsArticles';
-
-//import { useApi } from '@polkadot/react-hooks';
-
-//import useChainInfo from '../useChainInfo';
-//import Extensions from './Extensions';
-//import NetworkSpecs from './NetworkSpecs';
 
 interface Props {
   className?: string;
 }
 
 export default function Social ({ className = '' }: Props): React.ReactElement {
-//  const { isDevelopment } = useApi();
-//  const chainInfo = useChainInfo();
+
 const { t } = useTranslation();
 const { allCodes, codeTrigger } = useCodes();
 const { allContracts } = useContracts();
 
-//const [isFeed, toggleFeed] = useToggle();
-const [isPost, togglePost] = useToggle();
 const [isSearch, toggleSearch] = useToggle();
 const [isSettings, toggleSettings] = useToggle();
 const [isYourFeed, toggleYourFeed] = useToggle();
 const [isPaidFeed, togglePaidFeed] = useToggle();
-const [isYourPost, toggleYourPost] = useToggle();
-const [isPaidPost, togglePaidPost] = useToggle();
 const [isAccountSearch, toggleAccountSearch] = useToggle();
 const [isKeywordSearch, toggleKeywordSearch] = useToggle();
 const [isUpdate, toggleUpdate] = useToggle();
@@ -49,8 +35,6 @@ const [isFollow, toggleFollow] = useToggle();
 const [isUnFollow, toggleUnFollow] = useToggle();
 const [isBlock, toggleBlock] = useToggle();
 const [isUnBlock, toggleUnBlock] = useToggle();
-
-const isNoPost: boolean = false;
 
 const refTitle: string[] = 
 [' Display a feed of all public messages and endorsed public messages from all accounts that you follow, sorted by most recent. (Click again to close) ', 
@@ -71,75 +55,52 @@ const refTitle: string[] =
 
 // todo
 console.log(allCodes);
-
   return (
     <StyledDiv className={className}>
     <div>
         <Table >
           <Summary />
+          {!isAccountSearch && !isKeywordSearch 
+                            && !isFollow && !isUnFollow 
+                            && !isBlock && !isUnBlock
+                            && !isUpdate && (<>
             <Card>
-            {!isPaidFeed && !isPost && !isSettings && !isSearch && (
+            {!isPaidFeed && !isSettings && !isSearch && (
             <><Button
                 icon={(isYourFeed) ? 'minus' : 'plus'}
                 label={t('Your Feed')}
                 onClick={toggleYourFeed}>
-              </Button></>
+              </Button>
+              {isYourFeed && (<>{refTitle[0]}</>)}</>
           )}
-            {!isYourFeed && !isPost && !isSettings && !isSearch && (
+            {!isYourFeed && !isSettings && !isSearch && (
             <><Button
               icon={(isPaidFeed) ? 'minus' : 'plus'}
               label={t('Paid Feed')}
               onClick={togglePaidFeed}>
-            </Button></>
+            </Button>
+            {isPaidFeed && (<>{refTitle[5]}</>)}</>
           )}
 
-            {isNoPost && !isYourPost && !isPaidPost && !isSettings && !isSearch && (
-            <><Button
-                icon={(isPost) ? 'minus' : 'plus'}
-                label={t<string>('Post')}
-                onClick={togglePost}>
-            </Button></>
-            )}
-            {!isPaidFeed && !isYourFeed && !isAccountSearch && !isKeywordSearch && !isPost && !isSettings && (
+            {!isPaidFeed && !isYourFeed && !isAccountSearch && !isKeywordSearch && !isSettings && (
             <><Button
                 icon={(isSearch) ? 'minus' : 'plus'}
                 label={t<string>('Search')}
                 onClick={toggleSearch}>
-            </Button></>
+            </Button>
+            {isSearch && (<>{refTitle[2]}</>)}</>
             )}
-            {!isPaidFeed && !isYourFeed && !isUpdate && !isFollow && !isUnFollow && !isBlock && !isUnBlock && !isPost && !isSearch && (
+            {!isPaidFeed && !isYourFeed && !isUpdate && !isFollow && !isUnFollow && !isBlock && !isUnBlock && !isSearch && (
             <><Button
                 icon={(isSettings) ? 'minus' : 'plus'}
                 label={t<string>('Settings')}
                 onClick={toggleSettings}>
-            </Button></>
-            )}
-            {isYourFeed && (<>{refTitle[0]}</>)}
-            {isPaidFeed && (<>{refTitle[5]}</>)}
-            {isSearch && (<>{refTitle[2]}</>)}
-            {isSettings && (<>{refTitle[3]}</>)}
+            </Button>
+            {isSettings && (<>{refTitle[3]}</>)}</>
+            )}  
             </Card>  
+          </>)}
 
-        {isPost && (
-        <><Card>
-          {isNoPost && !isPaidPost && (
-            <><Button
-                icon={(isYourPost) ? 'minus' : 'plus'}
-                label={t('Post')}
-                onClick={toggleYourPost}>
-              </Button></>
-          )}
-          {!isYourPost && (
-            <><Button
-              icon={(isPaidPost) ? 'minus' : 'plus'}
-              label={t('Paid Post')}
-              onClick={togglePaidPost}>
-            </Button></>
-          )}
-          {isYourPost && (<>{refTitle[6]}</>)}
-          {isPaidPost && (<>{refTitle[7]}</>)}
-          </Card></>
-        )}
         {isSearch && (
         <><Card>
           {!isKeywordSearch && (
@@ -205,20 +166,6 @@ console.log(allCodes);
           </Card></>
         )}
         </Table>
-        {isYourPost && (
-          <ContractsTable
-            contracts={allContracts}
-            updated={codeTrigger}
-            initMessageIndex={0}
-            //isModal={false}
-        />)}
-        {isPaidPost && (
-          <ContractsTable
-            contracts={allContracts}
-            updated={codeTrigger}
-            initMessageIndex={1}
-            //isModal={false}
-        />)}
 
         {isFollow && (
           <ContractsTable
@@ -276,8 +223,6 @@ console.log(allCodes);
             initMessageIndex={11}
             //isModal={false}
         />)}
-
-
         {isKeywordSearch && (
           <ContractsTable
             contracts={allContracts}

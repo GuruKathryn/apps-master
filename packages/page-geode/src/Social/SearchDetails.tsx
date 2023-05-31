@@ -380,16 +380,23 @@ function ShowAccount(): JSX.Element {
                             {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                             {' '}{timeStampToDate(_feed.timestamp)}{' '}
                             {' '}
-                            <Badge icon='thumbs-up' color={'blue'}
-                                   onClick={() => {<>
+                            {(_feed.fromAcct===from || _feed.endorsers.includes(from))? (<>
+                                <Badge icon='thumbs-up' color='gray'/>
+                              </>) : (<>
+                                <Badge 
+                                  icon='thumbs-up' 
+                                  color={'blue'}
+                                  onClick={() => {<>
                                     {setPostToEndorse([
                                       _feed.messageId,
                                       _feed.username,
                                       _feed.fromAcct,
                                       _feed.message
                                     ])}
-                                    {_makeEndorse()}</>
-                                  }}/>                            
+                                    {_makeEndorse()}
+                                    </>
+                                  }}/>                              
+                              </>)}                          
                    </h3>
                    {isShowEndorsers && _feed.endorserCount > 0 && (
                   <>
@@ -494,17 +501,22 @@ function ShowReplies(replyMessageId: string): JSX.Element {
                                 {' ('}<AccountName value={_replyFeed.fromAcct} withSidebar={true}/>{') '}
                                 {' '}<Label color='blue' circular>{_replyFeed.endorserCount}</Label>
                                 {' '}{timeStampToDate(_replyFeed.timestamp)}{' '}
+                                {(_replyFeed.fromAcct===from || _replyFeed.endorsers.includes(from))? (<>
+                                <Badge icon='thumbs-up' color='gray'/>
+                                </>) : (<>
                                 <Badge icon='thumbs-up' color={'blue'}
-                                   onClick={() => {<>
+                                  onClick={() => {<>
                                     {setPostToEndorse([
                                       _replyFeed.messageId,
                                       _replyFeed.username,
                                       _replyFeed.fromAcct,
                                       _replyFeed.message
                                     ])}
-                                    {_makeEndorse()}</>
-                                  }}/>   
-                                  <br />                         
+                                    {_makeEndorse()}
+                                    </>
+                                  }}/>                              
+                                </>)}
+                                <br />                         
                                 {isShowEndorsers && _replyFeed.endorserCount > 0 && (
                                     <>
                                     <List divided inverted >

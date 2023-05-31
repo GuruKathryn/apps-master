@@ -165,6 +165,7 @@ function ShowFeed(): JSX.Element {
       setCountPost(0)
       try {
         const maxIndex: number = feedDetail.ok.maxfeed>0 ? feedDetail.ok.maxfeed: 10;
+        
         return(
           <div>
           {onReset && (<>{_reset()}</>)}
@@ -251,8 +252,10 @@ function ShowFeed(): JSX.Element {
                               {' '}<Label color='blue' circular>{_feed.endorserCount}</Label>
                               {' '}{timeStampToDate(_feed.timestamp)}{' '}
                               {' '}
-              
-                              <Badge 
+                              {(_feed.fromAcct===from || _feed.endorsers.includes(from))? (<>
+                                <Badge icon='thumbs-up' color='gray'/>
+                              </>) : (<>
+                                <Badge 
                                   icon='thumbs-up' 
                                   color={'blue'}
                                   onClick={() => {<>
@@ -264,7 +267,8 @@ function ShowFeed(): JSX.Element {
                                     ])}
                                     {_makeEndorse()}
                                     </>
-                                  }}/>
+                                  }}/>                              
+                              </>)}
                      </h3>
 
                      {isShowEndorsers && _feed.endorserCount > 0 && (
@@ -380,9 +384,10 @@ try {
                               {' '}<Label color='blue' circular>{_replyFeed.endorserCount}</Label>
                               {' '}{timeStampToDate(_replyFeed.timestamp)}{' '}
                               
-                              <Badge 
-                                  icon='thumbs-up' 
-                                  color={'blue'}
+                              {(_replyFeed.fromAcct===from || _replyFeed.endorsers.includes(from))? (<>
+                                <Badge icon='thumbs-up' color='gray'/>
+                              </>) : (<>
+                                <Badge icon='thumbs-up' color={'blue'}
                                   onClick={() => {<>
                                     {setPostToEndorse([
                                       _replyFeed.messageId,
@@ -390,10 +395,10 @@ try {
                                       _replyFeed.fromAcct,
                                       _replyFeed.message
                                     ])}
-                                    {_makeEndorse()}</>
-                                  }}/>
-
-                              
+                                    {_makeEndorse()}
+                                    </>
+                                  }}/>                              
+                              </>)}
                               
                               {isShowEndorsers && _replyFeed.endorserCount > 0 && (
                                   <>

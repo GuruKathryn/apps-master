@@ -60,9 +60,9 @@ function ListAccount(): JSX.Element {
                 {(callFrom===1 || callFrom===0) && (<>
                 {t<string>(' No. of Endorsements: ')}
                 <Label circular color='blue'>{'#'}</Label>  
-                {t<string>(' Endorse a Claim: ')}
+                {t<string>(' Endorse a Post: ')}
                 <Badge icon='thumbs-up' color='blue' /> 
-                {t<string>(' Copy a Claim ID: ')}
+                {t<string>(' Copy a message ID: ')}
                 <Badge icon='copy' color='orange' /> 
                 </>)}
                 {callFrom===2 && (<>

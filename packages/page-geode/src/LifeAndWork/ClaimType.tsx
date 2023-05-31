@@ -38,14 +38,14 @@ const [isIP, toggleIsIP] = useToggle();
                 onClick={toggleIsExpertise}>
     </Button>
     <Button
-                icon={(isEducation) ? 'minus' : 'plus'}
-                label={t<string>('Education')}
-                onClick={toggleIsEducation}>
-    </Button>
-    <Button
                 icon={(isWorkHistory) ? 'minus' : 'plus'}
                 label={t<string>('Work History')}
                 onClick={toggleIsWorkHistory}>
+    </Button>
+    <Button
+                icon={(isEducation) ? 'minus' : 'plus'}
+                label={t<string>('Education')}
+                onClick={toggleIsEducation}>
     </Button>
     <Button
                 icon={(isGoodDeed) ? 'minus' : 'plus'}

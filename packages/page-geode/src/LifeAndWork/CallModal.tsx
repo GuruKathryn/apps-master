@@ -145,23 +145,22 @@ function CallModal ({ className = '', claimID, claimant, claim, showBool, contra
   return (
     <Modal
       className={[className || '', 'app--contracts-Modal'].join(' ')}
-      header={t<string>('Geode Call Card')}
+      header={t<string>('Geode Life and Work')}
       onClose={onClose}
     >
       <Modal.Content>
         {messageIndex !== null && messageIndex === 5 && (<>
-          <h2><strong>{t<string>('Life and Work - Endorse a Claim')}</strong></h2><br />
+          <h2><strong>{t<string>('Endorse a Claim')}</strong></h2><br />
             <strong>{t<string>('Instructions for Endorsing Claims: ')}</strong><br />
-            {'(1) '}{t<string>('Make Sure the (account to use) is NOT the owner of the claims')}<br /> 
+            {'(1) '}{t<string>('Make Sure the (call from account) is NOT the owner of the claims')}<br /> 
             {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}<br /><br />
             {t<string>('⚠️ Please Note: You can not endorse your own claims.')}
           </>)}
           {messageIndex !== null && messageIndex === 6 && (<>
-            <h2><strong>{t<string>('Life and Work - Hide and Show Your Claims')}{' '}</strong></h2><br />
+            <h2><strong>{t<string>('Hide and Show Your Claims')}{' '}</strong></h2><br />
             <strong>{t<string>('Instructions for Hiding and Showing Claims: ')}</strong><br />
-            {'(1) '}{t<string>('Make Sure the (account to use) is the owner of the claims')}<br /> 
-            {'(2) '}{t<string>('Set the (setShow: bool) field to either no (Hide) or yes (Show)')}<br />
-            {'(3) '}{t<string>('Click Submit Button to sign and submit this transaction')}<br /><br />
+            {'(1) '}{t<string>('Make Sure the (call from account) is the owner of the claims')}<br /> 
+            {'(2) '}{t<string>('Click Submit Button to sign and submit this transaction')}<br /><br />
             {t<string>('⚠️ Please Note: You must be the account owner to show or hide a claim.')}<br />
           </>)}
         
@@ -279,7 +278,7 @@ function CallModal ({ className = '', claimID, claimant, claim, showBool, contra
             <Button
               icon='sign-in-alt'
               isDisabled={!isValid}
-              label={t<string>('Read')}
+              label={t<string>('View')}
               onClick={_onSubmitRpc}
             />
           )
@@ -289,7 +288,7 @@ function CallModal ({ className = '', claimID, claimant, claim, showBool, contra
               extrinsic={execTx}
               icon='sign-in-alt'
               isDisabled={!isValid || !execTx}
-              label={t('Execute')}
+              label={t('Submit')}
               onStart={onClose}
             />
           )
