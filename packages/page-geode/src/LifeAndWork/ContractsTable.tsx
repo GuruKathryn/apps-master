@@ -9,7 +9,7 @@ import type { ContractLink } from './types';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Badge, Card, Button, Table } from '@polkadot/react-components';
+import { Card, Button, Table } from '@polkadot/react-components';
 import { useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { formatNumber } from '@polkadot/util';
 
@@ -23,9 +23,9 @@ import { getContractForAddress } from './util';
 
 
 // uncomment for test configuration - - - - >
-import JSONContractAddress from '../shared/geode_contracts_test.json';
+//import JSONContractAddress from '../shared/geode_contracts_test.json';
 // uncomment for production chain - - - - >
-//import JSONContractAddress from '../shared/geode_contracts.json';
+import JSONContractAddress from '../shared/geode_contracts.json';
 
 
 export interface Props {

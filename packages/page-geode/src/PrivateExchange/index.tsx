@@ -21,7 +21,7 @@ interface Props {
     className?: string;
   }
   
-export default function Market ({ className = '' }: Props): React.ReactElement {
+export default function PrivateExcange ({ className = '' }: Props): React.ReactElement {
     const { t } = useTranslation();
     const [isUpdate, toggleUpdate] = useToggle();
     const [isLookUp, toggleLookUp] = useToggle();
@@ -38,8 +38,9 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
     const { allContracts } = useContracts();
     // todo
     console.log(allCodes);
-    //todo
+
     const deployApp: boolean = false;
+
     // const [codeHash, setCodeHash] = useState<string | undefined>();
     // const [constructorIndex, setConstructorIndex] = useState(0);
     // const [isDeployOpen, toggleDeploy, setIsDeployOpen] = useToggle();
@@ -64,7 +65,7 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
         <Table >
             <Summary />
             <Card>
-            {!deployApp && (<><strong>{'Coming Soon!'}</strong></>)}
+        {!deployApp && (<><strong>{'Coming Soon!'}</strong></>)}
 
         {deployApp && !isByKeyword && !isByAccount && !isLookUp && !isSearch && (
         <><Button

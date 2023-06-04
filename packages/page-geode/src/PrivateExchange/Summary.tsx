@@ -7,7 +7,7 @@ import React from 'react';
 import { Toggle, Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
 import { useTranslation } from '../translate';
 //import { formatNumber } from '@polkadot/util';
-import JSONinfo from '../shared/geode_messaging_info.json';
+import JSONinfo from '../shared/geode_private_exchange_info.json';
 import { useToggle } from '@polkadot/react-hooks';
 
 
@@ -38,12 +38,12 @@ function Summary (): React.ReactElement {
     <div>
     <SummaryBox>        
       <CardSummary label={''}>
-        {t<string>('Geode Private Messaging')} 
+        {t<string>('Geode Private Exchange')} 
       </CardSummary> 
     </SummaryBox>
     <Card> 
     <Badge icon={'info'} color={'blue'}/> 
-      <strong> {t<string>('Info for Private Messaging')} </strong>
+      <strong> {t<string>('Info for Private Exchange')} </strong>
         {': '}{t<string>(info[0]+info[1])}       
       <br /><br />
 

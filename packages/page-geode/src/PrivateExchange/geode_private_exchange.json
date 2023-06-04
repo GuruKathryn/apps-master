@@ -1,0 +1,1660 @@
+{
+  "source": {
+    "hash": "0xd7439670669495f2518b04dc48ad12581adf54f944260111ad0eb321bddb9a5e",
+    "language": "ink! 4.2.0",
+    "compiler": "rustc 1.70.0-nightly",
+    "build_info": {
+      "build_mode": "Release",
+      "cargo_contract_version": "2.0.1",
+      "rust_toolchain": "nightly-aarch64-apple-darwin",
+      "wasm_opt_settings": {
+        "keep_debug_symbols": false,
+        "optimization_passes": "Z"
+      }
+    }
+  },
+  "contract": {
+    "name": "geode_private_exchange",
+    "version": "0.1.0",
+    "authors": [
+      "Dr. Amy Messegee <support@blockandpurpose.com>"
+    ],
+    "description": "A contract for listing crytocurrencies for private sale on the Geode network."
+  },
+  "spec": {
+    "constructors": [
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "new",
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink_primitives",
+            "ConstructorResult"
+          ],
+          "type": 13
+        },
+        "selector": "0x9bae9d5e"
+      }
+    ],
+    "docs": [],
+    "environment": {
+      "accountId": {
+        "displayName": [
+          "AccountId"
+        ],
+        "type": 4
+      },
+      "balance": {
+        "displayName": [
+          "Balance"
+        ],
+        "type": 6
+      },
+      "blockNumber": {
+        "displayName": [
+          "BlockNumber"
+        ],
+        "type": 33
+      },
+      "chainExtension": {
+        "displayName": [
+          "ChainExtension"
+        ],
+        "type": 34
+      },
+      "hash": {
+        "displayName": [
+          "Hash"
+        ],
+        "type": 1
+      },
+      "maxEventTopics": 4,
+      "timestamp": {
+        "displayName": [
+          "Timestamp"
+        ],
+        "type": 12
+      }
+    },
+    "events": [
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "listing_id",
+            "type": {
+              "displayName": [
+                "Hash"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "seller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 4
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "pair",
+            "type": {
+              "displayName": [],
+              "type": 10
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "price",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "inventory",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "country",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "city",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "docs": [],
+        "label": "NewListing"
+      }
+    ],
+    "lang_error": {
+      "displayName": [
+        "ink",
+        "LangError"
+      ],
+      "type": 15
+    },
+    "messages": [
+      {
+        "args": [
+          {
+            "label": "offer_coin",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "asking_coin",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "price",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "label": "method",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "inventory",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "label": "country",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "city",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "notes",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "new_listing",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xee2823d1"
+      },
+      {
+        "args": [
+          {
+            "label": "listing_id",
+            "type": {
+              "displayName": [
+                "Hash"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "label": "price",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "label": "method",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "inventory",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "label": "country",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "city",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "notes",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "hide",
+            "type": {
+              "displayName": [
+                "bool"
+              ],
+              "type": 7
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "edit_listing",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0x187b4806"
+      },
+      {
+        "args": [
+          {
+            "label": "listing_id",
+            "type": {
+              "displayName": [
+                "Hash"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "hide_listing",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0x76ae0128"
+      },
+      {
+        "args": [
+          {
+            "label": "listing_id",
+            "type": {
+              "displayName": [
+                "Hash"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "show_listing",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0x2e4eef53"
+      },
+      {
+        "args": [
+          {
+            "label": "to_acct",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 4
+            }
+          },
+          {
+            "label": "message",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "new_message",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xaec7007f"
+      },
+      {
+        "args": [
+          {
+            "label": "block",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "block_message_sender",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xf4147bd0"
+      },
+      {
+        "args": [
+          {
+            "label": "unblock",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "unblock_message_sender",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0x8e5f2800"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "browse_all_listings",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0xed2a8980"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "view_my_messages",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 25
+        },
+        "selector": "0x420ea807"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "view_my_listings",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 31
+        },
+        "selector": "0x55d6713b"
+      }
+    ]
+  },
+  "storage": {
+    "root": {
+      "layout": {
+        "struct": {
+          "fields": [
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xa92e1651",
+                              "ty": 0
+                            }
+                          },
+                          "name": "hashvector"
+                        }
+                      ],
+                      "name": "HashVector"
+                    }
+                  },
+                  "root_key": "0xa92e1651"
+                }
+              },
+              "name": "account_listings"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 1
+                            }
+                          },
+                          "name": "listing_id"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 4
+                            }
+                          },
+                          "name": "seller"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 5
+                            }
+                          },
+                          "name": "offer_coin"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 5
+                            }
+                          },
+                          "name": "asking_coin"
+                        },
+                        {
+                          "layout": {
+                            "struct": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0xeb7ffaaf",
+                                      "ty": 5
+                                    }
+                                  },
+                                  "name": "0"
+                                },
+                                {
+                                  "layout": {
+                                    "leaf": {
+                                      "key": "0xeb7ffaaf",
+                                      "ty": 5
+                                    }
+                                  },
+                                  "name": "1"
+                                }
+                              ],
+                              "name": "(A, B)"
+                            }
+                          },
+                          "name": "pair"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 6
+                            }
+                          },
+                          "name": "price"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 5
+                            }
+                          },
+                          "name": "method"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 6
+                            }
+                          },
+                          "name": "inventory"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 5
+                            }
+                          },
+                          "name": "country"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 5
+                            }
+                          },
+                          "name": "city"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 5
+                            }
+                          },
+                          "name": "notes"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xeb7ffaaf",
+                              "ty": 7
+                            }
+                          },
+                          "name": "hide"
+                        }
+                      ],
+                      "name": "Listing"
+                    }
+                  },
+                  "root_key": "0xeb7ffaaf"
+                }
+              },
+              "name": "listing_details"
+            },
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 0
+                }
+              },
+              "name": "all_listings"
+            },
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 8
+                }
+              },
+              "name": "all_offer_coin"
+            },
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 9
+                }
+              },
+              "name": "listing_pairs"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x0403adda",
+                              "ty": 0
+                            }
+                          },
+                          "name": "hashvector"
+                        }
+                      ],
+                      "name": "HashVector"
+                    }
+                  },
+                  "root_key": "0x0403adda"
+                }
+              },
+              "name": "listings_by_pair"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x0609cd96",
+                              "ty": 11
+                            }
+                          },
+                          "name": "accountvector"
+                        }
+                      ],
+                      "name": "AccountVector"
+                    }
+                  },
+                  "root_key": "0x0609cd96"
+                }
+              },
+              "name": "account_contacts"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x6c01b1aa",
+                              "ty": 0
+                            }
+                          },
+                          "name": "hashvector"
+                        }
+                      ],
+                      "name": "HashVector"
+                    }
+                  },
+                  "root_key": "0x6c01b1aa"
+                }
+              },
+              "name": "sent_messages_to_account"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xb2660d46",
+                              "ty": 1
+                            }
+                          },
+                          "name": "message_id"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xb2660d46",
+                              "ty": 4
+                            }
+                          },
+                          "name": "from_acct"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xb2660d46",
+                              "ty": 4
+                            }
+                          },
+                          "name": "to_acct"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xb2660d46",
+                              "ty": 5
+                            }
+                          },
+                          "name": "message"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xb2660d46",
+                              "ty": 12
+                            }
+                          },
+                          "name": "timestamp"
+                        }
+                      ],
+                      "name": "MessageDetails"
+                    }
+                  },
+                  "root_key": "0xb2660d46"
+                }
+              },
+              "name": "message_details"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x5ea58bc5",
+                              "ty": 11
+                            }
+                          },
+                          "name": "accountvector"
+                        }
+                      ],
+                      "name": "AccountVector"
+                    }
+                  },
+                  "root_key": "0x5ea58bc5"
+                }
+              },
+              "name": "account_blocked"
+            }
+          ],
+          "name": "ContractStorage"
+        }
+      },
+      "root_key": "0x00000000"
+    }
+  },
+  "types": [
+    {
+      "id": 0,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 1
+          }
+        }
+      }
+    },
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 2,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "Hash"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 3
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 2,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "AccountId"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 3
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": {
+        "def": {
+          "primitive": "u128"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": {
+        "def": {
+          "primitive": "bool"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 5
+          }
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 10
+          }
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": {
+        "def": {
+          "tuple": [
+            5,
+            5
+          ]
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 4
+          }
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": {
+        "def": {
+          "primitive": "u64"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 14
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 14
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "tuple": []
+        }
+      }
+    },
+    {
+      "id": 15,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 1,
+                "name": "CouldNotReadInput"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "LangError"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 17
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 17
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 14
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 14
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "GenericError"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_private_exchange",
+          "geode_private_exchange",
+          "Error"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 20
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 20
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "pair_listings",
+                "type": 21,
+                "typeName": "Vec<PairListings>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_private_exchange",
+          "geode_private_exchange",
+          "BrowseAllListings"
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 22
+          }
+        }
+      }
+    },
+    {
+      "id": 22,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "pair",
+                "type": 10,
+                "typeName": "(Vec<u8>, Vec<u8>)"
+              },
+              {
+                "name": "average_price",
+                "type": 6,
+                "typeName": "Balance"
+              },
+              {
+                "name": "listing_count",
+                "type": 6,
+                "typeName": "u128"
+              },
+              {
+                "name": "total_inventory",
+                "type": 6,
+                "typeName": "Balance"
+              },
+              {
+                "name": "listings",
+                "type": 23,
+                "typeName": "Vec<Listing>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_private_exchange",
+          "geode_private_exchange",
+          "PairListings"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 24
+          }
+        }
+      }
+    },
+    {
+      "id": 24,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "listing_id",
+                "type": 1,
+                "typeName": "Hash"
+              },
+              {
+                "name": "seller",
+                "type": 4,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "offer_coin",
+                "type": 5,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "asking_coin",
+                "type": 5,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "pair",
+                "type": 10,
+                "typeName": "(Vec<u8>, Vec<u8>)"
+              },
+              {
+                "name": "price",
+                "type": 6,
+                "typeName": "Balance"
+              },
+              {
+                "name": "method",
+                "type": 5,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "inventory",
+                "type": 6,
+                "typeName": "Balance"
+              },
+              {
+                "name": "country",
+                "type": 5,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "city",
+                "type": 5,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "notes",
+                "type": 5,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "hide",
+                "type": 7,
+                "typeName": "bool"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_private_exchange",
+          "geode_private_exchange",
+          "Listing"
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 26
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "blocked",
+                "type": 11,
+                "typeName": "Vec<AccountId>"
+              },
+              {
+                "name": "conversations",
+                "type": 27,
+                "typeName": "Vec<ConversationWithAccount>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_private_exchange",
+          "geode_private_exchange",
+          "ViewMessages"
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 28
+          }
+        }
+      }
+    },
+    {
+      "id": 28,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "account",
+                "type": 4,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "conversation",
+                "type": 29,
+                "typeName": "Vec<MessageDetails>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_private_exchange",
+          "geode_private_exchange",
+          "ConversationWithAccount"
+        ]
+      }
+    },
+    {
+      "id": 29,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 30
+          }
+        }
+      }
+    },
+    {
+      "id": 30,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "message_id",
+                "type": 1,
+                "typeName": "Hash"
+              },
+              {
+                "name": "from_acct",
+                "type": 4,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "to_acct",
+                "type": 4,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "message",
+                "type": 5,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "timestamp",
+                "type": 12,
+                "typeName": "u64"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_private_exchange",
+          "geode_private_exchange",
+          "MessageDetails"
+        ]
+      }
+    },
+    {
+      "id": 31,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 32
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 32
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "listings",
+                "type": 23,
+                "typeName": "Vec<Listing>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_private_exchange",
+          "geode_private_exchange",
+          "ViewListings"
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "type": {
+        "def": {
+          "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 34,
+      "type": {
+        "def": {
+          "variant": {}
+        },
+        "path": [
+          "ink_env",
+          "types",
+          "NoChainExtension"
+        ]
+      }
+    }
+  ],
+  "version": "4"
+}

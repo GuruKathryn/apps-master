@@ -13,9 +13,12 @@ import { useTranslation } from '../translate';
 import icon_lifeandwork from './geode_app_icon_lifeandwork.png';
 import icon_market from './geode_app_icon_market.png';
 import icon_messaging from './geode_app_icon_messaging.png';
+import icon_private_exchange from './geode_app_icon_private_exchange.png';
 import icon_profile from './geode_app_icon_profile.png';
+import icon_referrals from './geode_app_icon_referrals.png';
 import icon_social from './geode_app_icon_social.png';
 import icon_sar from './geode_app_icon_sar.png';
+import icon_music from './geode_app_icon_music.png';
 import JSONhelp from './geode_home_info.json';
 
 //import IPAddress from '../shared/IpAddress';
@@ -36,7 +39,7 @@ const _help: string[] = JSONhelp;
 const CardContainer = () => (
   <Grid columns={3}>
     <Grid.Column height={5}>
-      <Segment raised textAlign='center' vertical color='blue' height={5}>
+      <Segment raised textAlign='center' vertical height={5}>
       <h2>{t<string>('Step ')}
         <Label color='orange' circular size='huge'>1</Label></h2>
         <h2><strong>{t<string>(' Get The Polkadot ')}<br />
@@ -53,7 +56,7 @@ const CardContainer = () => (
     </Grid.Column>
 
     <Grid.Column height={5}>
-    <Segment raised textAlign='center' vertical color='blue' height={5}>
+    <Segment raised textAlign='center' vertical height={5}>
       <h2>{t<string>('Step ')}
       <Label color='orange' circular size='huge'>2</Label></h2>
         <h2><strong>{t<string>(' Make a ')}<br />
@@ -72,7 +75,7 @@ const CardContainer = () => (
     </Grid.Column>
 
     <Grid.Column height={5}>
-    <Segment raised textAlign='center' vertical color='blue' height={5}>
+    <Segment raised textAlign='center' vertical height={5}>
     <h2>{t<string>('Step ')}
       <Label color='orange' circular size='huge'>3</Label></h2>
         <h2><strong>{t<string>(' Get GEODE Coins ')} <br />
@@ -152,6 +155,28 @@ const LinkContainer = () => {
       </Grid.Column>
 
       <Grid.Column width={1}>
+      <Image src={icon_referrals} size='tiny'
+            href={'#/geode/referrals'}>
+        </Image> 
+      </Grid.Column>
+      <Grid.Column verticalAlign={'top'} textAlign={'left'} width={5}>
+        <h2><strong>{t<string>('Referrals')}</strong></h2>
+        {_help[14]}
+      </Grid.Column>
+      </Grid.Row>
+
+      <Grid.Row stretched>
+      <Grid.Column width={1}>
+      <Image src={icon_private_exchange} size='tiny'
+            href={'#/geode/privateexchange'}>
+        </Image> 
+      </Grid.Column>
+      <Grid.Column verticalAlign={'top'} textAlign={'left'} width={4}>
+        <h2><strong>{t<string>('Private Exchange')}</strong></h2>
+        {_help[13]}
+      </Grid.Column>
+
+      <Grid.Column width={1}>
       <Image src={icon_sar} size='tiny'
             href={'#/geode/reporting'}>
         </Image> 
@@ -160,6 +185,7 @@ const LinkContainer = () => {
         <h2><strong>{t<string>('Reporting')}</strong></h2>
         {_help[5]}
       </Grid.Column>
+
       </Grid.Row>
     </Grid>
     </div>
