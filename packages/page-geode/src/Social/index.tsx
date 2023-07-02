@@ -172,65 +172,55 @@ console.log(allCodes);
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={4}
-            //isModal={false}
         />)}
         {isUnFollow && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={5}
-            //isModal={false}
         />)}
         {isBlock && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={6}
-            //isModal={false}
         />)}
         {isUnBlock && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={7}
-            //isModal={false}
         />)}
         {isUpdate && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={8}
-            //isModal={false}
         />)}
         {isYourFeed && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={9}
-            //isModal={false}
         />)}
         {isPaidFeed && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={10}
-            //isModal={false}
         />)}
         {isAccountSearch && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={11}
-            //isModal={false}
         />)}
         {isKeywordSearch && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={13}
-            //isModal={false}
         />)}
-
     </div>
     </StyledDiv>
   );

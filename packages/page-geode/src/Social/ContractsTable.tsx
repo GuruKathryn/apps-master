@@ -19,10 +19,10 @@ import CallCard from './CallCard';
 import Contract from './Contract';
 import { getContractForAddress } from './util';
 // uncomment for test configuration - - - - >
-//import JSONContractAddress from '../shared/geode_contracts_test.json';
+import JSONContractAddress from '../shared/geode_contracts_test.json';
 import CallModal from './CallModal';
 // uncomment for production chain - - - - >
-import JSONContractAddress from '../shared/geode_contracts.json';
+//import JSONContractAddress from '../shared/geode_contracts.json';
 
 export interface Props {
   contracts: string[];
@@ -32,9 +32,6 @@ export interface Props {
   fromAcct?: string;
   username?: string;
   postMessage?: string;
-  //isModal?: boolean;
-  //_isCallOpen?: boolean;
-  //called: boolean ;
 }
 
 interface Indexes {
@@ -59,7 +56,7 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
   const [isCallOpen, setIsCallOpen] = useState(true);
   const [contractLinks, setContractLinks] = useState<Record<string, ContractLink[]>>({});
   
-  const [isTableOpen, toggleTable] = useToggle();
+  const isTableOpen: boolean = false;
   const [isLoadContract, toggleIsLoad] = useToggle();
   // set to true to test contracts functionality
   const isTest: boolean = false;
@@ -114,15 +111,6 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
     []
   );
 
-  // const _resetModal = useCallback(
-  //   () => {setEndorse(false);
-  //          setReply(false);
-  //          setPost(false);
-  //         },
-  //   []
-  // )
-  
-
   const _toggleCall = useCallback(
     () => <>
     {setIsCallOpen((isCallOpen) => !isCallOpen)}
@@ -175,6 +163,7 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
           />
         ))}
       </Table>}
+      
       {isCallOpen && contract 
                   && messageIndex!=0 
                   && messageIndex!=2 && messageIndex!=3 

@@ -13,7 +13,7 @@ import { keyring } from '@polkadot/ui-keyring';
 import { ABI, InputName } from '../shared';
 import { useTranslation } from '../translate';
 import useAbi from '../useAbi';
-import ValidateAddr from './ValidateAddr';
+import ValidateAddr from '../shared/ValidateAddr';
 
 import JSONgeodeReferrals from './geode_referrals.json';
 
@@ -24,7 +24,7 @@ interface Props {
 
 function Add ({ defaultAddress, onClose }: Props): React.ReactElement {
   const { t } = useTranslation();
-  const _contractName: string = 'Geode Profile';
+  const _contractName: string = 'Geode Referrals';
   const { api } = useApi();
   const [address, setAddress] = useState<string | null>(defaultAddress);
   const [isAddressValid, setIsAddressValid] = useState(false);
@@ -109,7 +109,7 @@ function Add ({ defaultAddress, onClose }: Props): React.ReactElement {
   
   return (
     <Modal
-      header={t('Load the Geode Private Exchange Contract to your local browser: (just Click Load!)')}
+      header={t('Load the Geode Referrals Contract to your local browser: (just Click Load!)')}
       onClose={onClose}
     >
       <Modal.Content>

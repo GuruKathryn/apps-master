@@ -15,8 +15,6 @@ interface Props {
     fromAcct: string;
     timeDate: Date;
     callFrom?: number;
-    //outcome: CallResult;
-    //onClose: () => void;
   }
   
 function AccountHeader ({ className = '', onClear, fromAcct, timeDate, callFrom }: Props): React.ReactElement<Props> | null {

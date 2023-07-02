@@ -2,10 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-import { Card } from '@polkadot/react-components';
+
 import { useContracts } from '../useContracts';
 import { useCodes } from '../useCodes';
-
 import styled from 'styled-components';
 import { __RouterContext } from 'react-router';
 import ContractsTable from './ContractsTable';
@@ -17,31 +16,30 @@ interface Props {
   fromAcct?: string;
   username?: string;
   postMessage?: string;
+  callIndex: number;
 }
 
-function CallFollow ({ className = '', onClear, messageId, fromAcct, username, postMessage }: Props): React.ReactElement<Props> | null {
+function CallSendMessage ({ className = '', onClear, messageId, fromAcct, username, postMessage, callIndex }: Props): React.ReactElement<Props> | null {
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
 //todo: code for allCodes:
     console.log(JSON.stringify(allCodes));
 
-    function MakeAccountFollow(): JSX.Element {
+    function SendMessage(): JSX.Element {
     return(
         <div>
-                <ContractsTable
-                        contracts={allContracts}
-                        updated={codeTrigger}
-                        initMessageIndex={4}
-                    />                       
+            <ContractsTable
+                contracts={allContracts}
+                updated={codeTrigger}
+                initMessageIndex={callIndex}
+            />                       
         </div>
     )
 }
 
   return (
     <StyledDiv className={className}>
-      <Card>
-      <MakeAccountFollow />
-      </Card>
+      <SendMessage />
     </StyledDiv>
   );
 }
@@ -56,6 +54,6 @@ const StyledDiv = styled.div`
   }
 `;
 
-export default React.memo(CallFollow);
+export default React.memo(CallSendMessage);
 
 

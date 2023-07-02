@@ -24,7 +24,6 @@ interface Props {
     onClear?: () => void;
     isAccount?: boolean;
     outcome: CallResult;
-    //onClose: () => void;
   }
   
   type MessageObj = {
@@ -57,8 +56,6 @@ function KeywordDetails ({ className = '', onClear, isAccount, outcome: { from, 
     const searchWords: string[] = JSONprohibited;
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
     const maxIndex = 25;
-    //const isReply: boolean = true;
-    //const isReplyToReply: boolean = false;
 
     const [isShowEndorsers, toggleShowEndorse] = useToggle(false);
     const [isShowMessageID, toggleShowMsgId] = useToggle(false);
@@ -68,8 +65,6 @@ function KeywordDetails ({ className = '', onClear, isAccount, outcome: { from, 
     const [isPostReply, setPostReply] = useState(false);
     const [isFollow, setFollow] = useState(false);
 
-
-//    const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
     const [pgIndex, setPgIndex] = useState(1);
 
@@ -77,7 +72,6 @@ function KeywordDetails ({ className = '', onClear, isAccount, outcome: { from, 
     const _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-
 
     function autoCorrect(arr: string[], str: string): JSX.Element {
         arr.forEach(w => str = str.replaceAll(w, '****'));
@@ -94,7 +88,6 @@ function KeywordDetails ({ className = '', onClear, isAccount, outcome: { from, 
 }
 
     function timeStampToDate(tstamp: number): JSX.Element {
-      // const event = new Date(1681657752005);
       try {
        const event = new Date(tstamp);
        return (

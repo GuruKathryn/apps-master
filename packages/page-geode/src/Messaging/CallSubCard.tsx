@@ -2,13 +2,13 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
-import { Input } from 'semantic-ui-react'
+import { Container, Table, Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
-import type { ContractCallOutcome } from '@polkadot/api-contract/types';
+//import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
-import type { CallResult } from '../shared/types';
+//import type { CallResult } from '../shared/types';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -22,30 +22,26 @@ import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
 
-import MyProgramsDetail from './MyProgramsDetail';
-import BrowseDetail from './BrowseDetail';
-import MyActivityDetail from './MyActivityDetail';
 
 import { getCallMessageOptions } from '../shared/util';
-
-import JSONhelp from '../shared/geode_social_help.json';
-import JSONnote from '../shared/geode_social_note.json';
-import JSONTitle from '../shared/geode_social_card_titles.json';
-import JSONTier1Help from '../shared/geode_social_tier1_help.json';
-import JSONTier2Help from '../shared/geode_social_tier2_help.json';
+import JSONhelp from '../shared/geode_messaging_help.json';
+import JSONnote from '../shared/geode_messaging_note.json';
+import JSONTitle from '../shared/geode_messaging_infoTwo.json';
+import JSONTier1Help from '../shared/geode_messaging_tier1_help.json';
+import JSONTier2Help from '../shared/geode_messaging_tier2_help.json';
 
 interface Props {
   className?: string;
   contract: ContractPromise;
   messageIndex: number;
-  onCallResult?: (messageIndex: number, result?: ContractCallOutcome | void) => void;
+  //onCallResult?: (messageIndex: number, result?: ContractCallOutcome | void) => void;
   onChangeMessage: (messageIndex: number) => void;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 
-function CallCard ({ className = '', contract, messageIndex, onCallResult, onChangeMessage, onClose }: Props): React.ReactElement<Props> | null {
+function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage, onClose }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
   const message = contract.abi.messages[messageIndex];
@@ -53,7 +49,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [estimatedWeight, setEstimatedWeight] = useState<BN | null>(null);
   const [estimatedWeightV2, setEstimatedWeightV2] = useState<WeightV2 | null>(null);
   const [value, isValueValid, setValue] = useFormField<BN>(BN_ZERO);
-  const [outcomes, setOutcomes] = useState<CallResult[]>([]);
+//  const [outcomes, setOutcomes] = useState<CallResult[]>([]);
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
   const [isViaCall, toggleViaCall] = useToggle();
@@ -111,45 +107,45 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
       });
   }, [api, accountId, contract, message, dbParams, dbValue, weight.isWeightV2]);
 
-  const _onSubmitRpc = useCallback(
-    (): void => {
-      if (!accountId || !message || !value || !weight) {
-        return;
-      }
+  // const _onSubmitRpc = useCallback(
+  //   (): void => {
+  //     if (!accountId || !message || !value || !weight) {
+  //       return;
+  //     }
       
-      {toggleIsCalled()}
-      contract
-        .query[message.method](
-          accountId,
-          { gasLimit: weight.isWeightV2 ? weight.weightV2 : weight.isEmpty ? -1 : weight.weight, storageDepositLimit: null, value: message.isPayable ? value : 0 },
-          ...params
-        )
-        .then((result): void => {
-          setOutcomes([{
-            ...result,
-            from: accountId,
-            message,
-            params,
-            when: new Date()
-          }, ...outcomes]);
-          onCallResult && onCallResult(messageIndex, result);
-        })
-        .catch((error): void => {
-          console.error(error);
-          onCallResult && onCallResult(messageIndex);
-        });
-    },
-    [accountId, contract.query, message, messageIndex, onCallResult, outcomes, params, value, weight]
-  );
+  //     {toggleIsCalled()}
+  //     contract
+  //       .query[message.method](
+  //         accountId,
+  //         { gasLimit: weight.isWeightV2 ? weight.weightV2 : weight.isEmpty ? -1 : weight.weight, storageDepositLimit: null, value: message.isPayable ? value : 0 },
+  //         ...params
+  //       )
+  //       .then((result): void => {
+  //         setOutcomes([{
+  //           ...result,
+  //           from: accountId,
+  //           message,
+  //           params,
+  //           when: new Date()
+  //         }, ...outcomes]);
+  //         onCallResult && onCallResult(messageIndex, result);
+  //       })
+  //       .catch((error): void => {
+  //         console.error(error);
+  //         onCallResult && onCallResult(messageIndex);
+  //       });
+  //   },
+  //   [accountId, contract.query, message, messageIndex, onCallResult, outcomes, params, value, weight]
+  // );
 
-  const _onClearOutcome = useCallback(
-    (outcomeIndex: number) =>
-      () => setOutcomes([...outcomes.filter((_, index) => index !== outcomeIndex)]),
-    [outcomes]
-  );
+  // const _onClearOutcome = useCallback(
+  //   (outcomeIndex: number) =>
+  //     () => setOutcomes([...outcomes.filter((_, index) => index !== outcomeIndex)]),
+  //   [outcomes]
+  // );
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
-  const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
+//  const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
   const isClosed = (isCalled && (messageIndex === 9 || messageIndex === 14 || messageIndex===10 || messageIndex===11 || messageIndex===13));
   const _help: string[] = JSONhelp;
   const _note: string[] = JSONnote;
@@ -157,12 +153,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const _tierOne: string[] = JSONTier1Help;
   const _tierTwo: string[] = JSONTier2Help;
 
-  
   return (
-    <Card >
+    <StyledDiv className={className}>
+      <Container >
+        <br />
         <h2>
         <Badge icon='info' color={'blue'} /> 
-        <strong>{t<string>(' Geode Referral Programs ')}</strong>
+        <strong>{t<string>(' Geode Private Messaging ')}</strong>
         {t<string>(_title[messageIndex])}
         </h2>
         <Expander 
@@ -215,7 +212,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               defaultValue={messageIndex}
               //help={t<string>('The message to send to this contract. Parameters are adjusted based on the ABI provided.')}
               isError={message === null}
-              label={t<string>('Referral')}
+              label={t<string>('Profile Item')}
               onChange={onChangeMessage}
               options={getCallMessageOptions(contract)}
               value={messageIndex}
@@ -225,6 +222,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             )}
             
             {!isClosed && (<>
+            
               <Params
               onChange={setParams}
               params={
@@ -279,17 +277,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
       
       {!isClosed && (
         <>
-        <Card>
-        {isViaRpc
-          ? ( <>
-              <Button
-              icon='sign-in-alt'
-              isDisabled={!isValid}
-              label={t<string>('View')}
-              onClick={_onSubmitRpc} 
-              />
-              </>
-            ) : (
             <TxButton
               accountId={accountId}
               extrinsic={execTx}
@@ -298,70 +285,26 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               label={t<string>('Submit')}
               onStart={onClose}
             />
-          )
-        }      
-        </Card>    
+            <br /><br />
         </>
         )}
-        {outcomes.length > 0 && messageIndex===9 &&  (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <>
-              <BrowseDetail
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                outcome={outcome}
-                onClose={isCalled}
-              />
-              </>
-            ))}
-            </div>
-        )}        
-
-        {outcomes.length > 0 && messageIndex===10 &&  (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <>
-              <MyProgramsDetail
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                outcome={outcome}
-                onClose={isCalled}
-              />
-              </>
-            ))}
-            </div>
-        )}        
-        {outcomes.length > 0 && messageIndex===11 &&  (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <>
-              <MyActivityDetail
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                outcome={outcome}
-                onClose={isCalled}
-              />
-              </>
-            ))}
-            </div>
-        )}        
-        </Card>
-  );
+      </Container>
+      <br /><br />
+    </StyledDiv>);
 }
 
-export default React.memo(styled(CallCard)`
-  .rpc-toggle {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
+const StyledDiv = styled.div`
+  align-items: center;
+  display: flex;
+
+  .output {
+    flex: 1 1;
+    margin: 0.25rem 0.5rem;
   }
-  .clear-all {
-    float: right;
-  }
-  .outcomes {
-    margin-top: 1rem;
-  }
-`);
+`;
+
+export default React.memo(CallSubCard);
+
+
 
 

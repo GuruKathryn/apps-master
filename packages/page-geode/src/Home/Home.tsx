@@ -18,7 +18,7 @@ import icon_profile from './geode_app_icon_profile.png';
 import icon_referrals from './geode_app_icon_referrals.png';
 import icon_social from './geode_app_icon_social.png';
 import icon_sar from './geode_app_icon_sar.png';
-import icon_music from './geode_app_icon_music.png';
+//import icon_music from './geode_app_icon_music.png';
 import JSONhelp from './geode_home_info.json';
 
 //import IPAddress from '../shared/IpAddress';
@@ -65,7 +65,7 @@ const CardContainer = () => (
         <br />
         
         <Label as='a' color='blue'
-          hRef={'https://youtu.be/jO6ZSHQ8OpI'}
+          href={'https://youtu.be/jO6ZSHQ8OpI'}
           target="_blank" 
           rel="noopener noreferrer">
           <h2>{t<string>('Watch Video')}</h2>
@@ -196,42 +196,42 @@ const ButtonContainer = () => {
   return(
     <div>
       <Label as='a' color='orange' size='huge'
-          hRef={'https://blockandpurpose.com/announcements/'}
+          href={'https://blockandpurpose.com/announcements/'}
           target="_blank" 
           rel="noopener noreferrer"
           >
           <h2>{t<string>(' Announcements ')}</h2>
       </Label>
       <Label as='a' color='orange' size='huge'
-          hRef={'https://discord.com/invite/2v4DPxDQXt'}
+          href={'https://discord.com/invite/2v4DPxDQXt'}
           target="_blank" 
           rel="noopener noreferrer"
           >
           <h2>{t<string>(' Discord ')}</h2>
       </Label>
       <Label as='a' color='orange' size='huge'
-          hRef={'http://geodechain.com/'}
+          href={'http://geodechain.com/'}
           target="_blank" 
           rel="noopener noreferrer"
           >
           <h2>{t<string>(' Help & Info ')}</h2>
       </Label>
       <Label as='a' color='orange' size='huge'
-          hRef={'http://geodechain.com/wp-content/uploads/2023/04/Geode-Blockchain-Whitepaper-V2023_03_20.pdf'}
+          href={'http://geodechain.com/wp-content/uploads/2023/04/Geode-Blockchain-Whitepaper-V2023_03_20.pdf'}
           target="_blank" 
           rel="noopener noreferrer"
           >
           <h2>{t<string>(' Whitepaper ')}</h2>
       </Label>
       <Label as='a' color='orange' size='huge'
-          hRef={'http://geodechain.com/tos/'}
+          href={'http://geodechain.com/tos/'}
           target="_blank"
           rel="noopener noreferrer"
           >
           <h2>{t<string>(' TOS ')}</h2>
       </Label>
       <Label as='a' color='orange' size='huge'
-          hRef={'https://github.com/SparticleConcepts'}
+          href={'https://github.com/SparticleConcepts'}
           target="_blank" 
           rel="noopener noreferrer"
           >

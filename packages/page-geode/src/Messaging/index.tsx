@@ -31,17 +31,17 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
     const [isMyGroup, toggleMyGroup] = useToggle();
     const [isLists, toggleLists] = useToggle();
     // sub_menus_Inbox
-    const [isSearchKeyword, toggleSearchKeyword] = useToggle();
-    const [isSearchAccount, toggleSearchAccount] = useToggle();
+    //const [isSearchKeyword, toggleSearchKeyword] = useToggle();
+    //const [isSearchAccount, toggleSearchAccount] = useToggle();
     // sub_menu_Paid_Inbox
-    const [isBlockList, toggleBlockList] = useToggle();
-    const [isUnBlockList, toggleUnBlockList] = useToggle();
+    //const [isBlockList, toggleBlockList] = useToggle();
+    //const [isUnBlockList, toggleUnBlockList] = useToggle();
     // sub_menu_Allowed_Account
-    const [isAddAcct, toggleAddAcct] = useToggle();
-    const [isRemoveAcct, toggleRemoveAcct] = useToggle();
-    const [isBlockAcct, toggleBlockAcct] = useToggle();
-    const [isUnBlockAcct, toggleUnBlockAcct] = useToggle();
-    const [isDeleteMsg, toggleDeleteMsg] = useToggle();
+    //const [isAddAcct, toggleAddAcct] = useToggle();
+    //const [isRemoveAcct, toggleRemoveAcct] = useToggle();
+    //const [isBlockAcct, toggleBlockAcct] = useToggle();
+    //const [isUnBlockAcct, toggleUnBlockAcct] = useToggle();
+    //const [isDeleteMsg, toggleDeleteMsg] = useToggle();
     const deployApp: boolean = false;
 
 
@@ -127,81 +127,24 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
         {isMyGroup && (<>{refTitle[4]}</>)}
         {isLists && (<>{refTitle[5]}</>)}
         </Card>                     
-        {isInBox && (
-          <>
-          <Card>
-          <Button
-            icon={(isSearchKeyword) ? 'minus' : 'plus'}
-            label={t('Search Inbox By Keyword')}
-            onClick={toggleSearchKeyword}>
-          </Button>    
-          <Button
-            icon={(isSearchAccount) ? 'minus' : 'plus'}
-            label={t('Search Inbox By Account')}
-            onClick={toggleSearchAccount}>
-          </Button>    
-          </Card>
-          </>
-        )}
-        {isPaidInBox && (
-          <>
-          <Card>
-          <Button
-            icon={(isBlockList) ? 'minus' : 'plus'}
-            label={t('Block a List')}
-            onClick={toggleBlockList}>
-          </Button>    
-          <Button
-            icon={(isUnBlockList) ? 'minus' : 'plus'}
-            label={t('Unblock a List')}
-            onClick={toggleUnBlockList}>
-          </Button>    
-          </Card>
-          </>
-        )}
-        {isAllowedAccount && (
-          <>
-          <Card>
-          <Button
-            icon={(isAddAcct) ? 'minus' : 'plus'}
-            label={t('Add')}
-            onClick={toggleAddAcct}>
-          </Button>    
-          <Button
-            icon={(isRemoveAcct) ? 'minus' : 'plus'}
-            label={t('Remove')}
-            onClick={toggleRemoveAcct}>
-          </Button>    
-          <Button
-            icon={(isBlockAcct) ? 'minus' : 'plus'}
-            label={t('Block')}
-            onClick={toggleBlockAcct}>
-          </Button>    
-          <Button
-            icon={(isUnBlockAcct) ? 'minus' : 'plus'}
-            label={t('UnBlock')}
-            onClick={toggleUnBlockAcct}>
-          </Button>    
-          <Button
-            icon={(isDeleteMsg) ? 'minus' : 'plus'}
-            label={t('Delete Message')}
-            onClick={toggleDeleteMsg}>
-          </Button>    
-          </Card>
-          </>
-        )}
         </Table>
         {isInBox && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={0}
+            initMessageIndex={26}
         />)}
         {isPaidInBox && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={1}
+            initMessageIndex={27}
+        />)}
+        {isAllowedAccount && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={28}
         />)}
 
 

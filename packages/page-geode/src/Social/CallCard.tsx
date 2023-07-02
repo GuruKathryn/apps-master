@@ -13,7 +13,7 @@ import type { CallResult } from './types';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Expander, Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton, LabelHelp } from '@polkadot/react-components';
+import { Expander, Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
@@ -225,7 +225,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </>
             )}
             
-            {!isClosed && messageIndex!=1 && messageIndex!=8 && messageIndex!=13 && (<>
+            {!isClosed && messageIndex!=1 && 
+                          messageIndex!=8 && 
+                          messageIndex!=13 && (<>
               <Params
               onChange={setParams}
               params={
@@ -407,7 +409,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 onClose={isCalled}
               
               />
-              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
               </>
             ))}
             </div>
@@ -421,7 +422,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 onClear={_onClearOutcome(index)}
                 outcome={outcome}
               />
-              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
               </>
             ))}
             </div>
@@ -435,7 +435,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 onClear={_onClearOutcome(index)}
                 outcome={outcome}
               />
-              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
               </>
             ))}
             </div>
@@ -449,7 +448,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 onClear={_onClearOutcome(index)}
                 outcome={outcome}
               />
-              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
               </>
             ))}
             </div>
@@ -463,7 +461,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 onClear={_onClearOutcome(index)}
                 outcome={outcome}
               />
-              {isTest && (<>{JSON.stringify(outcome.output)}</>)}
               </>
             ))}
             </div>

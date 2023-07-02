@@ -15,7 +15,6 @@ import { useContracts } from '../useContracts';
 import ContractsTable from './ContractsTable';
 
 import Summary from './Summary';
-//import Details from './Details';
 
 interface Props {
     className?: string;
@@ -23,40 +22,19 @@ interface Props {
   
 export default function Referrals ({ className = '' }: Props): React.ReactElement {
     const { t } = useTranslation();
-    const [isUpdate, toggleUpdate] = useToggle();
-    const [isLookUp, toggleLookUp] = useToggle();
-    const [isSearch, toggleSearch] = useToggle();
-    const [isByAccount, toggleByAccount] = useToggle();
-    const [isByKeyword, toggleByKeyword] = useToggle();
+    const [isBrowse, toggleBrowse] = useToggle();
+    const [isMyPrograms, toggleMyPrograms] = useToggle();
+    const [isMyReferrals, toggleMyReferrals] = useToggle();
     const refTitle: string[] = 
-    [' Create and update your Profile. (Click again to close) ', 
-     ' Lookup an account and display its profile. (Click again to close) ', 
-     ' Search for Profiles by Keyword or by Account. ',
-     ' Search by Account, Enter Account Public Key below. (Click again to close) ',
-     ' Search by Keyword, Enter a Keyword to search all available Public Profiles.'];
+    [' Browse Available Referral Programs (Click again to close) ', 
+     ' Create and Manage Your Referral Programs (Click again to close) ', 
+     ' Review your current Referral Program Activity (Click again to close) '];
     const { allCodes, codeTrigger } = useCodes();
     const { allContracts } = useContracts();
     // todo
     console.log(allCodes);
 
-    const deployApp: boolean = false;
-    // const [codeHash, setCodeHash] = useState<string | undefined>();
-    // const [constructorIndex, setConstructorIndex] = useState(0);
-    // const [isDeployOpen, toggleDeploy, setIsDeployOpen] = useToggle();
-
-    // const _onShowDeploy = useCallback(
-    //   (codeHash: string, constructorIndex: number): void => {
-    //     setCodeHash(codeHash || (allCodes && allCodes[0] ? allCodes[0].json.codeHash : undefined));
-    //     setConstructorIndex(constructorIndex);
-    //     toggleDeploy();
-    //   },
-    //   [allCodes, toggleDeploy]
-    // );
-    
-    // const _onCloseDeploy = useCallback(
-    //   () => setIsDeployOpen(false),
-    //   [setIsDeployOpen]
-    // );
+    const deployApp: boolean = true;
     
   return (
     <StyledDiv className={className}>
@@ -65,86 +43,58 @@ export default function Referrals ({ className = '' }: Props): React.ReactElemen
             <Summary />
             <Card>
         {!deployApp && (<><strong>{'Coming Soon!'}</strong></>)}
-        {deployApp && !isByKeyword && !isByAccount && !isLookUp && !isSearch && (
-        <><Button
-                icon={(isUpdate) ? 'minus' : 'plus'}
-                label={t<string>('Update Your Profile')}
-                onClick={toggleUpdate}>
+        {deployApp && (
+        <>
+          <Button
+                icon={(isBrowse) ? 'minus' : 'plus'}
+                label={t<string>('Browse')}
+                onClick={toggleBrowse}
+                isDisabled={(isMyReferrals || isMyPrograms)}>
           </Button>
           </>
         )}
-        {deployApp && !isByKeyword && !isByAccount && !isUpdate && !isSearch && (
+        {deployApp &&  (
           <>
               <Button
-                icon={(isLookUp) ? 'minus' : 'plus'}
-                label={t('Account Lookup')}
-                onClick={toggleLookUp}>
+                icon={(isMyPrograms) ? 'minus' : 'plus'}
+                label={t('My Programs')}
+                onClick={toggleMyPrograms}
+                isDisabled={(isBrowse || isMyReferrals)}>
               </Button>    
           </>
         )}
-        {deployApp && !isByKeyword && !isByAccount && !isUpdate && !isLookUp && (
+        {deployApp &&  (
           <>
           <Button
-            icon={(isSearch) ? 'minus' : 'plus'}
-            label={t('Search')}
-            onClick={toggleSearch}>
+            icon={(isMyReferrals) ? 'minus' : 'plus'}
+            label={t('My Referrals & Payouts')}
+            onClick={toggleMyReferrals}
+            isDisabled={(isBrowse || isMyPrograms)}>
           </Button>    
           </>
         )}
-        {isUpdate && (<>{refTitle[0]}</>)}
-        {isLookUp && (<>{refTitle[1]}</>)}
-        {isSearch && (<>{refTitle[2]}</>)}
+        {isBrowse && (<>{refTitle[0]}</>)}
+        {isMyPrograms && (<>{refTitle[1]}</>)}
+        {isMyReferrals && (<>{refTitle[2]}</>)}
         </Card>                     
-        {isSearch && (
-        <>
-          <Card>
-          {!isByKeyword && (
-            <>
-              <Button
-                icon={(isByAccount) ? 'minus' : 'plus'}
-                label={t('By Account')}
-                onClick={toggleByAccount}>
-              </Button>    
-            </>
-          )}
-          {!isByAccount && (
-            <>
-            <Button
-              icon={(isByKeyword) ? 'minus' : 'plus'}
-              label={t('By Keyword')}
-              onClick={toggleByKeyword}>
-            </Button>    
-            </>
-          )}
-          {isByAccount && (<>{refTitle[0]}</>)}
-          {isByKeyword && (<>{refTitle[1]}</>)}
-          </Card>
-        </>
-        )}
         </Table>
-        {isUpdate && (
+        {isBrowse && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={0}
+            initMessageIndex={9}
         />)}
-        {isLookUp && (
+        {isMyPrograms && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={1}
+            initMessageIndex={10}
         />)}
-        {isByAccount && (
+        {isMyReferrals && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={3}
-        />)}
-        {isByKeyword && (
-          <ContractsTable
-            contracts={allContracts}
-            updated={codeTrigger}
-            initMessageIndex={2}
+            initMessageIndex={11}
         />)}
 
     </div>

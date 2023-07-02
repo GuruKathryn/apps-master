@@ -6,7 +6,6 @@ import React from 'react';
 
 import { Toggle, Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
 import { useTranslation } from '../translate';
-//import { formatNumber } from '@polkadot/util';
 import JSONinfo from '../shared/geode_social_info.json';
 import { useToggle } from '@polkadot/react-hooks';
 
@@ -14,7 +13,6 @@ import { useToggle } from '@polkadot/react-hooks';
 function Summary (): React.ReactElement {
   const { t } = useTranslation();
   const info: string[] = JSONinfo;
-  //const [isShowInfo, toggleShowInfo] = useToggle(true)
   const [isShowMore, toggleShowMore] = useToggle(false)
 
   function showAccount(str: string): JSX.Element { 

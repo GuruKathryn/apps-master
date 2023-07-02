@@ -22,9 +22,7 @@ import JSONprohibited from '../shared/geode_prohibited.json';
 interface Props {
     className?: string;
     onClear?: () => void;
-    //isAccount?: boolean;
     outcome: CallResult;
-    //onClose: () => void;
   }
   
   type MessageObj = {
@@ -59,8 +57,6 @@ function SearchDetails ({ className = '', onClear, outcome: { from, message, out
     const searchWords: string[] = JSONprohibited;
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
     const maxIndex = 25;
-    //const isReply: boolean = true;
-    //const isReplyToReply: boolean = false;
 
     const [isShowFollowers, toggleShowFollowers] = useToggle(false);
     const [isShowFollowing, toggleShowFollowing] = useToggle(false);
@@ -72,7 +68,6 @@ function SearchDetails ({ className = '', onClear, outcome: { from, message, out
     const [isPostReply, setPostReply] = useState(false);
     const [isAcctFollow, setAcctFollow] = useState(false);
 
-   // const [feedIndex, setFeedIndex] = useState(0);
     const [countPost, setCountPost] = useState(0);
     const [pgIndex, setPgIndex] = useState(1);
 

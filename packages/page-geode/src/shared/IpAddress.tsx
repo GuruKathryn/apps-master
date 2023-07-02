@@ -37,7 +37,7 @@ function IpAddress ({ className = ''}: Props): React.ReactElement {
 return (
     <StyledDiv className={className}>
         <div>
-            <strong>{t<string>('ip Address: ')}</strong>{ip}{' '}
+            <strong>{t<string>(' ')}</strong>{ip}{' '}
         </div>
     </StyledDiv>
   );

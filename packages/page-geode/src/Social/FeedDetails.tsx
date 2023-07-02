@@ -2,7 +2,6 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-//import React from 'react';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
 import type { CallResult } from './types';
@@ -17,8 +16,6 @@ import AccountHeader from '../shared/AccountHeader';
 import JSONprohibited from '../shared/geode_prohibited.json';
 import CallEndorse from './CallEndorse';
 import CallPost from './CallPost';
-
-//import { useToggle } from '@polkadot/react-hooks';
 
 interface Props {
     className?: string;
@@ -64,12 +61,10 @@ function FeedDetails ({ className = '', onReset, onClear, onClose, outcome: { fr
     const [isPost, setPost] = useState(false);
     const [isShowEndorsers, toggleShowEndorsers] = useToggle(false);
     const [isShowMsgID, toggleShowMsgID] = useToggle(false);
-
     const [isShowBlockedAccounts, toggleShowBlockedAccounts] = useToggle(false);
+    
     const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
-    // example objects
-    //let _Obj: Object = {"ok": {"maxfeed":10, "blocked":["5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL","5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw"], "myfeed": [ {"messageId":"0xb92283bc2400d530a60ee0cd73a992ce73d72af846608205d51427ba55be72af","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x466972737420706f7374","link":"0x68747470733a2f2f6d656469612e6973746f636b70686f746f2e636f6d2f69642f313330333433363033322f70686f746f2f6672656e63682d62756c6c646f672d6f6e2d7468652d67726173732d696e2d7468652d7061726b2d62656175746966756c2d646f672d62726565642d6672656e63682d62756c6c646f672d696e2d617574756d6e2d6f7574646f6f722e6a70673f623d3126733d3137303636376126773d30266b3d323026633d5a574f4b4f624133665939685756512d53505472454b53534c4f5577626442347168567a6a3749633773383d","endorserCount":0,"replyCount":0,"timestamp":1681657752005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]},{"messageId":"0xc76570158d247a1907b01ced4ea2ba29a8c6bff29165d85ca1183e0a35b1fe35","replyTo":"0x0000000000000000000000000000000000000000000000000000000000000000","fromAcct":"5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty","username":"0x426f62","message":"0x5365636f6e6420506f7374","link":"0x68747470733a2f2f74342e667463646e2e6e65742f6a70672f30302f39322f30342f38392f3336305f465f39323034383937395f4d50735a3074466c686477436653515a53463541554979476e30696f7a447a422e6a7067","endorserCount":0,"replyCount":0,"timestamp":1681657794005,"endorsers":["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"]}]}}
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
@@ -181,7 +176,6 @@ function ShowFeed(): JSX.Element {
                 <Button
                   icon={'plus'}
                   label={t<string>('Post')}
-                  //onClick={() => {!isPost? _makePost(): _reset()}}
                   onClick={() => {<>{setPostToEndorse(['','','',''])}{_makePost()}</>}}
                 />
                 {t<string>(' Number of Posts: ')}<strong>{countPost}</strong>
@@ -270,7 +264,6 @@ function ShowFeed(): JSX.Element {
                                   }}/>                              
                               </>)}
                      </h3>
-
                      {isShowEndorsers && _feed.endorserCount > 0 && (
                     <>
                     <List divided inverted >
@@ -282,10 +275,8 @@ function ShowFeed(): JSX.Element {
                     </List>     
                     </>
                     )}
-                
                     {isShowMsgID && 
-                      (<>
-                      
+                      (<>    
                       {(_feed.replyTo != zeroMessageId)
                       ? (<><CopyInline value={_feed.replyTo} label={''}/><i>{t<string>('reply to: ')}{_feed.replyTo}</i><br />
                            <CopyInline value={_feed.messageId} label={''}/><i>{t<string>('message Id: ')}{_feed.messageId}</i></>) 
@@ -335,10 +326,8 @@ function ShowFeed(): JSX.Element {
                     summary={<Label color='orange' circular> {'Replies: '}{_feed.replyCount}</Label>}>
                     {ShowReplies(_feed.messageId)}
                     </Expander>                    
-
                     <Divider />                        
                     </>)}
-
                     {setCountPost(index+1)}
               </>
             )}
@@ -357,7 +346,6 @@ function ShowFeed(): JSX.Element {
 }
 
 function ShowReplies(replyMessageId: string): JSX.Element {
-
 try {
     return(
       <>

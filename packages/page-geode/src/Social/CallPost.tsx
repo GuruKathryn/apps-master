@@ -2,25 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-
-//import {  Table } from 'semantic-ui-react'
-
-//import type { CallResult } from './types';
 import { useContracts } from '../useContracts';
 import { useCodes } from '../useCodes';
 
 import styled from 'styled-components';
-import { Card, LabelHelp } from '@polkadot/react-components';
+import { Card } from '@polkadot/react-components';
 import { __RouterContext } from 'react-router';
 import ContractsTable from './ContractsTable';
-
-//import { useTranslation } from '../translate';
 
 interface Props {
   className?: string;
   onClear?: () => void;
   isPost: boolean;
-  //isModal: boolean;
   messageId?: string;
   fromAcct?: string;
   username?: string;
@@ -29,7 +22,6 @@ interface Props {
 }
 
 function CallPost ({ className = '', onClear, isPost, messageId,fromAcct,username, postMessage }: Props): React.ReactElement<Props> | null {
-//    const { t } = useTranslation();
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
 
@@ -42,7 +34,6 @@ function CallPost ({ className = '', onClear, isPost, messageId,fromAcct,usernam
                 contracts={allContracts}
                 updated={codeTrigger}
                 initMessageIndex={1}
-                        //isModal={false}
               />                                    
     </>)
     }

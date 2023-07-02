@@ -24,7 +24,7 @@ interface Props {
 
 function Add ({ defaultAddress, onClose }: Props): React.ReactElement {
   const { t } = useTranslation();
-  const _contractName: string = 'Geode Profile';
+  const _contractName: string = 'Geode Social';
   const { api } = useApi();
   const [address, setAddress] = useState<string | null>(defaultAddress);
   const [isAddressValid, setIsAddressValid] = useState(false);

@@ -2,20 +2,17 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-//import React from 'react';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
 import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Toggle, Button, Badge, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Toggle, Button, Badge, AccountName, LabelHelp, Card } from '@polkadot/react-components';
 import { Grid, List, Table, Label, Image, Divider } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import { useToggle } from '@polkadot/react-hooks';
-//import JSONSocialInterests from '../shared/geode_social_interest.json';
-import JSONprohibited from '../shared/geode_prohibited.json';
+//import JSONprohibited from '../shared/geode_prohibited.json';
 import AccountHeader from '../shared/AccountHeader';
-//import { useToggle } from '@polkadot/react-hooks';
 import CallEndorse from './CallEndorse';
 import CallPost from './CallPost';
 import CallStats from './CallStats';
@@ -23,10 +20,7 @@ import CallStats from './CallStats';
 interface Props {
     className?: string;
     onClear?: () => void;
-    //isShowEndorsers?: boolean;
-    //isShowInterest?: boolean;
     outcome: CallResult;
-    //onClose: () => void;
   }
   
   type MessageObj = {
@@ -60,7 +54,7 @@ interface Props {
 function PaidFeedDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     //const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
-    const searchWords: string[] = JSONprohibited;
+    //const searchWords: string[] = JSONprohibited;
     const [countPost, setCountPost] = useState(0);
 
     const [isShowBlockedAccounts, toggleShowBlockedAccounts] = useToggle(false);
@@ -73,22 +67,22 @@ function PaidFeedDetails ({ className = '', onClear, outcome: { from, message, o
     const [isPaidPost, setPaidPost] =useState(false);
     const [isTarget, setTarget] =useState(false);
 
-    const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
+    //const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
-    let _Obj: Object = { "ok": {"maxfeed": 10, "myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64", "blocked": ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy"], "mypaidfeed": [ { "messageId": "0x09d3adb1294121426054d65b1535ccbdcebc44220b8304360aeddbeb5d448eac", "replyTo": "0x0000000000000000000000000000000000000000000000000000000000000000", "fromAcct": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw", "username": "Nala the Wonder Dog", "message": "More Free Puppies, Buy One get Two FREE!", "link": "https://dogsbestlife.com/wp-content/uploads/2022/09/french-bulldog-puppy-scaled.jpeg", "endorserCount": 0, "timestamp": 1682109894001, "paidEndorserMax": 10, "endorserPayment": 100000000000000, "targetInterests": "dogs", totalStaked: 1000000000000000, "endorsers": [ "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw" ] } ] } }
+    //let _Obj: Object = { "ok": {"maxfeed": 10, "myinterests":"0x646f67732c206172742c206d6f746f726379636c65732c20666f6f64", "blocked": ["5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY", "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy"], "mypaidfeed": [ { "messageId": "0x09d3adb1294121426054d65b1535ccbdcebc44220b8304360aeddbeb5d448eac", "replyTo": "0x0000000000000000000000000000000000000000000000000000000000000000", "fromAcct": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw", "username": "Nala the Wonder Dog", "message": "More Free Puppies, Buy One get Two FREE!", "link": "https://dogsbestlife.com/wp-content/uploads/2022/09/french-bulldog-puppy-scaled.jpeg", "endorserCount": 0, "timestamp": 1682109894001, "paidEndorserMax": 10, "endorserPayment": 100000000000000, "targetInterests": "dogs", totalStaked: 1000000000000000, "endorsers": [ "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw" ] } ] } }
     const objOutput: string = stringify(output);
-    _Obj = JSON.parse(objOutput);
+    const _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
 
-    function autoCorrect(arr: string[], str: string): JSX.Element {
-        arr.forEach(w => str = str.replaceAll(w, '****'));
-        arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '****'));
-        arr.forEach(w => str = str.replaceAll(w.charAt(0) + w.slice(1).toUpperCase, '****'));        
-        arr.forEach(w => str = str.replaceAll(w.toUpperCase(), '****'));
-        return (
-        <>{t<string>(str)}</>)
-    }
+    // function autoCorrect(arr: string[], str: string): JSX.Element {
+    //     arr.forEach(w => str = str.replaceAll(w, '****'));
+    //     arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '****'));
+    //     arr.forEach(w => str = str.replaceAll(w.charAt(0) + w.slice(1).toUpperCase, '****'));        
+    //     arr.forEach(w => str = str.replaceAll(w.toUpperCase(), '****'));
+    //     return (
+    //     <>{t<string>(str)}</>)
+    // }
 
     function timeStampToDate(tstamp: number): JSX.Element {
        try {

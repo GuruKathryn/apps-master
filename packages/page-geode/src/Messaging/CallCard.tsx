@@ -8,14 +8,14 @@ import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
-import type { CallResult } from './types';
+import type { CallResult } from '../shared/types';
 //import { blake2AsHex } from '@polkadot/util-crypto';
 //import MessageSignature from '../shared/MessageSignature';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
+import { Expander, Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
@@ -24,9 +24,17 @@ import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
-import Details from './Details';
-import SearchDetails from './SearchDetails';
-import { getCallMessageOptions } from './util';
+//import Details from './Details';
+import AllowedDetails from './AllowedDetails';
+//import SearchDetails from './SearchDetails';
+
+import { getCallMessageOptions } from '../shared/util';
+import JSONhelp from '../shared/geode_messaging_help.json';
+import JSONnote from '../shared/geode_messaging_note.json';
+import JSONtier1 from '../shared/geode_messaging_tier1_help.json';
+import JSONtier2 from '../shared/geode_messaging_tier2_help.json';
+import JSONTitle from '../shared/geode_messaging_info.json';
+import InBoxDetails from './InBoxDetails';
 
 interface Props {
   className?: string;
@@ -55,7 +63,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
-  //const [isTest, setIsTest] = useToggle();
+  const [isCalled, toggleIsCalled] = useToggle(false);
+
   
   const isTest: boolean = false;
   //const isTestData: boolean = false; //takes out code elements we only see for test
@@ -113,6 +122,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         return;
       }
       //{setIsMenu(true)}
+      {toggleIsCalled()}
       contract
         .query[message.method](
           accountId,
@@ -145,24 +155,31 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));      
-
+  const isClosed = (isCalled && (messageIndex === 26 ||
+                                 messageIndex === 27 || 
+                                 messageIndex===28));
+                               
   return (
     <Card >
-        <h2><strong>{t<string>(' Geode Profile ')}{' '}</strong>
-        {messageIndex===0 && (
-          <>
-            {'- Enter Your Profile Data'}</>
-        )}
-        {messageIndex===1 && (
-          <>{'- View Profiles'}</>
-        )}
-        {messageIndex===2 && (
-          <>{'- Search Profiles by Keyword'}</>
-        )}
-        {messageIndex===3 && (
-          <>{'- Search Profiles by Account ID'}</>
-        )}
+        <h2>
+        <Badge icon='info' color={'blue'} />   
+        <strong>{t<string>(' Geode Private Messaging ')}{' '}</strong>
+        {messageIndex>25 && (<>{' - '}{JSONTitle[messageIndex-21]}</>)}
         </h2>
+        <Expander 
+            className='viewInfo'
+            isOpen={false}
+            summary={<strong>{t<string>('Instructions: ')}</strong>}>
+            {messageIndex>25 && (<>
+              {t<string>(JSONhelp[messageIndex - 21])}<br /><br />
+              {t<string>(JSONnote[messageIndex - 21])}<br /><br />
+              <Badge color='blue' icon='info'/>
+              {t<string>(JSONtier1[messageIndex - 21])}<br />
+              <Badge color='blue' icon='info'/>
+              {t<string>(JSONtier2[messageIndex - 21])}
+            </>)}
+        </Expander>
+
         {isTest && (
           <InputAddress
           //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
@@ -172,17 +189,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           value={contract.address}
           />
         )}
-        {messageIndex !== null && messageIndex===1 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select which of your Accounts is asking for this Profile:')}
-          </>)}
-        {messageIndex !== null && messageIndex===0 && (
-          <><br /><br />
-          <Badge color='blue' icon='1'/>
-          {t<string>('Select the Account for this Profile:')}
-          </>)}
-        <InputAddress
+
+        {!isClosed && (<>
+          <InputAddress
           defaultValue={accountId}
           //help={t<string>('Specify the user account to use for this contract call. And fees will be deducted from this account.')}
           label={t<string>('account to use')}
@@ -195,7 +204,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
           onChange={setAccountId}
           type='account'
           value={accountId}
-        />
+        />        
+        </>)}
 
         {messageIndex !== null && (
           <>
@@ -213,20 +223,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />              
             </>
             )}
-            {messageIndex !== null && messageIndex===1 && (
-              <>
-              <Badge color='blue' icon='2'/>
-              {t<string>('Select the Account whose Profile you want to view:')}
-              </>)}
-
-            {messageIndex=== 0 && (
-              <>
-                <Badge color='blue' icon='2'/>
-                {t<string>('Enter Your keywords, description and link to See More:')}
-              </>)}
-
-            
-            <Params
+            {!isClosed && (<>
+              <Params
               onChange={setParams}
               params={
                 message
@@ -235,6 +233,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               }              
               registry={contract.abi.registry}
             />
+            
+            
+            </>)}
           </>
         )}
 
@@ -275,49 +276,53 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}        
         </>
         )}
+
+{!isClosed && (
+        <>
         <Card>
         {isViaRpc
-          ? (
-            <Button
-            icon='sign-in-alt'
-            isDisabled={!isValid}
-            label={t<string>('View')}
-            onClick={_onSubmitRpc} 
-            />
-          )
-          : (
+          ? ( <>
+              <Button
+              icon='sign-in-alt'
+              isDisabled={!isValid}
+              label={t<string>('View')}
+              onClick={_onSubmitRpc} 
+              />
+              </>
+            ) : (
             <TxButton
               accountId={accountId}
               extrinsic={execTx}
               icon='sign-in-alt'
               isDisabled={!isValid || !execTx}
-              label={t('Submit')}
+              label={t<string>('Submit')}
               onStart={onClose}
             />
           )
-        }
+        }      
+        </Card>    
+        </>
+        )}
 
-        </Card>
-
-        {outcomes.length > 0 && messageIndex < 2 && (
+        {outcomes.length > 0 && messageIndex===26 && (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
-              <Details
+              <InBoxDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                isAccount={messageIndex===3 ? true: false}
+                //isAccount={messageIndex > 1 ? true: false}
                 outcome={outcome}
               />
             ))}
             </div>
         )}
-        {outcomes.length > 0 && messageIndex > 1 && (
+        {outcomes.length > 0 && messageIndex===28 && (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
-              <SearchDetails
+              <AllowedDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                isAccount={messageIndex > 1 ? true: false}
+                //isAccount={messageIndex > 1 ? true: false}
                 outcome={outcome}
               />
             ))}

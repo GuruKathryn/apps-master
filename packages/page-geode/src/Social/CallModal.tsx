@@ -1,4 +1,5 @@
 // Copyright 2017-2022 @polkadot/app-contracts authors & contributors
+// Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 import { Input } from 'semantic-ui-react'
 
@@ -6,7 +7,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
-import type { CallResult } from './types';
+import type { CallResult } from '../shared/types';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -16,13 +17,10 @@ import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@pol
 import { Available } from '@polkadot/react-query';
 import { isHex, stringToHex, hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
 
-
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
-//import Outcome from './Outcome';
-import { getCallMessageOptions } from './util';
-//import FeedDetails from './FeedDetails';
+import { getCallMessageOptions } from '../shared/util';
 
 interface Props {
   className?: string;
@@ -43,8 +41,6 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
   const { t } = useTranslation();
   const { api } = useApi();
   const message = contract.abi.messages[messageIndex];
- 
-  //const [isCalled, toggleIsCalled] = useToggle(false);
 
   const [accountId, setAccountId] = useAccountId();
   const [estimatedWeight, setEstimatedWeight] = useState<BN | null>(null);
@@ -55,7 +51,6 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
   let [params, setParams] = useState<unknown[]>([]);
   
   const [isViaCall, toggleViaCall] = useToggle();
-  //const [isReload, toggleReload] = useToggle(false);
 
   const weight = useWeight();
   const dbValue = useDebounce(value);
@@ -74,8 +69,6 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
     const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
     return(_Out)
   }
-
-
 
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -153,13 +146,6 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
     },
     [accountId, contract.query, message, messageIndex, onCallResult, outcomes, params, value, weight]
   );
-
-  // const _onClearOutcome = useCallback(
-  //   (outcomeIndex: number) =>
-  //     () => setOutcomes([...outcomes.filter((_, index) => index !== outcomeIndex)]),
-  //   [outcomes]
-  // );
- 
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));
@@ -264,7 +250,6 @@ function CallModal ({ className = '', messageId, fromAcct, username, postMessage
         )}
         </>
         )}
-
 
         {messageIndex===0 && (<>
         {isReply? (

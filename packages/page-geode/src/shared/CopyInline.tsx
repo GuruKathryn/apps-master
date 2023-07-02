@@ -5,12 +5,11 @@ import type { IconName } from '@fortawesome/fontawesome-svg-core';
 
 import React, { useCallback } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-//import styled from 'styled-components';
 
 import { useQueue } from '@polkadot/react-hooks';
 import { isString } from '@polkadot/util';
 
-import { Button, Badge} from '@polkadot/react-components';
+import { Badge} from '@polkadot/react-components';
 
 import { useTranslation } from '../translate';
 
