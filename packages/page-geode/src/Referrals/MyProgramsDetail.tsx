@@ -57,7 +57,7 @@ interface Props {
     grandparent: string,
     branch: string[],
     payIn: number,
-    endorseBy: string,
+    endorsedBy: string,
     payoutId: string,
     status: number
   }
@@ -108,11 +108,14 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
     const [useMaxRewards, setMaxRewards] = useState(0);
     const [useOwnerApprovedRequired, setOwnerApprovedRequired] = useState(false);
     const [usePayInMinimum, setPayInMinimum] = useState(0);
+    const [useClaimId, setClaimId] = useState('');
 
     const [dbIsFund, setFund] = useState(false);
     const [isUpdate, setUpdate] = useState(false);
     const [isDeactivate, setDeactivate] = useState(false);
     const [isActivate, setActivate] = useState(false);
+    const [isApprove, setApprove] = useState(false);
+    const [isReject, setReject] = useState(false);
     
     //const [isReset, toggleReset] = useToggle(false);
     
@@ -124,16 +127,18 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
     const [isNewProgram, toggleNewProgram] = useToggle(false);
     //const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
     //const dbIsFund = useDebounce(isFund);
-
-    
+    //const shortAccount = (_acctAddrs: string) => _acctAddrs.length>0? _acctAddrs.slice(0, 5)+'..': '';
+    const shortClaimId = (_claimId: string) => _claimId.length>0? _claimId.slice(0, 7)+'..': ''; 
 
     const _reset = useCallback(
       () => {setFund(false);
              setUpdate(false);
              setDeactivate(false);
              setActivate(false);
+             setApprove(false);
+             setReject(false);
             },
-      [dbIsFund, isUpdate, isDeactivate, isActivate]
+      [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
     )
     
     const _makeFund = useCallback(
@@ -141,9 +146,11 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
              setUpdate(false);
              setDeactivate(false);
              setActivate(false);
+             setApprove(false);
+             setReject(false);
              //toggleReset();
             },
-      [dbIsFund, isUpdate, isDeactivate, isActivate]
+      [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
     )
     
     const _makeUpdate = useCallback(
@@ -151,8 +158,10 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
              setUpdate(true);
              setDeactivate(false);
              setActivate(false);
+             setApprove(false);
+             setReject(false);
             },
-      [dbIsFund, isUpdate, isDeactivate, isActivate]
+      [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
     )
     
     const _makeDeactivate = useCallback(
@@ -160,8 +169,10 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
              setUpdate(false);
              setDeactivate(true);
              setActivate(false);
+             setApprove(false);
+             setReject(false);
             },
-      [dbIsFund, isUpdate, isDeactivate, isActivate]
+      [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
     )
     
     const _makeActivate = useCallback(
@@ -169,11 +180,33 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
              setUpdate(false);
              setDeactivate(false);
              setActivate(true);
+             setApprove(false);
+             setReject(false);
             },
-      [dbIsFund, isUpdate, isDeactivate, isActivate]
+      [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
+    )
+
+    const _makeApprove = useCallback(
+      () => {setFund(false);
+             setUpdate(false);
+             setDeactivate(false);
+             setActivate(false);
+             setApprove(true);
+             setReject(false);
+            },
+      [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
     )
 
 
+    function showAddress(_acct: string): JSX.Element {
+      return(<>
+      {_acct.length>0? 
+                <><IdentityIcon value={_acct} />{' '}
+                  <AccountName value={_acct} withSidebar={true}/>
+                  {' '}    
+                </>: <>{''}</>}
+            </>)
+    }
 
     function timeStampToDate(tstamp: number): JSX.Element {
         try {
@@ -346,10 +379,27 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
                           {_programs.ownerApprovalRequired && _programs.claimsEndorsedWaiting.length>0 && (<>
                             <strong>{t<string>('Endorsements Waiting For Owner Approval:')}</strong><br />
                             {_programs.claimsEndorsedWaiting.map(_claim => <>
-                              {'Claim ID: '}{_claim.claimId}
-                              {_claim.child}{'('}{_claim.grandparent}{' -> '}{_claim.parent}{' -> '}{_claim.child}
-                              {' '}<Label as='a' circular color='orange'>{'Approve'}'</Label>
-                              {' '}<Label as='a' circular color='orange'>{'Reject'}'</Label>
+                              <strong>{'Claim ID: '}</strong>{shortClaimId(_claim.claimId)}<br />
+                              {timeStampToDate(_claim.timestamp)}<br />
+
+                              {'(child) '}{showAddress(_claim.child)}
+                              {'(grandpa) '}{showAddress(_claim.grandparent)}
+                              {' -> '}{'(parent) '}{showAddress(_claim.parent)}
+                              {' -> '}{'(child) '}{showAddress(_claim.child)}
+                              <br /><br />
+                              {_claim.status===1 && (<>
+                                {' '}<Label as='a' 
+                                          circular color='orange'
+                                          onClick={()=>{<>
+                                            {setProgramId(_programs.programId)}
+                                            {setTitle(_programs.title)}
+                                            {setDescription(_programs.description)}
+                                            {setClaimId(_claim.claimId)}
+                                            {_makeApprove()}
+                                            </>}} >
+                                   {'Approve'}</Label>                                                                                    
+                              </>)}
+                              {' '}<Label as='a' circular color='orange'>{'Reject'}</Label>
                             </>)}
                           </>)}
                          
@@ -430,6 +480,19 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
          title={useTitle}
          description={useDescription}
          callIndex={6}
+         isModal={true}
+         onClear={() => _reset()}
+        />
+      )}
+      {isApprove && !isReject && !isNewProgram && 
+       !dbIsFund && !isUpdate && !isDeactivate && 
+       !isActivate && (
+        <CallSendMessage
+         programID={useProgramId}
+         title={useTitle}
+         description={useDescription}
+         claimId={useClaimId}
+         callIndex={7}
          isModal={true}
          onClear={() => _reset()}
         />

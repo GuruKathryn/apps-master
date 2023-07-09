@@ -57,7 +57,7 @@ interface Props {
     grandparent: string,
     branch: string[],
     payIn: number,
-    endorseBy: string,
+    endorsedBy: string,
     payoutId: string,
     status: number
   }
@@ -95,18 +95,19 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
     const [useProgramId, setProgramId] = useState('');
     const [useTitle, setTitle] = useState('');
     const [useDescription, setDescription] = useState('');
-    const [useMoreInfoLink, setMoreInfoLink] = useState('');
-    const [usePhoto, setPhoto] = useState('');
-    const [useFirstLevelReward, setFirstLevelReward] = useState(0);
-    const [useSecondLevelReward, setSecondLevelReward] = useState(0);
-    const [useMaxRewards, setMaxRewards] = useState(0);
-    const [useOwnerApprovedRequired, setOwnerApprovedRequired] = useState(false);
-    const [usePayInMinimum, setPayInMinimum] = useState(0);
+    const [useClaimId, setClaimId] = useState('');
+    //const [useMoreInfoLink, setMoreInfoLink] = useState('');
+    //const [usePhoto, setPhoto] = useState('');
+    //const [useFirstLevelReward, setFirstLevelReward] = useState(0);
+    //const [useSecondLevelReward, setSecondLevelReward] = useState(0);
+    //const [useMaxRewards, setMaxRewards] = useState(0);
+    //const [useOwnerApprovedRequired, setOwnerApprovedRequired] = useState(false);
+    //const [usePayInMinimum, setPayInMinimum] = useState(0);
 
     const [isEndorse, setEndorse] = useState(false);
-    const [isUpdate, setUpdate] = useState(false);
-    const [isDeactivate, setDeactivate] = useState(false);
-    const [isActivate, setActivate] = useState(false);
+    //const [isUpdate, setUpdate] = useState(false);
+    //const [isDeactivate, setDeactivate] = useState(false);
+    //const [isActivate, setActivate] = useState(false);
     
     //const [isReset, toggleReset] = useToggle(false);
     
@@ -118,56 +119,26 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
 //    const [isNewProgram, toggleNewProgram] = useToggle(false);
     //const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
     //const dbIsFund = useDebounce(isFund);
-
+    const shortAccount = (_acctAddrs: string) => _acctAddrs.length>0? _acctAddrs.slice(0, 5)+'..': '';
     
-
     const _reset = useCallback(
       () => {setEndorse(false);
-             setUpdate(false);
-             setDeactivate(false);
-             setActivate(false);
             },
-      [isEndorse, isUpdate, isDeactivate, isActivate]
+      [isEndorse]
     )
     
     const _makeEndorse = useCallback(
       () => {setEndorse(true);
-             setUpdate(false);
-             setDeactivate(false);
-             setActivate(false);
-             //toggleReset();
             },
-      [isEndorse, isUpdate, isDeactivate, isActivate]
+      [isEndorse]
     )
     
-    const _makeUpdate = useCallback(
-      () => {setEndorse(false);
-             setUpdate(true);
-             setDeactivate(false);
-             setActivate(false);
-            },
-      [isEndorse, isUpdate, isDeactivate, isActivate]
-    )
-    
-    const _makeDeactivate = useCallback(
-      () => {setEndorse(false);
-             setUpdate(false);
-             setDeactivate(true);
-             setActivate(false);
-            },
-      [isEndorse, isUpdate, isDeactivate, isActivate]
-    )
-    
-    const _makeActivate = useCallback(
-      () => {setEndorse(false);
-             setUpdate(false);
-             setDeactivate(false);
-             setActivate(true);
-            },
-      [isEndorse, isUpdate, isDeactivate, isActivate]
-    )
-
-
+    function statusToHuman(_status: number): JSX.Element {
+      const _ref: string[] = ['Claim Made', 'Waiting approval', 'Approved', 'Rejected']
+      return(<>
+        {(_status>-1 && _status<4)? <>{_ref[_status]}</>: <>{'None'}</>}
+      </>)
+    }
 
     function timeStampToDate(tstamp: number): JSX.Element {
         try {
@@ -280,45 +251,14 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
                     <Grid.Row>
                       <Grid.Column>
                         {renderLink(_programs.photo)}
-                        <Label as='a' size='small' 
-                                color={'orange'}
-                                onClick={()=>{<>
-                                       {setProgramId(_programs.programId)}
-                                       {setTitle(_programs.title)}
-                                       {setDescription(_programs.description)}
-                                       {_makeEndorse()}
-                                          </>}} >{'Endorsed'}</Label>
-
                         <Label as='a' size='small' color='orange'
                                 onClick={()=>{<>
                                        {setProgramId(_programs.programId)}
                                        {setTitle(_programs.title)}
                                        {setDescription(_programs.description)}
-                                       {setMoreInfoLink(_programs.moreInfoLink)}
-                                       {setPhoto(_programs.photo)}
-                                       {setFirstLevelReward(_programs.firstLevelReward)}
-                                       {setSecondLevelReward(_programs.secondLevelReward)}
-                                       {setMaxRewards(_programs.maximumRewards)}
-                                       {setOwnerApprovedRequired(_programs.ownerApprovalRequired)}
-                                       {setPayInMinimum(_programs.payInMinimum)}
-                                       {_makeUpdate()}
-                                       </>}} >{'Update'}</Label>
+                                       {_reset()}
+                                       </>}} >{'Reset'}</Label>
 
-                        <Label as='a' size='small' color='orange'
-                                onClick={()=>{<>
-                                       {setProgramId(_programs.programId)}
-                                       {setTitle(_programs.title)}
-                                       {setDescription(_programs.description)}
-                                       {_makeDeactivate()}
-                                       </>}} >{'Deactivate'}</Label>
-
-                        <Label as='a' size='small' color='orange'
-                               onClick={()=>{<>
-                                       {setProgramId(_programs.programId)}
-                                       {setTitle(_programs.title)}
-                                       {setDescription(_programs.description)}
-                                       {_makeActivate()}
-                                       </>}} >{'Reactivate'}</Label>
                       </Grid.Column>
                       <Grid.Column>
                       <h3><strong>{t<string>('Title: ')}</strong>{hextoHuman(_programs.title)}</h3>
@@ -334,12 +274,32 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
                       </Grid.Column>
                       <Grid.Column>
                       <h3><strong>{t<string>('Claims: ')}</strong></h3>
-                      {_programs.claims.length>0 && _programs.claims.map(_claim =>{
+                      {_programs.claims.length>0 && _programs.claims.map(_claim =>
                         <>
-                        {t<string>('Program ID: ')}{_claim.programId}
-                        
+                        {timeStampToDate(_claim.timestamp)}<br />
+                        {t<string>('Status: ')}{statusToHuman(_claim.status)}<br />
+                        <strong>{t<string>('Parent: ')}</strong>{shortAccount(_claim.parent)}
+                        <IdentityIcon value={_claim.parent} />
+                        <AccountName value={_claim.parent} withSidebar={true}/>
+                        <strong>{' -> '}</strong>
+                        <strong>{t<string>('Child: ')}</strong>{shortAccount(_claim.child)}
+                        <IdentityIcon value={_claim.child} />
+                        <AccountName value={_claim.child} withSidebar={true}/>
+                        <br /><br />
+                        {_claim.status===0 && from===_claim.child && (<>
+                          <Label as='a' size='small' 
+                                color={isEndorse? 'grey': 'orange'}
+                                onClick={()=>{<>
+                                       {setProgramId(_programs.programId)}
+                                       {setTitle(_programs.title)}
+                                       {setDescription(_programs.description)}
+                                       {setClaimId(_claim.claimId)}
+                                       {_makeEndorse()}
+                          </>}} >{t<string>('Endorse')}</Label>
+                        </>)}
+                        <br /><br />
                         </>
-                      })}
+                      )}
                       <h3><strong>{t<string>('Payouts: ')}</strong></h3>
                       <h3><strong>{t<string>('Branches: ')}</strong></h3>                         
                       </Grid.Column>
@@ -369,49 +329,13 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
             timeDate={when} 
             callFrom={2}/>
       <ShowSubMenus />
-      {isEndorse && !isUpdate && !isDeactivate && !isActivate && (
+      {isEndorse && (
         <CallSendMessage
          programID={useProgramId}
          title={useTitle}
          description={useDescription}
+         claimId={useClaimId}
          callIndex={1}
-         isModal={true}
-         onClear={() => _reset()}
-        />
-      )}
-      {!isEndorse && isUpdate && !isDeactivate && !isActivate && (
-        <CallSendMessage
-         programID={useProgramId}
-         title={useTitle}
-         description={useDescription}
-         moreInfoLink={useMoreInfoLink}
-         photo={usePhoto}
-         firstLevelReward={useFirstLevelReward}
-         secondLevelReward={useSecondLevelReward}
-         maximumReward={useMaxRewards}
-         ownerApprovedRequired={useOwnerApprovedRequired}
-         payInMinimum={usePayInMinimum}
-         callIndex={4}
-         isModal={true}
-         onClear={() => _reset()}
-        />
-      )}
-      {!isEndorse && !isUpdate && isDeactivate && !isActivate &&  (
-        <CallSendMessage
-         programID={useProgramId}
-         title={useTitle}
-         description={useDescription}
-         callIndex={5}
-         isModal={true}
-         onClear={() => _reset()}
-        />
-      )}
-      {!isEndorse && !isUpdate && !isDeactivate && isActivate && (
-        <CallSendMessage
-         programID={useProgramId}
-         title={useTitle}
-         description={useDescription}
-         callIndex={6}
          isModal={true}
          onClear={() => _reset()}
         />

@@ -40,6 +40,7 @@ interface Props {
   maximumReward?: number;
   ownerApprovedRequired?: boolean;
   payInMinimum?: number;
+  claimId?: string;
   contract: ContractPromise;
   messageIndex: number;
   onCallResult?: (messageIndex: number, result?: ContractCallOutcome | void) => void;
@@ -54,12 +55,12 @@ const paramToNum = (_num: number|undefined) => _num? _num : 0;
 const paramToString = (_string: string|undefined) => _string? _string : '';
 const paramToBool = (_bool: boolean|undefined) => _bool? _bool: false;
 const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
-const refHeader: string[] = ['Make a Claim','','','Fund Program','Update Program', 'Deactivate Program', 'Activate Program', '']
+const refHeader: string[] = ['Make a Claim','Endorse a Claim','','Fund Program','Update Program', 'Deactivate Program', 'Activate Program', '']
 
 function CallModal ({ className = '', programID, 
                       title, description, moreInfoLink, 
                       photo, firstLevelReward, secondLevelReward, 
-                      maximumReward, ownerApprovedRequired, payInMinimum, 
+                      maximumReward, ownerApprovedRequired, payInMinimum, claimId, 
                       contract, messageIndex, onCallResult, onChangeMessage,
                       onClose }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
@@ -203,7 +204,6 @@ function CallModal ({ className = '', programID,
       <strong>{t<string>('Program Title: ')}</strong>
           {hextoHuman(paramToString(title))}<br />
       </h2>
-      <h2><IpAddress /></h2>
       <Expander 
          className='paramsExpander'
          isOpen={false}
@@ -214,7 +214,17 @@ function CallModal ({ className = '', programID,
             {'(2) '}{t<string>('Copy the Program ID and paste it into the (programId: Hash) Field. ')}<br /> 
             {'(3) '}{t<string>('Copy or Enter the Parent IP Address into the (parentId: Vec) Field. This is your current IP Address. ')}<br /> 
             {'(4) '}{t<string>('Select the Account of the Person you brought on (child: AccountID). ')}<br /> 
+            {'(5) '}{t<string>('Enter the value in Geode for the Pay-it-Forward ammount (value). This amount goes to the person you brought on. ')}
             
+            <br /><br />
+            {t<string>('⚠️ Please Note: Click Submit to execute this funding transaction. ')}
+          </>)}
+          {messageIndex !== null && messageIndex===1 && (<>
+            <strong>{t<string>('Instructions for Endorsing a Claim: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use for this transaction (call from account). ')}<br /> 
+            {'(2) '}{t<string>('Copy the Program ID and paste it into the (programId: Hash) Field. ')}<br /> 
+            {'(3) '}{t<string>('Copy or Enter the Parent IP Address into the (parentId: Vec) Field. This is your current IP Address. ')}<br /> 
+            {'(4) '}{t<string>('Select the Account of the Person you brought on (child: AccountID). ')}<br /> 
             {'(5) '}{t<string>('Enter the value in Geode for the Pay-it-Forward ammount (value). This amount goes to the person you brought on. ')}
             
             <br /><br />
@@ -333,12 +343,12 @@ function CallModal ({ className = '', programID,
         </>)}
 
         {messageIndex===1 && (<>
-          <strong>{t<string>('Copy & Paste Program ID and Parent IP Address Below: ')}</strong><br /><br />          
-          <LabelHelp help={programID}/>{' '}          
-          <strong>{t<string>('Program Id: ')}</strong>{programID}{' '}
-          <CopyInline value={programID} label={''}/>{' '}<br /><br />
+          <strong>{t<string>('Copy & Paste Claim ID and Your IP Address Below: ')}</strong><br /><br />          
+          <LabelHelp help={claimId}/>{' '}          
+          <strong>{t<string>('Claim Id: ')}</strong>{claimId}{' '}
+          <CopyInline value={claimId} label={''}/>{' '}<br /><br />
           <LabelHelp help={ip}/>{' '}          
-          <strong>{t<string>('Parent IP: ')}</strong>{ip}{' '} 
+          <strong>{t<string>('Your IP: ')}</strong>{ip}{' '} 
           <CopyInline value={ip} label={''}/>{' '}<br /><br />
               <Params
               onChange={setParams}
@@ -355,6 +365,12 @@ function CallModal ({ className = '', programID,
               {(messageIndex===3 || messageIndex===6) && (<>
                 <strong>{t<string>('Program Value: ')}</strong>              
               </>)}
+        </>)}
+        {(messageIndex===7) && (<>
+              <br />
+              <strong>{t<string>('Claim Id: ')}</strong>
+              {params[0] = claimId} <br /><br />
+              
         </>)}
       
         {messageIndex===4 && (<>

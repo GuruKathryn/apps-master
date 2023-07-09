@@ -42,6 +42,7 @@ export interface Props {
   maximumReward?: number;
   ownerApprovedRequired?: boolean;
   payInMinimum?: number;
+  claimId?: string;
 }
 
 interface Indexes {
@@ -56,7 +57,7 @@ function filterContracts (api: ApiPromise, keyringContracts: string[] = []): Con
     .filter((contract): contract is ContractPromise => !!contract);
 }
 
-function ContractsModal ({ contracts: keyringContracts, initMessageIndex, programID, title, description, moreInfoLink, photo, firstLevelReward, secondLevelReward, maximumReward, ownerApprovedRequired, payInMinimum }: Props): React.ReactElement<Props> {
+function ContractsModal ({ contracts: keyringContracts, initMessageIndex, programID, title, description, moreInfoLink, photo, firstLevelReward, secondLevelReward, maximumReward, ownerApprovedRequired, payInMinimum, claimId }: Props): React.ReactElement<Props> {
   const _initIndex: number = (initMessageIndex > -1) ? initMessageIndex: 0;
   let _initContractIndex: number = 0;
   const { t } = useTranslation();
@@ -165,7 +166,8 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, progra
       {isCallOpen && contract && 
       (messageIndex===0 || messageIndex===1 || 
        messageIndex===3 || messageIndex===4 || 
-       messageIndex===5 || messageIndex===6) && (
+       messageIndex===5 || messageIndex===6 ||
+       messageIndex===7) && (
         <CallModal
           programID={programID}
           title={title}
@@ -177,6 +179,7 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, progra
           maximumReward={maximumReward}
           ownerApprovedRequired={ownerApprovedRequired}
           payInMinimum={payInMinimum}
+          claimId={claimId}
           contract={contract}
           messageIndex={messageIndex}
           onCallResult={onCallResult}
