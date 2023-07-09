@@ -24,6 +24,7 @@ interface Props {
   maximumReward?: number;
   ownerApprovedRequired?: boolean;
   payInMinimum?: number;
+  claimId?: string;
   callIndex: number;
   isModal: boolean;
   onReset?: () => void;
@@ -32,7 +33,7 @@ interface Props {
 function CallSendMessage ({ className = '', onClear, programID, title, 
                             description, moreInfoLink, photo, firstLevelReward, 
                             secondLevelReward, maximumReward, ownerApprovedRequired, 
-                            payInMinimum, callIndex,
+                            payInMinimum, claimId, callIndex,
                             isModal, onReset }: Props): React.ReactElement<Props> | null {
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
@@ -62,6 +63,7 @@ function CallSendMessage ({ className = '', onClear, programID, title,
                 maximumReward={maximumReward}
                 ownerApprovedRequired={ownerApprovedRequired}
                 payInMinimum={payInMinimum}
+                claimId={claimId}
                 contracts={allContracts}
                 updated={codeTrigger}
                 initMessageIndex={callIndex}
