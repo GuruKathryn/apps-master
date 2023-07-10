@@ -51,6 +51,8 @@ function ViewAllowedDetails ({ className = '', onClear, outcome: { from, message
   // useToggles for secondary buttons on this display
   const [isAddDelegate, toggleAddDelegate] = useToggle(false);
   const [isAddEntity, toggleAddEntity] = useToggle(false);
+
+  const [count, setCount] = useState(0);
     
   const _reset = useCallback(
     () => {setRemoveDelegate(false);
@@ -129,6 +131,7 @@ function ViewAllowedDetails ({ className = '', onClear, outcome: { from, message
                         color='orange'
                         onClick={()=>{<>
                           {setRemoveAccountID(_delegates.userAcct)}
+                          {setCount(count + 1)}
                           {_removeDelegate()}</>}}
                         >{'Remove'}</Label>
                   <br /><br />
@@ -162,6 +165,7 @@ function ViewAllowedDetails ({ className = '', onClear, outcome: { from, message
                         color='orange'
                         onClick={()=>{<>
                           {setRemoveAccountID(_entities.userAcct)}
+                          {setCount(count + 1)}
                           {_removeEntity()}</>}}
                         >{'Remove'}</Label>
                   <br /><br />
