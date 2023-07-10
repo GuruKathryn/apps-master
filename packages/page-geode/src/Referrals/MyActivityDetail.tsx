@@ -286,7 +286,7 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
                         <IdentityIcon value={_claim.child} />
                         <AccountName value={_claim.child} withSidebar={true}/>
                         <br /><br />
-                        {_claim.status===0 && from===_claim.child && (<>
+                        {_claim.status===0 &&from===_claim.child && (<>
                           <Label as='a' size='small' 
                                 color={isEndorse? 'grey': 'orange'}
                                 onClick={()=>{<>

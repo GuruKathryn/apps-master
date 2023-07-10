@@ -16,7 +16,7 @@ import { formatNumber } from '@polkadot/util';
 import { useTranslation } from '../translate';
 import ContractAdd from './Add';
 import CallCard from './CallCard';
-import Contract from './Contract';
+import Contract from '../shared/Contract';
 import { getContractForAddress } from './util';
 // uncomment for test configuration - - - - >
 import JSONContractAddress from '../shared/geode_contracts_test.json';
@@ -163,7 +163,7 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
           />
         ))}
       </Table>}
-      
+
       {isCallOpen && contract 
                   && messageIndex!=0 
                   && messageIndex!=2 && messageIndex!=3 

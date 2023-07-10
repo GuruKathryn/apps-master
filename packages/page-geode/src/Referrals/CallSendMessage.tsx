@@ -37,6 +37,7 @@ function CallSendMessage ({ className = '', onClear, programID, title,
                             isModal, onReset }: Props): React.ReactElement<Props> | null {
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
+    // onReset=true;
     // const [isCallOpen, setIsCallOpen] = useState(true);
     // const _toggleCall = useCallback(
     //   () => <>

@@ -57,7 +57,13 @@ function filterContracts (api: ApiPromise, keyringContracts: string[] = []): Con
     .filter((contract): contract is ContractPromise => !!contract);
 }
 
-function ContractsModal ({ contracts: keyringContracts, initMessageIndex, programID, title, description, moreInfoLink, photo, firstLevelReward, secondLevelReward, maximumReward, ownerApprovedRequired, payInMinimum, claimId }: Props): React.ReactElement<Props> {
+function ContractsModal ({ contracts: keyringContracts, 
+                           initMessageIndex, programID, 
+                           title, description, moreInfoLink, 
+                           photo, firstLevelReward, secondLevelReward, 
+                           maximumReward, ownerApprovedRequired, payInMinimum, 
+                           claimId }: Props): React.ReactElement<Props> {
+  
   const _initIndex: number = (initMessageIndex > -1) ? initMessageIndex: 0;
   let _initContractIndex: number = 0;
   const { t } = useTranslation();
@@ -162,7 +168,8 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, progra
           />
         ))}
       </Table>}
-
+    
+      
       {isCallOpen && contract && 
       (messageIndex===0 || messageIndex===1 || 
        messageIndex===3 || messageIndex===4 || 

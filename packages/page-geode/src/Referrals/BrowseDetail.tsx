@@ -15,7 +15,7 @@ import { Grid, Table, Label, Image } from 'semantic-ui-react'
 
 import AccountHeader from '../shared/AccountHeader';
 import CallSendMessage from './CallSendMessage';
-import IpAddress from '../shared/IpAddress'
+//import IpAddress from '../shared/IpAddress'
 
 //import JSONprohibited from '../shared/geode_prohibited.json';
 
@@ -51,54 +51,34 @@ interface Props {
   }
   
 function BrowseDetails ({ className = '', onClear, onClose, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
-   // const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
-    //const [modalEnum, setModalEnum] = useState(['','','','','',0,0,0,false,0]);
     
     const [useProgramId, setProgramId] = useState('');
     const [useTitle, setTitle] = useState('');
     const [useDescription, setDescription] = useState('');
-    //const [useMoreInfoLink, setMoreInfoLink] = useState('');
-    //const [usePhoto, setPhoto] = useState('');
-    //const [useFirstLevelReward, setFirstLevelReward] = useState(0);
-    //const [useSecondLevelReward, setSecondLevelReward] = useState(0);
-    //const [useMaxRewards, setMaxRewards] = useState(0);
-    //const [useOwnerApprovedRequired, setOwnerApprovedRequired] = useState(false);
-    //const [usePayInMinimum, setPayInMinimum] = useState(0);
 
     const [isClaim, setClaim] = useState(false);
-    const [isEndorse, setEndorse] = useState(false);
+    const [count, setCount] = useState(0);
 
-    //const [isReset, toggleReset] = useToggle(false);
     
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const programDetail: ProgramDetail = Object.create(_Obj);
     
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-    //const [isNewProgram, toggleNewProgram] = useToggle(false);
 
     const _reset = useCallback(
-      () => {setClaim(false);
-             setEndorse(false);
+      () => {setClaim(false);           
             },
       []
-    )
-    
+    )  
+
     const _makeClaim = useCallback(
-      () => {setClaim(true);
-             setEndorse(false);
+      () => {setClaim(true);        
             },
       []
     )
-    
-    // const _makeEndorse = useCallback(
-    //   () => {setClaim(false);
-    //          setEndorse(true);
-    //         },
-    //   []
-    // )
-    
+        
 
     // function timeStampToDate(tstamp: number): JSX.Element {
     //     try {
@@ -210,23 +190,18 @@ function BrowseDetails ({ className = '', onClear, onClose, isAccount, outcome: 
                   <Grid columns={4} divided>
                     <Grid.Row>
                       <Grid.Column>
-                        {renderLink(_programs.photo)}
-                        <Label as='a' size='small' 
-                                color={isClaim? 'grey': 'orange'}
-                                onClick={()=>{<>
+                        {renderLink(_programs.photo)}                  
+                          <Label as='a' size='small' 
+                                color={'orange'}
+                                onClick={()=>{
+                                        <>
                                        {setProgramId(_programs.programId)}
                                        {setTitle(_programs.title)}
                                        {setDescription(_programs.description)}
+                                       {setCount(count + 1)}
                                        {_makeClaim()}
                                           </>}} >{'Claim'}</Label>
-
-                        <Label as='a' size='small' color='orange'
-                                onClick={()=>{<>
-                                       {setProgramId(_programs.programId)}
-                                       {setTitle(_programs.title)}
-                                       {setDescription(_programs.description)}
-                                       {_reset()}
-                                       </>}} >{'Reset'}</Label>
+                        
 
                       </Grid.Column>
                       <Grid.Column>
@@ -266,13 +241,14 @@ function BrowseDetails ({ className = '', onClear, onClose, isAccount, outcome: 
             timeDate={when} 
             callFrom={2}/>
       <ShowSubMenus />
-      {isClaim && !isEndorse &&  (
+      {isClaim && (
        <CallSendMessage
          programID={useProgramId}
          title={useTitle}
          description={useDescription}
          callIndex={0}
          isModal={true}
+         onReset={() => _reset()}
       />
       )}
 

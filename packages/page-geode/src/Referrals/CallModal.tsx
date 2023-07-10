@@ -23,7 +23,7 @@ import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
 import { getCallMessageOptions } from '../shared/util';
-import IpAddress from '../shared/IpAddress'
+//import IpAddress from '../shared/IpAddress'
 import axios from "axios";
 //import IpAddressString from '../shared/IpAddressString';
 
@@ -68,6 +68,8 @@ function CallModal ({ className = '', programID,
   const message = contract.abi.messages[messageIndex];
 
   const [accountId, setAccountId] = useAccountId();
+  const [childAccountId, setChildAccountId] = useAccountId();
+
   const [estimatedWeight, setEstimatedWeight] = useState<BN | null>(null);
   const [estimatedWeightV2, setEstimatedWeightV2] = useState<WeightV2 | null>(null);
   const [value, isValueValid, setValue] = useFormField<BN>(BN_ZERO);
@@ -328,18 +330,31 @@ function CallModal ({ className = '', programID,
         )}
 
         {messageIndex===0 && (<>
-          <strong>{t<string>('Copy & Paste Program ID and Parent IP Address Below: ')}</strong><br /><br />          
-          <LabelHelp help={programID}/>{' '}          
-          <strong>{t<string>('Program Id: ')}</strong>{programID}{' '}
+          <LabelHelp help={'Program ID'}/>{' '}    
+          <strong>{t<string>('Program Id: ')}</strong>{params[0] = programID}{' '}
           <CopyInline value={programID} label={''}/>{' '}<br /><br />
-          <LabelHelp help={ip}/>{' '}          
-          <strong>{t<string>('Parent IP: ')}</strong>{ip}{' '} 
+          <LabelHelp help={'Parent Ip Address'}/>{' '}          
+          <strong>{t<string>('Parent IP: ')}</strong>{params[1] = ip}{' '} 
           <CopyInline value={ip} label={''}/>{' '}<br /><br />
-              <Params
-              onChange={setParams}
-              params={message? message.args: undefined}
-              registry={contract.abi.registry}
-              />
+
+          <LabelHelp help={'Account of user that has been referred (Child Account)'}/>{' '}    
+          <strong>{t<string>('Child Account: ')}</strong><br />
+          <InputAddress
+           defaultValue={childAccountId}
+           //help={t<string>('Specify the user account to use for this contract call. And fees will be deducted from this account.')}
+           label={t<string>('Child Account')}
+           labelExtra={
+             <Available
+               label={t<string>('transferrable')}
+               params={childAccountId}
+             />
+            }
+           onChange={setChildAccountId}
+           type='account'
+           value={params[2]=childAccountId}
+        />
+        <LabelHelp help={'Value of amount to pass to Child Account '}/>{' '}    
+        <strong>{t<string>('Value: ')}</strong>
         </>)}
 
         {messageIndex===1 && (<>

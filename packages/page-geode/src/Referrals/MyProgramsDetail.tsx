@@ -10,8 +10,8 @@ import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Badge, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Grid, Table, Label, Image } from 'semantic-ui-react'
-import CopyInline from '../shared/CopyInline';
-import { useToggle, useDebounce } from '@polkadot/react-hooks';
+//import CopyInline from '../shared/CopyInline';
+import { useToggle } from '@polkadot/react-hooks';
 
 import AccountHeader from '../shared/AccountHeader';
 import CallSendMessage from './CallSendMessage';
@@ -116,7 +116,8 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
     const [isActivate, setActivate] = useState(false);
     const [isApprove, setApprove] = useState(false);
     const [isReject, setReject] = useState(false);
-    
+    const [count, setCount] = useState(0);
+
     //const [isReset, toggleReset] = useToggle(false);
     
     const objOutput: string = stringify(output);
@@ -330,6 +331,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
                                        {setProgramId(_programs.programId)}
                                        {setTitle(_programs.title)}
                                        {setDescription(_programs.description)}
+                                       {setCount(count + 1)}
                                        {_makeFund()}
                                           </>}} >{'Fund'}</Label>
 
@@ -345,6 +347,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
                                        {setMaxRewards(_programs.maximumRewards)}
                                        {setOwnerApprovedRequired(_programs.ownerApprovalRequired)}
                                        {setPayInMinimum(_programs.payInMinimum)}
+                                       {setCount(count + 1)}
                                        {_makeUpdate()}
                                        </>}} >{'Update'}</Label>
 
@@ -353,6 +356,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
                                        {setProgramId(_programs.programId)}
                                        {setTitle(_programs.title)}
                                        {setDescription(_programs.description)}
+                                       {setCount(count + 1)}
                                        {_makeDeactivate()}
                                        </>}} >{'Deactivate'}</Label>
 
@@ -361,6 +365,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
                                        {setProgramId(_programs.programId)}
                                        {setTitle(_programs.title)}
                                        {setDescription(_programs.description)}
+                                       {setCount(count + 1)}
                                        {_makeActivate()}
                                        </>}} >{'Reactivate'}</Label>
                       </Grid.Column>
@@ -395,6 +400,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
                                             {setTitle(_programs.title)}
                                             {setDescription(_programs.description)}
                                             {setClaimId(_claim.claimId)}
+                                            {setCount(count + 1)}
                                             {_makeApprove()}
                                             </>}} >
                                    {'Approve'}</Label>                                                                                    
@@ -434,7 +440,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
       <CallSendMessage
          callIndex={2}
          isModal={false}
-         onClear={() => _reset()}
+         onReset={() => _reset()}
       />
       )}
       {!isNewProgram && dbIsFund && !isUpdate && !isDeactivate && !isActivate && (
@@ -444,7 +450,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
          description={useDescription}
          callIndex={3}
          isModal={true}
-         onClear={() => _reset()}
+         onReset={() => _reset()}
         />
       )}
       {!isNewProgram && !dbIsFund && isUpdate && !isDeactivate && !isActivate && (
@@ -461,7 +467,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
          payInMinimum={usePayInMinimum}
          callIndex={4}
          isModal={true}
-         onClear={() => _reset()}
+         onReset={() => _reset()}
         />
       )}
       {!isNewProgram && !dbIsFund && !isUpdate && isDeactivate && !isActivate &&  (
@@ -471,7 +477,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
          description={useDescription}
          callIndex={5}
          isModal={true}
-         onClear={() => _reset()}
+         onReset={() => _reset()}
         />
       )}
       {!isNewProgram && !dbIsFund && !isUpdate && !isDeactivate && isActivate && (
@@ -481,7 +487,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
          description={useDescription}
          callIndex={6}
          isModal={true}
-         onClear={() => _reset()}
+         onReset={() => _reset()}
         />
       )}
       {isApprove && !isReject && !isNewProgram && 
@@ -494,7 +500,7 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
          claimId={useClaimId}
          callIndex={7}
          isModal={true}
-         onClear={() => _reset()}
+         onReset={() => _reset()}
         />
       )}
       <ShowPrograms />
