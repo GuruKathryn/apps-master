@@ -1,4 +1,4 @@
-// Copyright 2017-2023 @polkadot/app-whitelist authors & contributors
+// Copyright 2017-2023 @polkadot/app-referral authors & contributors
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
@@ -33,9 +33,9 @@ function Summary (): React.ReactElement {
       icon={'info'}
            color={(isShowInfo) ? 'blue' : 'gray'}
            onClick={toggleShowInfo}/> 
-      <strong> {t<string>('Info for Suspicious Activity Reporting')} </strong>
+      <strong> {t<string>('Report Illegal and/or Suspicious Activity in the Ecosystem.')} </strong>
       {isShowInfo && (<>
-        {': '}{t<string>(info[0]+info[1])}       
+        {': '}{t<string>(info[0])}       
       </>)}      
     </Card>
     </div>
