@@ -1,8 +1,10 @@
 // Copyright 2017-2022 @polkadot/app-contracts authors & contributors
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
-// packages/page-geode/src/LifeAndWork/CallCard.tsx
-import { Input } from 'semantic-ui-react'
+// packages/page-geode/src/Referrals/CallCard.tsx
+
+
+//import { Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -27,12 +29,6 @@ import BrowseDetail from './BrowseDetail';
 import MyActivityDetail from './MyActivityDetail';
 
 import { getCallMessageOptions } from '../shared/util';
-
-import JSONhelp from '../shared/geode_social_help.json';
-import JSONnote from '../shared/geode_social_note.json';
-import JSONTitle from '../shared/geode_social_card_titles.json';
-import JSONTier1Help from '../shared/geode_social_tier1_help.json';
-import JSONTier2Help from '../shared/geode_social_tier2_help.json';
 
 interface Props {
   className?: string;
@@ -151,11 +147,11 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
   const isClosed = (isCalled && (messageIndex === 9 || messageIndex === 14 || messageIndex===10 || messageIndex===11 || messageIndex===13));
-  const _help: string[] = JSONhelp;
-  const _note: string[] = JSONnote;
-  const _title: string[] = JSONTitle;
-  const _tierOne: string[] = JSONTier1Help;
-  const _tierTwo: string[] = JSONTier2Help;
+  // const _help: string[] = JSONhelp;
+  // const _note: string[] = JSONnote;
+  // const _title: string[] = JSONTitle;
+  // const _tierOne: string[] = JSONTier1Help;
+  // const _tierTwo: string[] = JSONTier2Help;
 
   
   return (
@@ -163,18 +159,33 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         <h2>
         <Badge icon='info' color={'blue'} /> 
         <strong>{t<string>(' Geode Referral Programs ')}</strong>
-        {t<string>(_title[messageIndex])}
+        {messageIndex===9 && (<>{t<string>(' - Browse Programs')}</>)}
+        {messageIndex===10 && (<>{t<string>(' - My Programs')}</>)}
+        {messageIndex===11 && (<>{t<string>(' - My Activity (Referrals & Payouts)')}</>)}
+        
         </h2>
         <Expander 
             className='viewInfo'
             isOpen={false}
             summary={<strong>{t<string>('Instructions: ')}</strong>}>
-            {t<string>(_help[messageIndex])}<br /><br />
-            {t<string>(_note[messageIndex])}<br /><br />
-            <Badge color='blue' icon='info'/>
-            {t<string>(_tierOne[messageIndex])}<br />
-            <Badge color='blue' icon='info'/>
-            {t<string>(_tierTwo[messageIndex])}
+              {t<string>('(1) Select the Account to Use')}<br />
+            {messageIndex===9 && (<>
+              {t<string>('(2) Click View to Show the Available Programs. ')}<br />              
+              {t<string>('(3) Browse the Programs Available. ')}<br />          
+              {t<string>('(4) Click the Claim button to submit a Claim. ')}
+            </>)}
+            {messageIndex===10 && (<>
+              {t<string>('(2) Click View to Show your Programs. ')}<br />                       
+              {t<string>('(3) Fund - Add funding to a Program. ')}<br />
+              {t<string>('(4) Update - Change/Update program details. ')}<br />
+              {t<string>('(5) Deactivate - Deactivate a Program. ')}<br />
+              {t<string>('(6) Reactivate - Reactivate a Program. ')}
+            </>)}
+            {messageIndex===11 && (<>
+              {t<string>('(2) Click View to Show the Available Programs. ')}<br />              
+              {t<string>('(3) Browse the Programs Available. ')}<br />          
+              {t<string>('(4) Click the Claim button to submit a Claim. ')}
+            </>)}
 
         </Expander>
         {isTest && (

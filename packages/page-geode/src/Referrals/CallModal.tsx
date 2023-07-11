@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import { Expander, LabelHelp, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
-import { isHex, stringToHex, hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
+import { isHex, stringToHex, hexToString, hexToNumber, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
 
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
@@ -52,10 +52,11 @@ const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 const BNtoGeode = (_num: number|undefined) => _num? _num/1000000000000: 0;
 const GeodeToBN = (_num: number|undefined) => _num? _num*1000000000000: 0;
 const paramToNum = (_num: number|undefined) => _num? _num : 0; 
+const hexToNum = (_hex: number|undefined) => isHex(_hex)? hexToNumber(_hex): 0;
 const paramToString = (_string: string|undefined) => _string? _string : '';
 const paramToBool = (_bool: boolean|undefined) => _bool? _bool: false;
 const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
-const refHeader: string[] = ['Make a Claim','Endorse a Claim','','Fund Program','Update Program', 'Deactivate Program', 'Activate Program', '']
+const refHeader: string[] = ['Make a Claim','Endorse a Claim','','Fund Program','Update Program', 'Deactivate Program', 'Activate Program', 'Claim Approval', 'Reject a Claim']
 
 function CallModal ({ className = '', programID, 
                       title, description, moreInfoLink, 
@@ -213,10 +214,8 @@ function CallModal ({ className = '', programID,
         {messageIndex !== null && messageIndex===0 && (<>
             <strong>{t<string>('Instructions for Making a Claim: ')}</strong><br />
             {'(1) '}{t<string>('Select the Account to use for this transaction (call from account). ')}<br /> 
-            {'(2) '}{t<string>('Copy the Program ID and paste it into the (programId: Hash) Field. ')}<br /> 
-            {'(3) '}{t<string>('Copy or Enter the Parent IP Address into the (parentId: Vec) Field. This is your current IP Address. ')}<br /> 
-            {'(4) '}{t<string>('Select the Account of the Person you brought on (child: AccountID). ')}<br /> 
-            {'(5) '}{t<string>('Enter the value in Geode for the Pay-it-Forward ammount (value). This amount goes to the person you brought on. ')}
+            {'(2) '}{t<string>('Select the Account of the Person you brought on (child: AccountID). ')}<br /> 
+            {'(3) '}{t<string>('Enter the value in Geode for the Pay-it-Forward ammount (value). This amount goes to the person you brought on. ')}
             
             <br /><br />
             {t<string>('⚠️ Please Note: Click Submit to execute this funding transaction. ')}
@@ -224,13 +223,8 @@ function CallModal ({ className = '', programID,
           {messageIndex !== null && messageIndex===1 && (<>
             <strong>{t<string>('Instructions for Endorsing a Claim: ')}</strong><br />
             {'(1) '}{t<string>('Select the Account to use for this transaction (call from account). ')}<br /> 
-            {'(2) '}{t<string>('Copy the Program ID and paste it into the (programId: Hash) Field. ')}<br /> 
-            {'(3) '}{t<string>('Copy or Enter the Parent IP Address into the (parentId: Vec) Field. This is your current IP Address. ')}<br /> 
-            {'(4) '}{t<string>('Select the Account of the Person you brought on (child: AccountID). ')}<br /> 
-            {'(5) '}{t<string>('Enter the value in Geode for the Pay-it-Forward ammount (value). This amount goes to the person you brought on. ')}
-            
+            {'(2) '}{t<string>('Click Submit to execute this funding transaction. ')}<br /> 
             <br /><br />
-            {t<string>('⚠️ Please Note: Click Submit to execute this funding transaction. ')}
           </>)}
           {messageIndex !== null && messageIndex===3 && (<>
             <strong>{t<string>('Instructions for Funding a Program: ')}</strong><br />
@@ -266,8 +260,22 @@ function CallModal ({ className = '', programID,
           {messageIndex !== null && messageIndex === 6 && (<>
             <strong>{t<string>('Instructions for Reactiving a Program: ')}</strong><br />
             {'(1) '}{t<string>('Select the Account to use for this transaction (call from account). ')}<br /> 
-            {'(2) '}{t<string>('Enter the Program value in Geode. ')}
+            {'(2) '}{t<string>('Enter the Program value in Geode. ')}<br />
             {'(3) '}{t<string>('Click Submit to Reactivate the Program. ')}<br />
+            <br /><br />
+            {t<string>("⚠️ Please Note: Don't Forget to Click Submit when done! ")}<br /><br />
+          </>)}
+          {messageIndex !== null && messageIndex === 7 && (<>
+            <strong>{t<string>('Instructions for Approving a Claim: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use for this transaction (call from account). ')}<br /> 
+            {'(2) '}{t<string>('Click Submit to Approve this claim. ')}<br />
+            <br /><br />
+            {t<string>("⚠️ Please Note: Don't Forget to Click Submit when done! ")}<br /><br />
+          </>)}
+          {messageIndex !== null && messageIndex === 8 && (<>
+            <strong>{t<string>('Instructions for Rejecting a Claim: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use for this transaction (call from account). ')}<br /> 
+            {'(2) '}{t<string>('Click Submit to Reject this claim. ')}<br />
             <br /><br />
             {t<string>("⚠️ Please Note: Don't Forget to Click Submit when done! ")}<br /><br />
           </>)}
@@ -358,18 +366,12 @@ function CallModal ({ className = '', programID,
         </>)}
 
         {messageIndex===1 && (<>
-          <strong>{t<string>('Copy & Paste Claim ID and Your IP Address Below: ')}</strong><br /><br />          
-          <LabelHelp help={claimId}/>{' '}          
-          <strong>{t<string>('Claim Id: ')}</strong>{claimId}{' '}
+          <LabelHelp help={'This is the Claim ID'}/>{' '}   
+          <strong>{t<string>('Claim Id: ')}</strong>{params[0] = claimId}{' '}
           <CopyInline value={claimId} label={''}/>{' '}<br /><br />
-          <LabelHelp help={ip}/>{' '}          
-          <strong>{t<string>('Your IP: ')}</strong>{ip}{' '} 
+          <LabelHelp help={'This is the Your IP Address'}/>{' '}          
+          <strong>{t<string>('Your IP: ')}</strong>{params[1] = ip}{' '} 
           <CopyInline value={ip} label={''}/>{' '}<br /><br />
-              <Params
-              onChange={setParams}
-              params={message? message.args: undefined}
-              registry={contract.abi.registry}
-              />
         </>)}
 
 
@@ -381,7 +383,7 @@ function CallModal ({ className = '', programID,
                 <strong>{t<string>('Program Value: ')}</strong>              
               </>)}
         </>)}
-        {(messageIndex===7) && (<>
+        {(messageIndex===7 || messageIndex===8) && (<>
               <br />
               <strong>{t<string>('Claim Id: ')}</strong>
               {params[0] = claimId} <br /><br />

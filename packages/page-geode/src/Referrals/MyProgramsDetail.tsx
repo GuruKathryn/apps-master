@@ -94,9 +94,7 @@ interface Props {
   }
   
 function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
-   // const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
-    //const [modalEnum, setModalEnum] = useState(['','','','','',0,0,0,false,0]);
     
     const [useProgramId, setProgramId] = useState('');
     const [useTitle, setTitle] = useState('');
@@ -117,8 +115,6 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
     const [isApprove, setApprove] = useState(false);
     const [isReject, setReject] = useState(false);
     const [count, setCount] = useState(0);
-
-    //const [isReset, toggleReset] = useToggle(false);
     
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
@@ -149,7 +145,6 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
              setActivate(false);
              setApprove(false);
              setReject(false);
-             //toggleReset();
             },
       [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
     )
@@ -198,6 +193,16 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
       [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
     )
 
+    const _makeReject = useCallback(
+      () => {setFund(false);
+             setUpdate(false);
+             setDeactivate(false);
+             setActivate(false);
+             setApprove(false);
+             setReject(true);
+            },
+      [dbIsFund, isUpdate, isDeactivate, isActivate, isApprove, isReject]
+    )
 
     function showAddress(_acct: string): JSX.Element {
       return(<>
@@ -380,17 +385,18 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
                           <strong>{t<string>('Pay It Forward Minimum: ')}</strong>{BNtoGeode(_programs.payInMinimum)}<br />
                           <strong>{t<string>('More Info Link: ')}</strong>{linkToButton(_programs.moreInfoLink)}<br />
                           <strong>{t<string>('Program Account Balance: ')}</strong>{BNtoGeode(_programs.programBalance)}<br />
-                          <strong>{t<string>('Program Status: ')}</strong>{booleanToStatus(_programs.active)}<br />
+                          <strong>{t<string>('Program Status: ')}</strong>{booleanToStatus(_programs.active)}<br /><br />
                           {_programs.ownerApprovalRequired && _programs.claimsEndorsedWaiting.length>0 && (<>
-                            <strong>{t<string>('Endorsements Waiting For Owner Approval:')}</strong><br />
+                            <strong>{t<string>('Endorsements Waiting For Owner Approval:')}</strong>
                             {_programs.claimsEndorsedWaiting.map(_claim => <>
+                              <br /><br />
                               <strong>{'Claim ID: '}</strong>{shortClaimId(_claim.claimId)}<br />
                               {timeStampToDate(_claim.timestamp)}<br />
+                              {showAddress(_claim.child)}{' -- ('}<br />
+                              {showAddress(_claim.grandparent)}{' -> '}<br />
+                              {showAddress(_claim.parent)}{' -> '}<br />
+                              {showAddress(_claim.child)}{')'}
 
-                              {'(child) '}{showAddress(_claim.child)}
-                              {'(grandpa) '}{showAddress(_claim.grandparent)}
-                              {' -> '}{'(parent) '}{showAddress(_claim.parent)}
-                              {' -> '}{'(child) '}{showAddress(_claim.child)}
                               <br /><br />
                               {_claim.status===1 && (<>
                                 {' '}<Label as='a' 
@@ -403,9 +409,18 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
                                             {setCount(count + 1)}
                                             {_makeApprove()}
                                             </>}} >
-                                   {'Approve'}</Label>                                                                                    
+                                   {'Approve'}</Label> 
+                                   {' '}<Label as='a' 
+                                          circular color='orange'
+                                          onClick={()=>{<>
+                                            {setProgramId(_programs.programId)}
+                                            {setTitle(_programs.title)}
+                                            {setDescription(_programs.description)}
+                                            {setClaimId(_claim.claimId)}
+                                            {setCount(count + 1)}
+                                            {_makeReject()}
+                                            </>}}>{'Reject'}</Label>                                                                                   
                               </>)}
-                              {' '}<Label as='a' circular color='orange'>{'Reject'}</Label>
                             </>)}
                           </>)}
                          
@@ -499,6 +514,19 @@ function MyProgramsDetails ({ className = '', onClear, onClose, isAccount, outco
          description={useDescription}
          claimId={useClaimId}
          callIndex={7}
+         isModal={true}
+         onReset={() => _reset()}
+        />
+      )}
+      {!isApprove && isReject && !isNewProgram && 
+       !dbIsFund && !isUpdate && !isDeactivate && 
+       !isActivate && (
+        <CallSendMessage
+         programID={useProgramId}
+         title={useTitle}
+         description={useDescription}
+         claimId={useClaimId}
+         callIndex={8}
          isModal={true}
          onReset={() => _reset()}
         />

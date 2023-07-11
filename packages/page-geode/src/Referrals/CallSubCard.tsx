@@ -2,7 +2,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
-import { Container, Table, Input } from 'semantic-ui-react'
+import { Container } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -10,10 +10,10 @@ import type { ContractPromise } from '@polkadot/api-contract';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 //import type { CallResult } from '../shared/types';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Expander, Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
+import { Expander, Badge, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
@@ -22,13 +22,7 @@ import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
 
-
 import { getCallMessageOptions } from '../shared/util';
-import JSONhelp from '../shared/geode_messaging_help.json';
-import JSONnote from '../shared/geode_messaging_note.json';
-import JSONTitle from '../shared/geode_messaging_infoTwo.json';
-import JSONTier1Help from '../shared/geode_messaging_tier1_help.json';
-import JSONTier2Help from '../shared/geode_messaging_tier2_help.json';
 
 interface Props {
   className?: string;
@@ -56,9 +50,12 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
-  const [isCalled, toggleIsCalled] = useToggle(false);
-  
+  //const [isCalled, toggleIsCalled] = useToggle(false);
+  //const isCalled: boolean = false; 
   const isTest: boolean = false;
+  const isValid = !!(accountId && weight.isValid && isValueValid);
+  const isClosed: boolean = false; 
+  
   
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -107,51 +104,6 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
       });
   }, [api, accountId, contract, message, dbParams, dbValue, weight.isWeightV2]);
 
-  // const _onSubmitRpc = useCallback(
-  //   (): void => {
-  //     if (!accountId || !message || !value || !weight) {
-  //       return;
-  //     }
-      
-  //     {toggleIsCalled()}
-  //     contract
-  //       .query[message.method](
-  //         accountId,
-  //         { gasLimit: weight.isWeightV2 ? weight.weightV2 : weight.isEmpty ? -1 : weight.weight, storageDepositLimit: null, value: message.isPayable ? value : 0 },
-  //         ...params
-  //       )
-  //       .then((result): void => {
-  //         setOutcomes([{
-  //           ...result,
-  //           from: accountId,
-  //           message,
-  //           params,
-  //           when: new Date()
-  //         }, ...outcomes]);
-  //         onCallResult && onCallResult(messageIndex, result);
-  //       })
-  //       .catch((error): void => {
-  //         console.error(error);
-  //         onCallResult && onCallResult(messageIndex);
-  //       });
-  //   },
-  //   [accountId, contract.query, message, messageIndex, onCallResult, outcomes, params, value, weight]
-  // );
-
-  // const _onClearOutcome = useCallback(
-  //   (outcomeIndex: number) =>
-  //     () => setOutcomes([...outcomes.filter((_, index) => index !== outcomeIndex)]),
-  //   [outcomes]
-  // );
-
-  const isValid = !!(accountId && weight.isValid && isValueValid);
-//  const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
-  const isClosed = (isCalled && (messageIndex === 9 || messageIndex === 14 || messageIndex===10 || messageIndex===11 || messageIndex===13));
-  const _help: string[] = JSONhelp;
-  const _note: string[] = JSONnote;
-  const _title: string[] = JSONTitle;
-  const _tierOne: string[] = JSONTier1Help;
-  const _tierTwo: string[] = JSONTier2Help;
 
   return (
     <StyledDiv className={className}>
@@ -159,24 +111,28 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
         <br />
         <h2>
         <Badge icon='info' color={'blue'} /> 
-        <strong>{t<string>(' Geode Private Messaging ')}</strong>
-        {t<string>(_title[messageIndex])}
+        <strong>{t<string>(' Geode Create a New Program ')}</strong>
         </h2>
         <Expander 
             className='viewInfo'
             isOpen={false}
             summary={<strong>{t<string>('Instructions: ')}</strong>}>
-            {t<string>(_help[messageIndex])}<br /><br />
-            {t<string>(_note[messageIndex])}<br /><br />
-            <Badge color='blue' icon='info'/>
-            {t<string>(_tierOne[messageIndex])}<br />
-            <Badge color='blue' icon='info'/>
-            {t<string>(_tierTwo[messageIndex])}
-
+            <strong>{t<string>('Instructions for Updating Program Information: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use for this transaction (call from account). ')}<br /> 
+            {'(2) '}{t<string>('Enter the Program Title. ')}<br />
+            {'(3) '}{t<string>('Enter the description of the program. ')}<br />
+            {'(4) '}{t<string>('Website or Document Link - Enter your Website or Document Link for further information.')}<br />
+            {'(5) '}{t<string>('Photo or YouTube Link -  Enter a valid Photo or YouTube Link.')}<br />
+            {'(6) '}{t<string>('First Level Reward in Geode.')}<br />
+            {'(7) '}{t<string>('Second Level Reward in Geode. ')}<br />
+            {'(8) '}{t<string>('Maximum Number of Rewards to pay out.')}<br />
+            {'(9) '}{t<string>('As the program owner do you wish to approve each award? ')}<br />
+            {'(10) '}{t<string>('The minimum Amount to pay in (in Geode)')}
+            <br /><br />
+            {t<string>('⚠️ Caution: You must fill in each field before submitting.')} <br /><br />        
         </Expander>
         {isTest && (
           <InputAddress
-          //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
           isDisabled
           label={t<string>('contract to use')}
           type='contract'
@@ -189,7 +145,6 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
         <>
         <InputAddress
           defaultValue={accountId}
-          //help={t<string>('Specify the user account to use for this contract call. And fees will be deducted from this account.')}
           label={t<string>('account to use')}
           labelExtra={
             <Available
@@ -210,7 +165,6 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
             <>
             <Dropdown
               defaultValue={messageIndex}
-              //help={t<string>('The message to send to this contract. Parameters are adjusted based on the ABI provided.')}
               isError={message === null}
               label={t<string>('Profile Item')}
               onChange={onChangeMessage}
@@ -222,7 +176,6 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
             )}
             
             {!isClosed && (<>
-            
               <Params
               onChange={setParams}
               params={
@@ -238,7 +191,6 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
 
         {message.isPayable && (
           <InputBalance
-            //help={t<string>('The allotted value for this contract, i.e. the amount transferred to the contract as part of this call.')}
             isError={!isValueValid}
             isZeroable
             label={t<string>('value')}
@@ -248,8 +200,6 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
         )}
         {isTest && (
         <>
-        <Badge color='green' icon='hand'/>
-          {t<string>('Gas Required - Information Only')}
         <InputMegaGas
           estimatedWeight={message.isMutating ? estimatedWeight : MAX_CALL_WEIGHT}
           estimatedWeightV2={message.isMutating
