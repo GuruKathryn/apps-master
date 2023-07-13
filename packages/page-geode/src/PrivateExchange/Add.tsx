@@ -15,7 +15,7 @@ import { useTranslation } from '../translate';
 import useAbi from '../useAbi';
 import ValidateAddr from './ValidateAddr';
 
-import JSONgeodePrivateExchange from './geode_private_exchange.json';
+import JSONgeodeExchange from './geode_private_exchange.json';
 
 interface Props {
   defaultAddress: string;
@@ -24,12 +24,12 @@ interface Props {
 
 function Add ({ defaultAddress, onClose }: Props): React.ReactElement {
   const { t } = useTranslation();
-  const _contractName: string = 'Geode Profile';
+  const _contractName: string = 'Geode Private Exchange';
   const { api } = useApi();
   const [address, setAddress] = useState<string | null>(defaultAddress);
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [name, isNameValid, setName] = useNonEmptyString(_contractName);
-  const _abi: string | null = JSON.stringify(JSONgeodePrivateExchange)
+  const _abi: string | null = JSON.stringify(JSONgeodeExchange)
   const { abi, contractAbi, errorText, isAbiError, isAbiSupplied, isAbiValid, onChangeAbi, onRemoveAbi } = useAbi([_abi, null], null, true);
 
   const isTestInfo: boolean = false;
@@ -109,7 +109,7 @@ function Add ({ defaultAddress, onClose }: Props): React.ReactElement {
   
   return (
     <Modal
-      header={t('Load the Geode Private Exchange Contract to your local browser: (just Click Load!)')}
+      header={t('Load the Geode Exchange Contract to your local browser: (just Click Load!)')}
       onClose={onClose}
     >
       <Modal.Content>

@@ -2,7 +2,6 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
-import { Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -14,6 +13,7 @@ import type { CallResult } from './types';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Input, Container } from 'semantic-ui-react'
 
 import { Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
@@ -176,7 +176,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}
         {messageIndex !== null && messageIndex===0 && (
           <><br /><br />
-          <Badge color='blue' icon='i'/>
+          <Badge color='blue' icon='1'/>
           {t<string>('Select which of your Accounts is making this report:')}
           </>)}
         {messageIndex !== null && messageIndex===7 && (
@@ -210,7 +210,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               defaultValue={messageIndex}
               //help={t<string>('The message to send to this contract. Parameters are adjusted based on the ABI provided.')}
               isError={message === null}
-              label={t<string>('Profile Item')}
+              label={t<string>('Reporting Item')}
               onChange={onChangeMessage}
               options={getCallMessageOptions(contract)}
               value={messageIndex}
@@ -221,8 +221,10 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
             {messageIndex=== 0 && (
               <>
+              <Container>
                 <Badge color='blue' icon='2'/>
                 {t<string>('Please fill out the folowing fields:')}
+              </Container>
               </>)}
 
             

@@ -1,4 +1,4 @@
-// Copyright 2017-2023 @polkadot/app-staking authors & contributors
+// Copyright 2017-2023 @polkadot/app-referrals authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { ApiPromise } from '@polkadot/api';
@@ -9,24 +9,35 @@ import type { ContractLink } from './types';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Badge, InputAddress, Card, Button, Table } from '@polkadot/react-components';
+import { Card, Button, Table } from '@polkadot/react-components';
 import { useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { formatNumber } from '@polkadot/util';
 
 import { useTranslation } from '../translate';
 import ContractAdd from './Add';
 import CallCard from './CallCard';
+import CallModal from './CallModal';
 import Contract from './Contract';
 import { getContractForAddress } from './util';
+
 // uncomment for test configuration - - - - >
 import JSONContractAddress from '../shared/geode_contracts_test.json';
 // uncomment for production chain - - - - >
-//import JSONContractAddress from '../shared/geode_contracts.json';
+//import JSONContractAddress from '../shared/geode_reporting.json';
 
 export interface Props {
   contracts: string[];
   updated: number;
   initMessageIndex: number;
+  passListingID?: string;
+  passOfferCoin?: string;
+  passAskingCoin?: string;
+  passPrice?: number;
+  passMethod?: string;
+  passInventory?: number;
+  passCountry?: string;
+  passCity?: string;
+  passNotes?: string;
 }
 
 interface Indexes {
@@ -41,7 +52,10 @@ function filterContracts (api: ApiPromise, keyringContracts: string[] = []): Con
     .filter((contract): contract is ContractPromise => !!contract);
 }
 
-function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Props): React.ReactElement<Props> {
+function ContractsTable ({  contracts: keyringContracts, initMessageIndex, 
+                            passListingID, passOfferCoin, passAskingCoin, passPrice, passMethod, 
+                            passInventory, passCountry, passCity, passNotes
+                          }: Props): React.ReactElement<Props> {
   const _initIndex: number = (initMessageIndex > -1) ? initMessageIndex: 0;
   let _initContractIndex: number = 0;
   const { t } = useTranslation();
@@ -51,15 +65,16 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   const [isCallOpen, setIsCallOpen] = useState(true);
   const [contractLinks, setContractLinks] = useState<Record<string, ContractLink[]>>({});
   
-  const [isTableOpen, toggleTable] = useToggle();
+  const isTableOpen: boolean = false;
   const [isLoadContract, toggleIsLoad] = useToggle();
   // set to true to test contracts functionality
   const isTest: boolean = false;
   // set default after contract load to chain
-  const contractAddress: string = (JSONContractAddress[1])? JSONContractAddress[1] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
+  const contractAddress: string = (JSONContractAddress[5])? JSONContractAddress[5] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
+  console.log(contractIndex);
 
   const headerRef = useRef<[string?, string?, number?][]>([
-    [t('Add claims for Geode Profile'), 'start'],
+    [t('Geode Private Exchange'), 'start'],
     [undefined, undefined, 3],
     [t('status'), 'start'],
     []
@@ -105,6 +120,13 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
     []
   );
 
+  const _toggleCall = useCallback(
+    () => <>
+    {setIsCallOpen((isCallOpen) => !isCallOpen)}
+    </>,
+    []
+  );
+
   const _setMessageIndex = useCallback(
     (messageIndex: number) => setIndexes((state) => ({ ...state, messageIndex })),
     []
@@ -117,7 +139,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
     <>
       {!contract && (
         <Card>
-          {t<string>('Load Geode Profile Contract')}
+          {t<string>('Load The Geode Private Exchange Smart Contract')}
           <Button
             icon={(isLoadContract) ? 'plus' : 'sign-in-alt'}
             label={t<string>('Load')}
@@ -133,48 +155,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
       )}
       {isTest && contract && (
         <Card>
-            {'(1) Default Geode Profile Contract Address: '}{contractAddress}{' | '}
-            {(contractAddress)?
-            <Badge color='green' icon='thumbs-up'/> : 
-            <Badge color='red' icon='x' />}<br />
-            <InputAddress
-              //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
-              label={t<string>('contract to use')}
-              type='contract'
-              value={contractAddress}          
-            />
-            {'(2) Set Contract Address: '}{contract.address.toString()}{' | '}
-            {(contract.address)?
-            <Badge color='green' icon='thumbs-up'/> : 
-            <Badge color='red' icon='x' />}<br />
-            <InputAddress
-              //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
-              label={t<string>('contract to use')}
-              type='contract'
-              value={contract.address}
-            />
-            {'(3) Is API Loaded?: '}
-            {(api)?
-              <Badge color='green' icon='thumbs-up'/> : 
-              <Badge color='red' icon='x' />}<br />
-            {'API size: '}{JSON.stringify(api).length}<br /><br />
-            {'(4) Is Geode Profile Contract Loaded?: '}
-            {(contract)?
-              <Badge color='green' icon='thumbs-up'/> : 
-              <Badge color='red' icon='x' />}<br />
-            {'Profile contract size: '}{JSON.stringify(contract).length}<br />
-            {'Contract Index: '}{contractIndex}<br /><br />
-            {'(5) All Contracts Loaded?: '}
-            {(contracts)?
-              <Badge color='green' icon='thumbs-up'/> : 
-              <Badge color='red' icon='x' />}<br />
-            {'Profile contract size: '}{JSON.stringify(contracts).length}<br /><br />
-            <Button
-              icon={(isTableOpen) ? 'minus' : 'plus'}
-              label={t<string>('View Contracts')}
-              onClick={toggleTable} 
-            />
-            <br />
+          {'Contract Test Code Here!'}
         </Card>)}
 
       {isTableOpen && <Table
@@ -191,7 +172,10 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           />
         ))}
       </Table>}
-      {isCallOpen && contract && (
+      
+      {isCallOpen && contract 
+                  && (messageIndex ===0 || messageIndex ===2 || messageIndex ===3)
+                  && (
         <CallCard
           contract={contract}
           messageIndex={messageIndex}
@@ -199,6 +183,30 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           onChangeMessage={_setMessageIndex}
         />
       )}
+      
+      {isCallOpen && contract 
+                  && messageIndex ===1
+                  && (
+        <CallModal
+         contract={contract}
+         messageIndex={messageIndex}
+         onCallResult={onCallResult}
+         onChangeMessage={_setMessageIndex}
+         passListingID={passListingID}
+         passOfferCoin={passOfferCoin}
+         passAskingCoin={passAskingCoin}
+         passPrice={passPrice}
+         passMethod={passMethod}
+         passInventory={passInventory}
+         passCountry={passCountry}
+         passCity={passCity}
+         passNotes={passNotes}
+         onClose={_toggleCall}
+         />
+      )
+      }
+       
+
     </>
   );
 }
