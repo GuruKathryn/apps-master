@@ -10,8 +10,8 @@ import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Badge, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Grid, Table, Label, Image } from 'semantic-ui-react'
-import CopyInline from '../shared/CopyInline';
-import { useToggle, useDebounce } from '@polkadot/react-hooks';
+//import CopyInline from '../shared/CopyInline';
+//import { useToggle, useDebounce } from '@polkadot/react-hooks';
 
 import AccountHeader from '../shared/AccountHeader';
 import CallSendMessage from './CallSendMessage';
@@ -96,29 +96,15 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
     const [useTitle, setTitle] = useState('');
     const [useDescription, setDescription] = useState('');
     const [useClaimId, setClaimId] = useState('');
-    //const [useMoreInfoLink, setMoreInfoLink] = useState('');
-    //const [usePhoto, setPhoto] = useState('');
-    //const [useFirstLevelReward, setFirstLevelReward] = useState(0);
-    //const [useSecondLevelReward, setSecondLevelReward] = useState(0);
-    //const [useMaxRewards, setMaxRewards] = useState(0);
-    //const [useOwnerApprovedRequired, setOwnerApprovedRequired] = useState(false);
-    //const [usePayInMinimum, setPayInMinimum] = useState(0);
+    const [count, setCount] = useState(0);
 
     const [isEndorse, setEndorse] = useState(false);
-    //const [isUpdate, setUpdate] = useState(false);
-    //const [isDeactivate, setDeactivate] = useState(false);
-    //const [isActivate, setActivate] = useState(false);
-    
-    //const [isReset, toggleReset] = useToggle(false);
-    
+        
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const programDetail: ProgramDetail = Object.create(_Obj);
     
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-//    const [isNewProgram, toggleNewProgram] = useToggle(false);
-    //const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
-    //const dbIsFund = useDebounce(isFund);
     const shortAccount = (_acctAddrs: string) => _acctAddrs.length>0? _acctAddrs.slice(0, 5)+'..': '';
     
     const _reset = useCallback(
@@ -251,14 +237,6 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
                     <Grid.Row>
                       <Grid.Column>
                         {renderLink(_programs.photo)}
-                        <Label as='a' size='small' color='orange'
-                                onClick={()=>{<>
-                                       {setProgramId(_programs.programId)}
-                                       {setTitle(_programs.title)}
-                                       {setDescription(_programs.description)}
-                                       {_reset()}
-                                       </>}} >{'Reset'}</Label>
-
                       </Grid.Column>
                       <Grid.Column>
                       <h3><strong>{t<string>('Title: ')}</strong>{hextoHuman(_programs.title)}</h3>
@@ -273,35 +251,65 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
                          
                       </Grid.Column>
                       <Grid.Column>
-                      <h3><strong>{t<string>('Claims: ')}</strong></h3>
+                      {_programs.claims.length>0 && (<><h3><Label color='blue' tag >{t<string>('Claims: ')}</Label></h3></>)}
                       {_programs.claims.length>0 && _programs.claims.map(_claim =>
                         <>
                         {timeStampToDate(_claim.timestamp)}<br />
                         {t<string>('Status: ')}{statusToHuman(_claim.status)}<br />
-                        <strong>{t<string>('Parent: ')}</strong>{shortAccount(_claim.parent)}
+                        <strong>{t<string>('Parent: ')}</strong>
                         <IdentityIcon value={_claim.parent} />
                         <AccountName value={_claim.parent} withSidebar={true}/>
                         <strong>{' -> '}</strong>
-                        <strong>{t<string>('Child: ')}</strong>{shortAccount(_claim.child)}
+                        <strong>{t<string>('Child: ')}</strong>
                         <IdentityIcon value={_claim.child} />
                         <AccountName value={_claim.child} withSidebar={true}/>
                         <br /><br />
                         {_claim.status===0 &&from===_claim.child && (<>
                           <Label as='a' size='small' 
-                                color={isEndorse? 'grey': 'orange'}
+                                color={'orange'}
                                 onClick={()=>{<>
                                        {setProgramId(_programs.programId)}
                                        {setTitle(_programs.title)}
                                        {setDescription(_programs.description)}
                                        {setClaimId(_claim.claimId)}
+                                       {setCount(count + 1)}
                                        {_makeEndorse()}
                           </>}} >{t<string>('Endorse')}</Label>
                         </>)}
                         <br /><br />
                         </>
                       )}
-                      <h3><strong>{t<string>('Payouts: ')}</strong></h3>
-                      <h3><strong>{t<string>('Branches: ')}</strong></h3>                         
+                      {_programs.payouts.length>0 && (<><h3><Label color='blue' tag >{t<string>('Payouts: ')}</Label></h3></>)} 
+                      {_programs.payouts.length>0 && _programs.payouts.map(_payouts => <>
+                        {timeStampToDate(_payouts.timestamp)}<br />
+                        <strong>{t<string>('Child: ')}</strong>
+                        <IdentityIcon value={_payouts.childAccount} />
+                        <AccountName value={_payouts.childAccount} withSidebar={true}/>
+                        {' '}{BNtoGeode(_payouts.childPayout)}<br />
+                        <strong>{t<string>('Parent: ')}</strong>
+                        <IdentityIcon value={_payouts.parentAccount} />
+                        <AccountName value={_payouts.parentAccount} withSidebar={true}/>
+                        {' '}{BNtoGeode(_payouts.parentPayout)}<br />
+                        <strong>{t<string>('GrandParent: ')}</strong>
+                        <IdentityIcon value={_payouts.grandparentAccount} />
+                        <AccountName value={_payouts.grandparentAccount} withSidebar={true}/>
+                        {' '}{BNtoGeode(_payouts.grandparentPayout)}<br />
+
+                        <br /><br />
+                      </>)}
+                      {_programs.branches.length>0 && (<><h3><Label color='blue' tag >{t<string>('Branches: ')}</Label></h3></>)}
+                      {_programs.branches.length>0 && _programs.branches.map(_branches => <>
+                          <IdentityIcon value={_branches.branch[0]} />
+                          <AccountName value={_branches.branch[0]} withSidebar={true}/>
+                          {' -> '}
+                          <IdentityIcon value={_branches.branch[1]} />
+                          <AccountName value={_branches.branch[1]} withSidebar={true}/>
+                          {' -> '}
+                          <IdentityIcon value={_branches.branch[2]} />
+                          <AccountName value={_branches.branch[2]} withSidebar={true}/>
+                          <br />
+                       </>)}
+
                       </Grid.Column>
                     </Grid.Row>
                   </Grid>
@@ -337,7 +345,7 @@ function MyActivityDetails ({ className = '', onClear, onClose, isAccount, outco
          claimId={useClaimId}
          callIndex={1}
          isModal={true}
-         onClear={() => _reset()}
+         onReset={() => _reset()}
         />
       )}
       <ShowPrograms />

@@ -174,7 +174,7 @@ function ContractsModal ({ contracts: keyringContracts,
       (messageIndex===0 || messageIndex===1 || 
        messageIndex===3 || messageIndex===4 || 
        messageIndex===5 || messageIndex===6 ||
-       messageIndex===7) && (
+       messageIndex===7 || messageIndex===8) && (
         <CallModal
           programID={programID}
           title={title}
