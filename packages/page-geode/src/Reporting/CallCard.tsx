@@ -2,7 +2,6 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
-import { Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -14,6 +13,7 @@ import type { CallResult } from './types';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Input, Container } from 'semantic-ui-react'
 
 import { Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
@@ -58,6 +58,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   
   const isTest: boolean = false;
   //const isTestData: boolean = false; //takes out code elements we only see for test
+
+  const [accusedAccountId, setAccusedAccountId] = useAccountId();
 
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -176,7 +178,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         )}
         {messageIndex !== null && messageIndex===0 && (
           <><br /><br />
-          <Badge color='blue' icon='i'/>
+          <Badge color='blue' icon='1'/>
           {t<string>('Select which of your Accounts is making this report:')}
           </>)}
         {messageIndex !== null && messageIndex===7 && (
@@ -210,7 +212,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               defaultValue={messageIndex}
               //help={t<string>('The message to send to this contract. Parameters are adjusted based on the ABI provided.')}
               isError={message === null}
-              label={t<string>('Profile Item')}
+              label={t<string>('Reporting Item')}
               onChange={onChangeMessage}
               options={getCallMessageOptions(contract)}
               value={messageIndex}
@@ -221,12 +223,92 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
             {messageIndex=== 0 && (
               <>
+             
                 <Badge color='blue' icon='2'/>
                 {t<string>('Please fill out the folowing fields:')}
+                <br /><br />
+                <strong>{t<string>('Your Legal Name')}</strong>
+                    <Input label='' type="text" 
+                            value={params[0]}
+                            onChange={(e)=>{
+                              params[0]=e.target.value;
+                              setParams([...params]);
+                            }}
+                    ></Input>
+                
+                <strong>{t<string>('Your Phone Number')}</strong>
+                    <Input label='' type="text" 
+                            value={params[1]}
+                            onChange={(e)=>{
+                              params[1]=e.target.value;
+                              setParams([...params]);
+                            }}
+                    ></Input>
+
+                <strong>{t<string>('Accused Account')}</strong>
+                <InputAddress
+                    label={t<string>('Accused Account')}
+                    defaultValue={accusedAccountId}
+                    labelExtra={
+                      <Available
+                        label={t<string>('transferrable')}
+                        params={accusedAccountId}
+                      />
+                      }
+                    onChange={setAccusedAccountId}
+                    type='account'
+                    value={params[2]=accusedAccountId}
+                />
+                
+                <strong>{t<string>('Geode Apps Where The Crime Happened')}</strong>
+                    <Input label='' type="text" 
+                            value={params[3]}
+                            onChange={(e)=>{
+                              params[3]=e.target.value;
+                              setParams([...params]);
+                            }}
+                    ></Input>
+
+                <strong>{t<string>('Activity ID List (Hash IDs for the post, product, etc in question)')}</strong>
+                    <Input label='' type="text" 
+                            value={params[4]}
+                            onChange={(e)=>{
+                              params[4]=e.target.value;
+                              setParams([...params]);
+                            }}
+                    ></Input>
+
+                <strong>{t<string>('Crime Category (What kind of crime is this?)')}</strong>
+                    <Input label='' type="text" 
+                            value={params[5]}
+                            onChange={(e)=>{
+                              params[5]=e.target.value;
+                              setParams([...params]);
+                            }}
+                    ></Input>
+
+                <strong>{t<string>('Crime Description (Put the details of the crime here)')}</strong>
+                    <Input label='' type="text" 
+                            value={params[6]}
+                            onChange={(e)=>{
+                              params[6]=e.target.value;
+                              setParams([...params]);
+                            }}
+                    ></Input>
+
+                <strong>{t<string>('Accused User Location (What is the country, state and city of the accused user?)')}</strong>
+                    <Input label='' type="text" 
+                            value={params[7]}
+                            onChange={(e)=>{
+                              params[7]=e.target.value;
+                              setParams([...params]);
+                            }}
+                    ></Input>    
+              
               </>)}
 
             
-            <Params
+              {messageIndex != 0 && ( <Params
               onChange={setParams}
               params={
                 message
@@ -234,7 +316,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                   : undefined
               }              
               registry={contract.abi.registry}
-            />
+            />)}
+
           </>
         )}
 
@@ -308,7 +391,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <ViewReportsDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                isAccount={messageIndex === 6 ? true: false}
                 outcome={outcome}
               />
             ))}
@@ -320,7 +402,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <ViewAllowedDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                isAccount={messageIndex === 7 ? true: false}
                 outcome={outcome}
               />
             ))}
