@@ -2,7 +2,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
-import { Container } from 'semantic-ui-react'
+import { Label, Container, Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -13,7 +13,7 @@ import type { WeightV2 } from '@polkadot/types/interfaces';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Expander, Badge, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
+import { Card, LabelHelp, Expander, Badge, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
@@ -43,13 +43,20 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
   const [estimatedWeight, setEstimatedWeight] = useState<BN | null>(null);
   const [estimatedWeightV2, setEstimatedWeightV2] = useState<WeightV2 | null>(null);
   const [value, isValueValid, setValue] = useFormField<BN>(BN_ZERO);
+  const [payInValue, setPayInValue] = useState<string>();
+  const [firstInValue, setFirstInValue] = useState<string>();
+  const [secondInValue, setSecondInValue] = useState<string>();
 //  const [outcomes, setOutcomes] = useState<CallResult[]>([]);
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
   const [isViaCall, toggleViaCall] = useToggle();
+  const [isOwnerApproved, toggleOwnerApproved] = useToggle();
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
+  const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
+  //const numToBN = (_num: number) => _num? _num * 1000000000000: 0;
+  //const strToBN = (_str: string) => _str? new BN(_str): null;
   //const [isCalled, toggleIsCalled] = useToggle(false);
   //const isCalled: boolean = false; 
   const isTest: boolean = false;
@@ -104,6 +111,10 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
       });
   }, [api, accountId, contract, message, dbParams, dbValue, weight.isWeightV2]);
 
+  function GeodeToZeo(_string: string): string {
+    const _num = +_string * 1000000000000;
+    return(_num.toString())
+  }
 
   return (
     <StyledDiv className={className}>
@@ -175,7 +186,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
             </>
             )}
             
-            {!isClosed && (<>
+            {isTest && !isClosed && (<>
               <Params
               onChange={setParams}
               params={
@@ -184,8 +195,115 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
                   : undefined
               }              
               registry={contract.abi.registry}
-            />            
+            />  
+            {JSON.stringify(message.args)}          
             </>)}
+          {!isTest && (<>
+            <LabelHelp help={t<string>('Enter the Program Title.')}/>{' '}          
+          <strong>{t<string>('Program Title: ')}</strong>
+          <Input label='' type="text"
+            //defaultValue={hextoHuman(paramToString(title))}
+            value={params[0]}
+            onChange={(e) => {
+              params[0] = e.target.value;
+              setParams([...params]);
+            }}
+          />
+          <LabelHelp help={t<string>('Enter the Program Description.')}/>{' '}          
+          <strong>{t<string>('Program Description: ')}</strong>
+          <Input label='' type="text"
+            //defaultValue={hextoHuman(paramToString(title))}
+            value={params[1]}
+            onChange={(e) => {
+              params[1] = e.target.value;
+              setParams([...params]);
+            }}
+          />
+          <LabelHelp help={t<string>('Enter a Link for More Information.')}/>{' '}          
+          <strong>{t<string>('Link for More Information: ')}</strong>
+          <Input label='' type="text"
+            //defaultValue={hextoHuman(paramToString(title))}
+            value={params[2]}
+            onChange={(e) => {
+              params[2] = e.target.value;
+              setParams([...params]);
+            }}
+          />
+          <LabelHelp help={t<string>('Enter a Link to a Photo.')}/>{' '}          
+          <strong>{t<string>('Link for Photo: ')}</strong>
+          <Input label='' type="text"
+            //defaultValue={hextoHuman(paramToString(title))}
+            value={params[3]}
+            onChange={(e) => {
+              params[3] = e.target.value;
+              setParams([...params]);
+            }}
+          />
+          <LabelHelp help={t<string>('Enter a the First Level Reward.')}/>{' '}          
+          <strong>{t<string>('First Level Reward: ')}</strong>
+          <Input label='' type="text"
+            //defaultValue={0}
+            value={firstInValue}
+            onChange={(e) => {
+              setFirstInValue(e.target.value);
+            }}
+          ><input />
+          <Label basic>{firstInValue? params[4] = GeodeToZeo(firstInValue):'0'}
+                       <br />{' zeolites'}</Label></Input>
+
+         <LabelHelp help={t<string>('Enter a the Second Level Reward.')}/>{' '}          
+          <strong>{t<string>('Second Level Reward: ')}</strong>
+          <Input label='' type="text"
+            //defaultValue={0}
+            value={secondInValue}
+            onChange={(e) => {
+              setSecondInValue(e.target.value);
+            }}
+          ><input />
+          <Label basic>{secondInValue? params[5] = GeodeToZeo(secondInValue): '0'}
+                       <br />{' zeolites'}</Label></Input>
+
+          <LabelHelp help={t<string>('Enter the Maximum Number of Rewards.')}/>{' '}          
+          <strong>{t<string>('Maximum Number of Rewards: ')}</strong>
+          <Input label='' type="text"
+            //defaultValue={hextoHuman(paramToString(title))}
+            value={params[6]}
+            onChange={(e) => {
+              params[6] = e.target.value;
+              setParams([...params]);
+            }}
+          />
+          <LabelHelp help={t<string>('Enter (True/False) if Owner Approval is Required.')}/>{' '}          
+          <strong>{t<string>('Owner Approval Required (True/False): ')}</strong>
+          <br /><br />
+          <Toggle
+            className='booleantoggle'
+            label={<strong>{t<string>(boolToString(isOwnerApproved))}</strong>}
+            onChange={() => {
+              toggleOwnerApproved()
+              params[7] = !isOwnerApproved;
+              setParams([...params]);
+            }}
+            value={isOwnerApproved}
+          />
+          <br />
+
+          <LabelHelp help={t<string>('Enter the Minimum amount of coin to give your referrals.')}/>{' '}          
+          <strong>{t<string>('Pay In Minimum Amount: ')}</strong>
+          
+          <Input label='' type="text"
+            //defaultValue={0}
+            value={payInValue}
+            onChange={(e) => {
+              setPayInValue(e.target.value);
+            }}
+          ><input />
+          <Label basic>{payInValue? params[8] = GeodeToZeo(payInValue): '0'}
+                       <br />{'  zeolites'}</Label></Input>
+          </>)}
+          <br /><br />
+          <LabelHelp help={t<string>('Enter the Total Value of the Program.')}/>{' '}          
+          <strong>{t<string>('Total Program Value: ')}</strong>
           </>
         )}
 
@@ -227,6 +345,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
       
       {!isClosed && (
         <>
+            <Card>
             <TxButton
               accountId={accountId}
               extrinsic={execTx}
@@ -235,6 +354,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
               label={t<string>('Submit')}
               onStart={onClose}
             />
+            </Card>
             <br /><br />
         </>
         )}

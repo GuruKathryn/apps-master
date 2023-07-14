@@ -1,7 +1,7 @@
 // Copyright 2017-2022 @polkadot/app-contracts authors & contributors
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
-import { Input } from 'semantic-ui-react'
+import { Input, Label } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -52,7 +52,7 @@ const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 const BNtoGeode = (_num: number|undefined) => _num? _num/1000000000000: 0;
 const GeodeToBN = (_num: number|undefined) => _num? _num*1000000000000: 0;
 const paramToNum = (_num: number|undefined) => _num? _num : 0; 
-const hexToNum = (_hex: number|undefined) => isHex(_hex)? hexToNumber(_hex): 0;
+const hexParamToString = (_hex: number|undefined) => _hex? hexToString((_hex).toString()): '0';
 const paramToString = (_string: string|undefined) => _string? _string : '';
 const paramToBool = (_bool: boolean|undefined) => _bool? _bool: false;
 const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
@@ -74,6 +74,10 @@ function CallModal ({ className = '', programID,
   const [estimatedWeight, setEstimatedWeight] = useState<BN | null>(null);
   const [estimatedWeightV2, setEstimatedWeightV2] = useState<WeightV2 | null>(null);
   const [value, isValueValid, setValue] = useFormField<BN>(BN_ZERO);
+  const [payInValue, setPayInValue] = useState<string>();
+  const [firstInValue, setFirstInValue] = useState<string>();
+  const [secondInValue, setSecondInValue] = useState<string>();
+
   const [outcomes, setOutcomes] = useState<CallResult[]>([]);
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
@@ -107,6 +111,17 @@ function CallModal ({ className = '', programID,
     useEffect(() => {
       getData();
     }, []);
+
+    function GeodeToZeo(_string: string): string {
+      const _num = +_string * 1000000000000;
+      return(_num.toString())
+    }
+
+    // function BNtoGeode(_num: number): JSX.Element {
+    //   return(<>
+    //       {_num>0? <>{(_num/1000000000000).toString()}{' Geode'}</>: <>{'0'}</>}
+    //   </>)
+    // }
 
 
   function hextoHuman(_hexIn: string): string {
@@ -247,7 +262,6 @@ function CallModal ({ className = '', programID,
             {'(9) '}{t<string>('As the program owner do you wish to approve each award? ')}<br />
             {'(10) '}{t<string>('The minimum Amount to pay in (in Geode)')}
             <br /><br />
-            {t<string>("⚠️ Please Note: You can use the copy buttons to copy and past the existing values into the form.  ")}<br />
             {t<string>('⚠️ Caution: You must fill in each field before submitting.')} <br /><br />        
           </>)}
         {messageIndex !== null && messageIndex === 5 && (<>
@@ -399,8 +413,8 @@ function CallModal ({ className = '', programID,
 
           <LabelHelp help={t<string>(hextoHuman(paramToString(title)))}/>{' '}          
           <strong>{t<string>('Program Title: ')}</strong>
-          <CopyInline value={hextoHuman(paramToString(title))} label={''}/>{' '}
           <Input label='' type="text"
+            defaultValue={hextoHuman(paramToString(title))}
             value={params[1]}
             onChange={(e) => {
               params[1] = e.target.value;
@@ -409,9 +423,9 @@ function CallModal ({ className = '', programID,
           />
           <LabelHelp help={t<string>(hextoHuman(paramToString(description)))}/>{' '}          
           <strong>{t<string>('Description: ')}</strong>
-          <CopyInline value={hextoHuman(paramToString(description))} label={''}/>{' '}
           <Input label='' type="text"
             value={params[2]}
+            defaultValue={hextoHuman(paramToString(description))}
             onChange={(e) => {
               params[2] = e.target.value;
               setParams([...params]);
@@ -419,9 +433,9 @@ function CallModal ({ className = '', programID,
           />
           <LabelHelp help={hexToString(moreInfoLink)}/>{' '}          
           <strong>{t<string>('Link to More Information: ')}</strong>
-          <CopyInline value={hextoHuman(paramToString(moreInfoLink))} label={''}/>{' '}
           <Input label='' type="text"
             value={params[3]}
+            defaultValue={hextoHuman(paramToString(moreInfoLink))}
             onChange={(e) => {
               params[3] = e.target.value;
               setParams([...params]);
@@ -429,9 +443,9 @@ function CallModal ({ className = '', programID,
           />
           <LabelHelp help={hextoHuman(paramToString(photo))}/> {' '}         
           <strong>{t<string>('Link to Photo or YouTube Video: ')}</strong>
-          <CopyInline value={hextoHuman(paramToString(photo))} label={''}/>{' '}
           <Input label='' type="text"
             value={params[4]}
+            defaultValue={hextoHuman(paramToString(photo))}
             onChange={(e) => {
               params[4] = e.target.value;
               setParams([...params]);
@@ -439,29 +453,33 @@ function CallModal ({ className = '', programID,
           />
           <LabelHelp help={paramToNum(firstLevelReward) + ' Geode'}/>{' '}          
           <strong>{t<string>('First Level Reward: ')}</strong>
-          <CopyInline value={(paramToNum(firstLevelReward)).toString()} label={''}/>{' '}
           <Input label='' type="text"
-            value={params[5]}
+            defaultValue={0}
+            value={firstInValue}
             onChange={(e) => {
-              params[5] = e.target.value;
-              setParams([...params]);
+              setFirstInValue(e.target.value);
             }}
-          />
+          ><input />
+          <Label basic>{firstInValue? params[5] = GeodeToZeo(firstInValue):'0'}
+                       <br />{' zeolites'}</Label></Input>
+
           <LabelHelp help={paramToNum(secondLevelReward) + ' Geode'}/> {' '}         
           <strong>{t<string>('Second Level Reward: ')}</strong>
-          <CopyInline value={(paramToNum(secondLevelReward)).toString()} label={''}/>{' '}
           <Input label='' type="text"
-            value={params[6]}
+            defaultValue={0}
+            value={secondInValue}
             onChange={(e) => {
-              params[6] = e.target.value;
-              setParams([...params]);
+              setSecondInValue(e.target.value);
             }}
-          />
+          ><input />
+          <Label basic>{secondInValue? params[6] = GeodeToZeo(secondInValue): '0'}
+                       <br />{' zeolites'}</Label></Input>
+        
           <LabelHelp help={(paramToNum(maximumReward)).toString()}/> {' '}         
           <strong>{t<string>('Maximum Number of Rewards: ')}</strong>
-          <CopyInline value={(paramToNum(maximumReward)).toString()} label={''}/>{' '}
           <Input label='' type="text"
             value={params[7]}
+            defaultValue={paramToNum(maximumReward).toString()}
             onChange={(e) => {
               params[7] = e.target.value;
               setParams([...params]);
@@ -471,37 +489,30 @@ function CallModal ({ className = '', programID,
           <br /><br />
           <LabelHelp help={boolToString(paramToBool(ownerApprovedRequired))}/> {' '}         
           <strong>{t<string>('Program Owner Approval Required: ')}</strong>
-          <br />
+          <br /><br />
           <Toggle
             className='booleantoggle'
-            label={<strong>{t<string>(boolToString(!isOwnerApproved))}</strong>}
+            label={<strong>{t<string>(boolToString(isOwnerApproved))}</strong>}
             onChange={() => {
               toggleOwnerApproved()
-              params[8] = isOwnerApproved;
+              params[8] = !isOwnerApproved;
               setParams([...params]);
             }}
             value={isOwnerApproved}
           />
-            <Input label='' type="text"
-            value={params[8]}
-            onChange={(e) => {
-              params[8] = e.target.value;
-              setParams([...params]);
-            }}
-          />
 
-          <br /><br />  
+          <br />
           <LabelHelp help={(paramToNum(payInMinimum)).toString() + ' Geode '}/>{' '}          
           <strong>{t<string>('Minimum Amount to Pay In: ')}</strong>
-          <CopyInline value={paramToNum(payInMinimum).toString()} label={''}/>{' '}
           <Input label='' type="text"
-            value={params[9]}
+            defaultValue={0}
+            value={payInValue}
             onChange={(e) => {
-              params[9] = e.target.value;
-              setParams([...params]);
+              setPayInValue(e.target.value);
             }}
-          />
-  
+          ><input />
+          <Label basic>{payInValue? params[9] = GeodeToZeo(payInValue): '0'}
+                       <br />{'  zeolites'}</Label></Input>
         </>)}
 
 
