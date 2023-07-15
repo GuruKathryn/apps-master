@@ -2,7 +2,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-import { Input } from 'semantic-ui-react'
+import { Input, Label } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -68,7 +68,15 @@ function CallModal ({ className = '', passListingID, passOfferCoin, passAskingCo
   const [params, setParams] = useState<unknown[]>([]);
   
   const [isViaCall, toggleViaCall] = useToggle();
-  const [isHideListing, toggleHideListing] = useToggle(paramToBool(hideThisListing));
+  const [isHideListing, toggleHideListing] = useToggle();
+
+  const [formPrice, setFormPrice] = useState<string>();
+  const [formInventory, setFormInventory] = useState<string>();
+  const [formMethod, setFormMethod] = useState<string>();
+  const [formCountry, setFormCountry] = useState<string>();
+  const [formCity, setFormCity] = useState<string>();
+  const [formNotes, setFormNotes] = useState<string>();
+  const [formHide, setFormHide] = useState<boolean>();
 
   const weight = useWeight();
   const dbValue = useDebounce(value);
@@ -164,6 +172,11 @@ function CallModal ({ className = '', passListingID, passOfferCoin, passAskingCo
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));
 
+  function GeodeToZeo(_string: string): string {
+    const _num = +_string * 1000000000000;
+    return(_num.toString())
+  }
+
   return (
     <>
     <Modal
@@ -237,73 +250,69 @@ function CallModal ({ className = '', passListingID, passOfferCoin, passAskingCo
           <br />
 
           <strong>{t<string>('Price per coin in ')}{hexToString(passAskingCoin)}</strong>
-          <Input label='' type="number" 
-              value={params[1]}
-              defaultValue={BNtoGeode(passPrice)}
-              onChange={(e)=>{
-              params[1]=e.target.value;
-              setParams([...params]);
-              }}
-          ></Input>
+          <Input label={formPrice? params[1] = GeodeToZeo(formPrice): params[1] = passPrice} type="text"
+                defaultValue={BNtoGeode(passPrice)}
+                value={formPrice}
+                onChange={(e) => {
+                    setFormPrice(e.target.value);
+                }}
+                ><input /> 
+          </Input>
 
           <strong>{t<string>('Method: explain how you want buyers to communicate with you, etc. ')}</strong>
-          <Input label='' type="text" 
-              value={params[2]}
+          <Input label={formMethod? params[2] = formMethod: params[2] = hexToString(passMethod)} type="text" 
+              value={formMethod}
               defaultValue={hexToString(passMethod)}
               onChange={(e)=>{
-              params[2]=e.target.value;
-              setParams([...params]);
+                setFormMethod(e.target.value);
               }}
-          ></Input>
+          ><input /></Input>
 
           <strong>{t<string>('Inventory: how much of the offer coin do you have for sale?')}</strong>
-          <Input label='' type="number" 
-              value={params[3]}
-              defaultValue={BNtoGeode(passInventory)}
-              onChange={(e)=>{
-              params[3]=e.target.value;
-              setParams([...params]);
-              }}
-          ></Input>
+          <Input label={formInventory? params[3] = GeodeToZeo(formInventory) : params[3] = passInventory} type="text"
+                  value={formInventory}
+                  defaultValue={BNtoGeode(passInventory)}
+                  onChange={(e) => {
+                    setFormInventory(e.target.value);
+                  }}
+                ><input />
+          </Input>
 
           <strong>{t<string>('Country: what country do you live in (for local sales)')}</strong>
-          <Input label='' type="text" 
-              value={params[4]}
+          <Input label={formCountry? params[4] = formCountry: params[4] = hexToString(passCountry)} type="text" 
+              value={formCountry}
               defaultValue={hexToString(passCountry)}
               onChange={(e)=>{
-              params[4]=e.target.value;
-              setParams([...params]);
+              setFormCountry(e.target.value);
               }}
-          ></Input>
+          ><input /></Input>
 
           <strong>{t<string>('City: what city do you live in (for local sales)')}</strong>
-          <Input label='' type="text" 
-              value={params[5]}
+          <Input label={formCity? params[5] = formCity: params[5] = hexToString(passCity)} type="text" 
+              value={formCity}
               defaultValue={hexToString(passCity)}
               onChange={(e)=>{
-              params[5]=e.target.value;
-              setParams([...params]);
+              setFormCity(e.target.value);
               }}
-          ></Input>
+          ><input /></Input>
 
           <strong>{t<string>('Notes: what else should buyers know?')}</strong>
-          <Input label='' type="text" 
-              value={params[6]}
+          <Input label={formNotes? params[6] = formNotes: params[6] = hexToString(passNotes)} type="text" 
+              value={formNotes}
               defaultValue={hexToString(passNotes)}
               onChange={(e)=>{
-              params[6]=e.target.value;
-              setParams([...params]);
+              setFormNotes(e.target.value);
               }}
-          ></Input>
+          ><input /></Input>
 
-          <strong>{t<string>('Hide This Listing? (click this toggle if the submit button does not show)')}</strong>
+          <strong>{t<string>('Hide This Listing?')}</strong>
           <br />
           <Toggle
             className='booleantoggle'
             label={<strong>{t<string>(boolToString(isHideListing))}</strong>}
             onChange={() => {
               toggleHideListing()
-              params[7] = isHideListing;
+              params[7] = !isHideListing;
               setParams([...params]);
             }}
             value={isHideListing}

@@ -115,7 +115,7 @@ function ViewAllListings ({ className = '', onClear, outcome: { from, message, o
                         }>
                         {/* Listing details  */}
                         <><strong>{t<string>(' Method: ')}</strong>{isHex(_list.method) ? hexToString(_list.method) : ' '}</>
-                        <br /><><strong>{t<string>(' Nodes: ')}</strong>{isHex(_list.notes) ? hexToString(_list.notes) : ' '}</>
+                        <br /><><strong>{t<string>(' Notes: ')}</strong>{isHex(_list.notes) ? hexToString(_list.notes) : ' '}</>
                         <br /><><strong>{t<string>(' Listing ID: ')}</strong>{_list.listingId}</>
                       </Expander>
                       </div>
