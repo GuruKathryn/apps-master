@@ -199,49 +199,75 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
             {JSON.stringify(message.args)}          
             </>)}
           {!isTest && (<>
-            <LabelHelp help={t<string>('Enter the Program Title.')}/>{' '}          
+          
+          <LabelHelp help={t<string>('Enter the Program Title.')}/>{' '}          
           <strong>{t<string>('Program Title: ')}</strong>
-          <Input label='' type="text"
+          <Input label='Program Title' 
+            type="text"
             //defaultValue={hextoHuman(paramToString(title))}
             value={params[0]}
             onChange={(e) => {
               params[0] = e.target.value;
               setParams([...params]);
             }}
-          />
+            ><input />
+            <Label color={params[0]? 'blue': 'orange'}>
+                    {params[0]? <>{'OK'}</>:<>{'Enter Value'}</>}
+            </Label>
+          </Input>
+
           <LabelHelp help={t<string>('Enter the Program Description.')}/>{' '}          
           <strong>{t<string>('Program Description: ')}</strong>
-          <Input label='' type="text"
+          <Input label='Program Description' 
+            type="text"
             //defaultValue={hextoHuman(paramToString(title))}
             value={params[1]}
             onChange={(e) => {
               params[1] = e.target.value;
               setParams([...params]);
             }}
-          />
+            ><input />
+            <Label color={params[1]? 'blue': 'orange'}>
+                    {params[1]? <>{'OK'}</>:<>{'Enter Value'}</>}
+            </Label>
+          </Input>
+
           <LabelHelp help={t<string>('Enter a Link for More Information.')}/>{' '}          
           <strong>{t<string>('Link for More Information: ')}</strong>
-          <Input label='' type="text"
+          <Input label='Link to More Information' 
+            type="text"
             //defaultValue={hextoHuman(paramToString(title))}
             value={params[2]}
             onChange={(e) => {
               params[2] = e.target.value;
               setParams([...params]);
             }}
-          />
+            ><input />
+            <Label color={params[2]? 'blue': 'orange'}>
+                    {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}
+            </Label>
+          </Input>
+
           <LabelHelp help={t<string>('Enter a Link to a Photo.')}/>{' '}          
           <strong>{t<string>('Link for Photo: ')}</strong>
-          <Input label='' type="text"
+          <Input label='Link to Photo' 
+            type="text"
             //defaultValue={hextoHuman(paramToString(title))}
             value={params[3]}
             onChange={(e) => {
               params[3] = e.target.value;
               setParams([...params]);
             }}
-          />
+            ><input />
+            <Label color={params[3]? 'blue': 'orange'}>
+                    {params[3]? <>{'OK'}</>:<>{'Enter Value'}</>}
+            </Label>
+          </Input>
+
           <LabelHelp help={t<string>('Enter a the First Level Reward.')}/>{' '}          
           <strong>{t<string>('First Level Reward: ')}</strong>
-          <Input label='' type="text"
+          <Input label='First Reward' 
+            type="text"
             //defaultValue={0}
             value={firstInValue}
             onChange={(e) => {
@@ -249,11 +275,13 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
             }}
           ><input />
           <Label basic>{firstInValue? params[4] = GeodeToZeo(firstInValue):'0'}
-                       <br />{' zeolites'}</Label></Input>
+          <br />{' zeolites'}</Label>
+          </Input>
 
-         <LabelHelp help={t<string>('Enter a the Second Level Reward.')}/>{' '}          
+          <LabelHelp help={t<string>('Enter a the Second Level Reward.')}/>{' '}          
           <strong>{t<string>('Second Level Reward: ')}</strong>
-          <Input label='' type="text"
+          <Input label='Second Reward' 
+            type="text"
             //defaultValue={0}
             value={secondInValue}
             onChange={(e) => {
@@ -261,18 +289,25 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
             }}
           ><input />
           <Label basic>{secondInValue? params[5] = GeodeToZeo(secondInValue): '0'}
-                       <br />{' zeolites'}</Label></Input>
+          <br />{' zeolites'}</Label>
+          </Input>
 
           <LabelHelp help={t<string>('Enter the Maximum Number of Rewards.')}/>{' '}          
           <strong>{t<string>('Maximum Number of Rewards: ')}</strong>
-          <Input label='' type="text"
+          <Input label='Maximum Number of Rewards' 
+            type="text"
             //defaultValue={hextoHuman(paramToString(title))}
             value={params[6]}
             onChange={(e) => {
               params[6] = e.target.value;
               setParams([...params]);
             }}
-          />
+            ><input />
+            <Label color={params[6]? 'blue': 'orange'}>
+                    {params[6]? <>{'OK'}</>:<>{'Enter Value'}</>}
+            </Label>
+          </Input>
+
           <LabelHelp help={t<string>('Enter (True/False) if Owner Approval is Required.')}/>{' '}          
           <strong>{t<string>('Owner Approval Required (True/False): ')}</strong>
           <br /><br />
@@ -291,7 +326,8 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
           <LabelHelp help={t<string>('Enter the Minimum amount of coin to give your referrals.')}/>{' '}          
           <strong>{t<string>('Pay In Minimum Amount: ')}</strong>
           
-          <Input label='' type="text"
+          <Input label='Pay In Value' 
+            type="text"
             //defaultValue={0}
             value={payInValue}
             onChange={(e) => {
@@ -299,7 +335,8 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
             }}
           ><input />
           <Label basic>{payInValue? params[8] = GeodeToZeo(payInValue): '0'}
-                       <br />{'  zeolites'}</Label></Input>
+          <br />{'  zeolites'}</Label>
+          </Input>
           </>)}
           <br /><br />
           <LabelHelp help={t<string>('Enter the Total Value of the Program.')}/>{' '}          
