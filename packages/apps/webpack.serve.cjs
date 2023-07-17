@@ -17,7 +17,7 @@ module.exports = merge(
       allowedHosts: [
         '.getgeode.com',
         'getgeode.com'
-      ]
+      ],
       static: path.resolve(__dirname, 'build')
     },
     plugins: [
