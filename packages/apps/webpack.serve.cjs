@@ -14,11 +14,15 @@ module.exports = merge(
       hot: true,
       open: false,
       port: 3000,
+      allowedHosts: [
+        '.getgeode.com',
+        'getgeode.com'
+      ],
       static: path.resolve(__dirname, 'build')
     },
     plugins: [
       new HtmlWebpackPlugin({
-        PAGE_TITLE: 'Polkadot/Substrate Portal',
+        PAGE_TITLE: 'Geode Portal',
         inject: true,
         template: path.join(__dirname, 'public/index.html')
       })
