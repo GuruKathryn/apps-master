@@ -13,7 +13,7 @@ import type { WeightV2 } from '@polkadot/types/interfaces';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Card, LabelHelp, Expander, Badge, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
+import { Button, Card, LabelHelp, Expander, Badge, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
@@ -51,6 +51,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
   const [params, setParams] = useState<unknown[]>([]);
   const [isViaCall, toggleViaCall] = useToggle();
   const [isOwnerApproved, toggleOwnerApproved] = useToggle();
+  const [isSaved, setSaved] = useState(false);
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
@@ -211,7 +212,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
               setParams([...params]);
             }}
             ><input />
-            <Label color={params[0]? 'blue': 'orange'}>
+            <Label color={params[0]? 'blue': 'grey'}>
                     {params[0]? <>{'OK'}</>:<>{'Enter Value'}</>}
             </Label>
           </Input>
@@ -227,7 +228,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
               setParams([...params]);
             }}
             ><input />
-            <Label color={params[1]? 'blue': 'orange'}>
+            <Label color={params[1]? 'blue': 'grey'}>
                     {params[1]? <>{'OK'}</>:<>{'Enter Value'}</>}
             </Label>
           </Input>
@@ -243,7 +244,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
               setParams([...params]);
             }}
             ><input />
-            <Label color={params[2]? 'blue': 'orange'}>
+            <Label color={params[2]? 'blue': 'grey'}>
                     {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}
             </Label>
           </Input>
@@ -259,7 +260,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
               setParams([...params]);
             }}
             ><input />
-            <Label color={params[3]? 'blue': 'orange'}>
+            <Label color={params[3]? 'blue': 'grey'}>
                     {params[3]? <>{'OK'}</>:<>{'Enter Value'}</>}
             </Label>
           </Input>
@@ -303,7 +304,7 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
               setParams([...params]);
             }}
             ><input />
-            <Label color={params[6]? 'blue': 'orange'}>
+            <Label color={params[6]? 'blue': 'grey'}>
                     {params[6]? <>{'OK'}</>:<>{'Enter Value'}</>}
             </Label>
           </Input>
@@ -383,11 +384,19 @@ function CallSubCard ({ className = '', contract, messageIndex, onChangeMessage,
       {!isClosed && (
         <>
             <Card>
+            <Button
+              icon='sign-in-alt'
+              //isDisabled={!isValid}
+              label={t<string>('Save')}
+              onClick={()=>{setParams([...params]);
+                            setSaved(true);}}
+            />            
+
             <TxButton
               accountId={accountId}
               extrinsic={execTx}
               icon='sign-in-alt'
-              isDisabled={!isValid || !execTx}
+              isDisabled={!isValid || !execTx || !isSaved}
               label={t<string>('Submit')}
               onStart={onClose}
             />

@@ -241,9 +241,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               registry={contract.abi.registry}
             />            
             </>)}
-            
-
-
           </>
         )}
 

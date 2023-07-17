@@ -87,6 +87,7 @@ function CallModal ({ className = '', programID,
   const [outcomes, setOutcomes] = useState<CallResult[]>([]);
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
+  const [isSaved, setSaved] = useState(false);
   
   const [isViaCall, toggleViaCall] = useToggle();
   const [isOwnerApproved, toggleOwnerApproved] = useToggle(paramToBool(ownerApprovedRequired));
@@ -431,7 +432,7 @@ function CallModal ({ className = '', programID,
               setTitleValue(e.target.value);
             }}
             ><input />
-            <Label color={params[1]? 'blue': 'orange'}>
+            <Label color={params[1]? 'blue': 'grey'}>
                     {params[1]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
           </Input>
 
@@ -445,7 +446,7 @@ function CallModal ({ className = '', programID,
               setDescriptionValue(e.target.value);
             }}
             ><input />
-            <Label color={params[2]? 'blue': 'orange'}>
+            <Label color={params[2]? 'blue': 'grey'}>
                     {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
           </Input>
 
@@ -459,7 +460,7 @@ function CallModal ({ className = '', programID,
                 setMoreInfoValue(e.target.value);
             }}
             ><input />
-            <Label color={params[3]? 'blue': 'orange'}>
+            <Label color={params[3]? 'blue': 'grey'}>
                     {params[3]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
           </Input>
 
@@ -473,7 +474,7 @@ function CallModal ({ className = '', programID,
               setPhotoValue(e.target.value);
             }}
             ><input />
-            <Label color={params[4]? 'blue': 'orange'}>
+            <Label color={params[4]? 'blue': 'grey'}>
                     {params[4]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
           </Input>
           
@@ -516,7 +517,7 @@ function CallModal ({ className = '', programID,
               setMaxRewardValue(e.target.value);
             }}
             ><input />
-            <Label color={params[7]? 'blue': 'orange'}>
+            <Label color={params[7]? 'blue': 'grey'}>
                     {params[7]? <>{'OK'}</>:<>{'Enter Value'}</>}
                     </Label></Input>
           
@@ -598,12 +599,21 @@ function CallModal ({ className = '', programID,
           )
           : (
             <>
+            {messageIndex===4 && (<>
+              <Button
+              icon='sign-in-alt'
+              //isDisabled={!isValid}
+              label={t<string>('Save')}
+              onClick={()=>{setParams([...params]);
+                            setSaved(true);}}
+            />            
+            </>)}
 
             { <TxButton
               accountId={accountId}
               extrinsic={execTx}
               icon='sign-in-alt'
-              isDisabled={!isValid || !execTx}
+              isDisabled={!isValid || !execTx || !isSaved}
               label={t<string>('Submit')}
               onStart={onClose}
             />
