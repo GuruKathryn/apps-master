@@ -7,7 +7,7 @@ import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import type { CallResult } from './types';
-import { Input, Container } from 'semantic-ui-react'
+import { Input, Container, Label } from 'semantic-ui-react'
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -51,6 +51,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
   const [isCalled, toggleIsCalled] = useToggle(false);
+
+  const [formPrice, setFormPrice] = useState<string>();
+  const [formInventory, setFormInventory] = useState<string>();
   
   const isTest: boolean = false;
   //const isTestData: boolean = false; //takes out code elements we only see for test
@@ -139,7 +142,12 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   );
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
-  const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));      
+  const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));  
+  
+  function GeodeToZeo(_string: string): string {
+    const _num = +_string * 1000000000000;
+    return(_num.toString())
+  }
 
   return (
     <Card>
@@ -236,13 +244,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                     ></Input>
 
                     <strong>{t<string>('Price per asking coin')}</strong>
-                    <Input label='' type="number" 
-                            value={params[2]}
-                            onChange={(e)=>{
-                              params[2]=e.target.value;
-                              setParams([...params]);
-                            }}
-                    ></Input>
+                    <Input label={formPrice? params[2] = GeodeToZeo(formPrice) : '0'} type="text"
+                        value={formPrice}
+                        onChange={(e) => {
+                          setFormPrice(e.target.value);
+                        }}
+                      ><input />
+                    </Input>
 
                     <strong>{t<string>('Method: Instructions for how buyers can find you, communicate with you and buy coin')}</strong>
                     <Input label='' type="text" 
@@ -254,13 +262,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                     ></Input>
 
                     <strong>{t<string>('Inventory: How much coin you have avaialble for sale')}</strong>
-                    <Input label='' type="number" 
-                            value={params[4]}
-                            onChange={(e)=>{
-                              params[4]=e.target.value;
-                              setParams([...params]);
-                            }}
-                    ></Input>
+                    <Input label={formInventory? params[4] = GeodeToZeo(formInventory) : '0'} type="text"
+                        value={formInventory}
+                        onChange={(e) => {
+                          setFormInventory(e.target.value);
+                        }}
+                      ><input />
+                    </Input>
 
                     <strong>{t<string>('What country do you live in? (for local in person sales)')}</strong>
                     <Input label='' type="text" 
