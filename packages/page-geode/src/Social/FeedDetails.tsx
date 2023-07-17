@@ -293,7 +293,7 @@ function ShowFeed(): JSX.Element {
                     <Label  as='a'
                     color='orange'
                     circular
-                    href={isHex(_feed.link) ? withHttp(hexToString(_feed.link2).trim()) : ''} 
+                    href={isHex(_feed.link2) ? withHttp(hexToString(_feed.link2).trim()) : ''} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     >{t<string>('Link')}
