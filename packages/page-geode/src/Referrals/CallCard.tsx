@@ -147,12 +147,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));   
   const isClosed = (isCalled && (messageIndex === 9 || messageIndex === 14 || messageIndex===10 || messageIndex===11 || messageIndex===13));
-  // const _help: string[] = JSONhelp;
-  // const _note: string[] = JSONnote;
-  // const _title: string[] = JSONTitle;
-  // const _tierOne: string[] = JSONTier1Help;
-  // const _tierTwo: string[] = JSONTier2Help;
-
+  
   
   return (
     <Card >

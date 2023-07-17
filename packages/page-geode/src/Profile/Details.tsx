@@ -2,16 +2,18 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-import React from 'react';
-//import React, { useState } from 'react';
+//import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
-import type { CallResult } from './types';
+import type { CallResult } from '../shared/types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Table, Label, Image } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import AccountHeader from '../shared/AccountHeader';
+
+import CallSendMessage from './CallSendMessage';
 
 import JSONprohibited from '../shared/geode_prohibited.json';
 
@@ -57,6 +59,37 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
     const profileDetail: ProfileDetail = Object.create(_Obj);
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
 
+    const [isUpdate, setUpdate] = useState<boolean>(false);
+    const [count, setCount] = useState(0);
+
+    //const from passing default props
+    // const [_account, setAccount] = useState<string>();
+    // const [_displayName, setDisplayName] = useState<number>();
+    // const [_location, setLocation] = useState<number>();
+    // const [_tags, setTags] = useState<number>();
+    // const [_bio, setBio] = useState<number>();
+    // const [_photoUrl, setPhotoUrl] = useState<number>();
+    // const [_websiteUrl1, setWebsiteUrl1] = useState<number>();
+    // const [_websiteUrl2, setWebsiteUrl2] = useState<number>();
+    // const [_websiteUrl3, setWebsiteUrl3] = useState<number>();
+    // const [_lifeAndWork, setLifeAndWork] = useState<string>();
+    // const [_social, setSocial] = useState<string>();
+    // const [_privateMessage, setPrivateMessage] = useState<string>();
+    // const [_marketPlace, setMarketPlace] = useState<string>();
+    // const [_moreInfo, setMoreInfo] = useState<number>();
+    // const [_makePrivate, setMakePrivate] = useState<boolean>(false);
+
+    const _reset = useCallback(
+      () => {setUpdate(false);
+            },
+      [isUpdate]
+    )
+    const _makeUpdate = useCallback(
+      () => {setUpdate(true);
+            },
+      [isUpdate]
+    )
+
 
     function autoCorrect(arr: string[], str: string): JSX.Element {
         arr.forEach(w => str = str.replaceAll(w, '****'));
@@ -65,6 +98,47 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
         arr.forEach(w => str = str.replaceAll(w.toUpperCase(), '****'));
         return (
         <>{t<string>(str)}</>)
+    }
+
+    function matchAccounts(_from: string): boolean{
+      try {
+        const _acct = profileDetail.ok.account;
+        return(_from===_acct? true: false)
+      } catch(e) {
+        console.log(e);
+        return(false)
+      }
+    }
+
+    function OpenModal(): JSX.Element{
+      try {
+        return(
+          <>
+            <CallSendMessage
+              callIndex={0}
+              myAccount={profileDetail.ok.account}
+              displayName={profileDetail.ok.displayName}
+              location={profileDetail.ok.location}
+              tags={profileDetail.ok.tags}
+              bio={profileDetail.ok.bio}
+              photoUrl={profileDetail.ok.photoUrl}
+              websiteUrl1={profileDetail.ok.websiteUrl1}
+              websiteUrl2={profileDetail.ok.websiteUrl2}
+              websiteUrl3={profileDetail.ok.websiteUrl3}
+              lifeAndWork={profileDetail.ok.lifeAndWork}
+              social={profileDetail.ok.social}
+              privateMessage={profileDetail.ok.privateMessaging}
+              marketPlace={profileDetail.ok.marketplace}
+              moreInfo={profileDetail.ok.moreInfo}
+              makePrivate={profileDetail.ok.makePrivate}
+              onReset={() => _reset()}
+          />
+          </>)
+      } catch(e) {
+        console.log(e)
+        
+        return(<>{'Modal not called'}</>)
+      }
     }
 
     function ListAccount(): JSX.Element {
@@ -78,6 +152,16 @@ function Details ({ className = '', onClear, isAccount, outcome: { from, message
                   label={t<string>('Close')}
                   onClick={onClear}
                 />
+              {matchAccounts(from) && (<>
+                <Button
+                  icon='plus'
+                  label={t<string>('Update')}
+                  onClick={()=>{<>{setCount(count + 1)}
+                                  {_makeUpdate()}</>}}
+                />              
+              </>)}
+              
+             
               </Table.Cell>
               </Table.Row>
             </Table>
@@ -90,7 +174,22 @@ function ShowProfile(): JSX.Element {
         const link1: string = (isHex(profileDetail.ok.websiteUrl1) ? withHttp(hexToString(profileDetail.ok.websiteUrl1).trim()) : '');
         const link2: string = (isHex(profileDetail.ok.websiteUrl2) ? withHttp(hexToString(profileDetail.ok.websiteUrl2).trim()) : '');
         const link3: string = (isHex(profileDetail.ok.websiteUrl3) ? withHttp(hexToString(profileDetail.ok.websiteUrl3).trim()) : '');
-
+        // {profileDetail.ok.account.length>0 && (<>{setAccount(profileDetail.ok.account)}</>)}
+        // {profileDetail.ok.displayName>0 && (<>{setDisplayName(profileDetail.ok.displayName)}</>)}
+        // {profileDetail.ok.location>0 && (<>{setLocation(profileDetail.ok.location)}</>)}
+        // {profileDetail.ok.tags>0 && (<>{setTags(profileDetail.ok.tags)}</>)}
+        // {profileDetail.ok.bio>0 && (<>{setBio(profileDetail.ok.bio)}</>)}
+        // {profileDetail.ok.photoUrl>0 && (<>{setPhotoUrl(profileDetail.ok.photoUrl)}</>)}
+        // {profileDetail.ok.websiteUrl1>0 && (<>{setWebsiteUrl1(profileDetail.ok.websiteUrl1)}</>)}
+        // {profileDetail.ok.websiteUrl2>0 && (<>{setWebsiteUrl2(profileDetail.ok.websiteUrl2)}</>)}
+        // {profileDetail.ok.websiteUrl3>0 && (<>{setWebsiteUrl3(profileDetail.ok.websiteUrl3)}</>)}
+        // {profileDetail.ok.lifeAndWork.length>0 && (<>{setLifeAndWork(profileDetail.ok.lifeAndWork)}</>)}
+        // {profileDetail.ok.social.length>0 && (<>{setSocial(profileDetail.ok.social)}</>)}
+        // {profileDetail.ok.privateMessaging.length>0 && (<>{setPrivateMessage(profileDetail.ok.privateMessaging)}</>)}
+        // {profileDetail.ok.marketplace.length>0 && (<>{setMarketPlace(profileDetail.ok.marketplace)}</>)}
+        // {profileDetail.ok.moreInfo>0 && (<>{setMoreInfo(profileDetail.ok.moreInfo)}</>)}
+        // {profileDetail.ok.makePrivate && (<>{setMakePrivate(profileDetail.ok.makePrivate)}</>)}
+            
         return(
           <div>
           <Table stretch>
@@ -265,6 +364,9 @@ function ShowProfile(): JSX.Element {
             callFrom={2}/>
       <ListAccount />
       <ShowProfile />
+      {isUpdate && (<>
+        <OpenModal />
+      </>)}
     </Card>
     </StyledDiv>
   );

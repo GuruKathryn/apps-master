@@ -526,7 +526,7 @@ function CallModal ({ className = '', programID,
           <br /><br />
           <Toggle
             className='booleantoggle'
-            label={<strong>{t<string>(boolToString(isOwnerApproved))}</strong>}
+            label={<strong>{t<string>(boolToString(params[8] = isOwnerApproved))}</strong>}
             onChange={() => {
               toggleOwnerApproved()
               params[8] = !isOwnerApproved;
@@ -534,7 +534,6 @@ function CallModal ({ className = '', programID,
             }}
             value={isOwnerApproved}
           />
-
           <br />
           <LabelHelp help={t<string>('Enter the Minimum Amount to Pay Forward.')}/>{' '}          
           <strong>{t<string>('Minimum Amount to Pay In: ')}</strong>

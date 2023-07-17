@@ -9,14 +9,19 @@ import type { ContractLink } from '../shared/types';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Card, Button, Table } from '@polkadot/react-components';
+import { Card, Button, Table} from '@polkadot/react-components';
 import { useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { formatNumber } from '@polkadot/util';
 
 import { useTranslation } from '../translate';
 import ContractAdd from './Add';
-import CallCard from './CallCard';
 import Contract from '../shared/Contract';
+
+//import CallCard from './CallCard';
+//import CallSubCard from './CallSubCard';
+import CallModal from './CallModal';
+
+//import Contract from '../shared/Contract';
 import { getContractForAddress } from '../shared/util';
 // uncomment for test configuration - - - - >
 import JSONContractAddress from '../shared/geode_contracts_test.json';
@@ -27,6 +32,21 @@ export interface Props {
   contracts: string[];
   updated: number;
   initMessageIndex: number;
+  myAccount?: string;
+  displayName?: number;
+  location?: number;
+  tags?: number;
+  bio?: number;
+  photoUrl?: number;
+  websiteUrl1?: number;
+  websiteUrl2?: number;
+  websiteUrl3?: number;
+  lifeAndWork?: string;
+  social?: string;
+  privateMessage?: string;
+  marketPlace?: string;
+  moreInfo?: number;
+  makePrivate?: boolean;
 }
 
 interface Indexes {
@@ -41,7 +61,13 @@ function filterContracts (api: ApiPromise, keyringContracts: string[] = []): Con
     .filter((contract): contract is ContractPromise => !!contract);
 }
 
-function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Props): React.ReactElement<Props> {
+function ContractsModal ({ contracts: keyringContracts, 
+                           initMessageIndex, myAccount, displayName, 
+                           location, tags, bio, photoUrl, 
+                           websiteUrl1, websiteUrl2, websiteUrl3, 
+                           lifeAndWork, social, privateMessage,
+                           marketPlace, moreInfo, makePrivate }: Props): React.ReactElement<Props> {
+  
   const _initIndex: number = (initMessageIndex > -1) ? initMessageIndex: 0;
   let _initContractIndex: number = 0;
   const { t } = useTranslation();
@@ -51,15 +77,18 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   const [isCallOpen, setIsCallOpen] = useState(true);
   const [contractLinks, setContractLinks] = useState<Record<string, ContractLink[]>>({});
   
-  const [isTableOpen, toggleTable] = useToggle();
+  //const [isTableOpen, toggleTable] = useToggle();
+  const isTableOpen: boolean = false;
   const [isLoadContract, toggleIsLoad] = useToggle();
   // set to true to test contracts functionality
-  const isTest: boolean = false;
+  //const isTest: boolean = false;
   // set default after contract load to chain
-  const contractAddress: string = (JSONContractAddress[1])? JSONContractAddress[1] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
+  const _defaultAddress: string = '5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
+  const contractAddress: string = (JSONContractAddress[1])? JSONContractAddress[1] :_defaultAddress;
+  console.log(contractIndex);
 
   const headerRef = useRef<[string?, string?, number?][]>([
-    [t('Add claims for Geode Profile'), 'start'],
+    [t('Geode Referral'), 'start'],
     [undefined, undefined, 3],
     [t('status'), 'start'],
     []
@@ -105,6 +134,14 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
     []
   );
 
+  const _toggleCall = useCallback(
+    () => <>
+    {setIsCallOpen((isCallOpen) => !isCallOpen)}
+    </>,
+    []
+  );
+
+
   const _setMessageIndex = useCallback(
     (messageIndex: number) => setIndexes((state) => ({ ...state, messageIndex })),
     []
@@ -112,32 +149,16 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
 
  const _initIndexIndex = ((contracts) ? contracts.findIndex( x => x.address.toString() === contractAddress ): 0);  
  const contract = contracts[_initIndexIndex] || null;
- console.log(contractIndex);
 
  return (
     <>
-      {!contract && (
-        <Card>
-          {t<string>('Load Geode Profile Contract')}
-          <Button
-            icon={(isLoadContract) ? 'plus' : 'sign-in-alt'}
-            label={t<string>('Load')}
-            onClick={toggleIsLoad} 
-          />
-        <br />
-        </Card>
-      )}
       {!contract && isLoadContract && (
         <ContractAdd 
             onClose={toggleIsLoad} 
             defaultAddress ={contractAddress}/>
       )}
-      {isTest && contract && (
-        <Card>
-          {'Test Code here.'}
-        </Card>)}
-
-      {isTableOpen && <Table
+        
+        {isTableOpen && <Table
         empty={t<string>('No contracts available')}
         header={headerRef.current}
       >
@@ -151,18 +172,38 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           />
         ))}
       </Table>}
-      {isCallOpen && contract && (
-        <CallCard
+    
+      
+      {isCallOpen && contract && 
+       messageIndex===0 && (
+        <CallModal
+          myAccount={myAccount}
+          displayName={displayName}
+          location={location}
+          tags={tags}
+          bio={bio}
+          photoUrl={photoUrl}
+          websiteUrl1={websiteUrl1}
+          websiteUrl2={websiteUrl2}
+          websiteUrl3={websiteUrl3}
+          lifeAndWork={lifeAndWork}
+          social={social}
+          privateMessage={privateMessage}
+          marketPlace={marketPlace}
+          makePrivate={makePrivate}
+          moreInfo={moreInfo}
           contract={contract}
           messageIndex={messageIndex}
           onCallResult={onCallResult}
           onChangeMessage={_setMessageIndex}
+          onClose={_toggleCall}
         />
       )}
+
     </>
   );
 }
 
-export default React.memo(ContractsTable);
+export default React.memo(ContractsModal);
 
 

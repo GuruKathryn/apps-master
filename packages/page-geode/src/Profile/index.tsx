@@ -29,7 +29,7 @@ export default function Profile ({ className = '' }: Props): React.ReactElement 
     const [isByAccount, toggleByAccount] = useToggle();
     const [isByKeyword, toggleByKeyword] = useToggle();
     const refTitle: string[] = 
-    [' Create and update your Profile. (Click again to close) ', 
+    [' Create your Profile. (Click again to close) ', 
      ' Lookup an account and display its profile. (Click again to close) ', 
      ' Search for Profiles by Keyword or by Account. ',
      ' Search by Account, Enter Account Public Key below. (Click again to close) ',
@@ -65,7 +65,7 @@ export default function Profile ({ className = '' }: Props): React.ReactElement 
         {!isByKeyword && !isByAccount && !isLookUp && !isSearch && (
         <><Button
                 icon={(isUpdate) ? 'minus' : 'plus'}
-                label={t<string>('Update Your Profile')}
+                label={t<string>('Create Your Profile')}
                 onClick={toggleUpdate}>
           </Button>
           </>

@@ -13,7 +13,7 @@ import { keyring } from '@polkadot/ui-keyring';
 import { ABI, InputName } from '../shared';
 import { useTranslation } from '../translate';
 import useAbi from '../useAbi';
-import ValidateAddr from './ValidateAddr';
+import ValidateAddr from '../shared/ValidateAddr';
 
 import JSONgeodeProfile from './geode_profile.json';
 
