@@ -63,7 +63,7 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, remov
   console.log(contractIndex);
 
   const headerRef = useRef<[string?, string?, number?][]>([
-    [t('Geode Referrals'), 'start'],
+    [t('Geode Reporting'), 'start'],
     [undefined, undefined, 3],
     [t('status'), 'start'],
     []
