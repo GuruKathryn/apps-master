@@ -4,7 +4,7 @@
 import React from 'react';
 //import React, { useState } from 'react';
 import { useTranslation } from '../translate';
-import type { CallResult } from './types';
+import type { CallResult } from '../shared/types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Toggle, Card, Button, Badge } from '@polkadot/react-components';

@@ -7,7 +7,8 @@ import { useContracts } from '../useContracts';
 import { useCodes } from '../useCodes';
 import styled from 'styled-components';
 import { __RouterContext } from 'react-router';
-import ContractsTable from './ContractsTable';
+//import ContractsTable from './ContractsTable';
+import ContractsModal from './ContractsModal';
 
 interface Props {
   className?: string;
@@ -30,7 +31,7 @@ function CallEndorse ({ className = '', onClear, isPost, messageId, fromAcct, us
         <div>
   
               {isPost? (<>
-                <ContractsTable
+                <ContractsModal
                         contracts={allContracts}
                         updated={codeTrigger}
                         initMessageIndex={2}
@@ -40,7 +41,7 @@ function CallEndorse ({ className = '', onClear, isPost, messageId, fromAcct, us
                         postMessage={postMessage}   
                     />                       
               </>) : (<>
-                <ContractsTable
+                <ContractsModal
                         contracts={allContracts}
                         updated={codeTrigger}
                         initMessageIndex={3}

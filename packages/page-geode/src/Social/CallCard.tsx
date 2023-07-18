@@ -8,7 +8,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
-import type { CallResult } from './types';
+import type { CallResult } from '../shared/types';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -28,7 +28,7 @@ import StatDetails from './StatDetails';
 import SearchDetails from './SearchDetails';
 import KeywordDetails from './KeywordDetails';
 
-import { getCallMessageOptions } from './util';
+import { getCallMessageOptions } from '../shared/util';
 import JSONhelp from '../shared/geode_social_help.json';
 import JSONnote from '../shared/geode_social_note.json';
 import JSONTitle from '../shared/geode_social_card_titles.json';

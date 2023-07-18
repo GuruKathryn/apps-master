@@ -8,7 +8,8 @@ import { useCodes } from '../useCodes';
 import styled from 'styled-components';
 import { Card } from '@polkadot/react-components';
 import { __RouterContext } from 'react-router';
-import ContractsTable from './ContractsTable';
+//import ContractsTable from './ContractsTable';
+import ContractsModal from './ContractsModal';
 
 interface Props {
   className?: string;
@@ -30,7 +31,7 @@ function CallPost ({ className = '', onClear, isPost, messageId,fromAcct,usernam
   
     function MakePaidPost(): JSX.Element {
     return(<>
-              <ContractsTable
+              <ContractsModal
                 contracts={allContracts}
                 updated={codeTrigger}
                 initMessageIndex={1}
@@ -41,7 +42,7 @@ function CallPost ({ className = '', onClear, isPost, messageId,fromAcct,usernam
     function MakePost(): JSX.Element {
     return(
         <div>
-            <ContractsTable
+            <ContractsModal
               contracts={allContracts}
               updated={codeTrigger}
               initMessageIndex={0}

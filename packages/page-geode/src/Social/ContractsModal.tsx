@@ -9,7 +9,7 @@ import type { ContractLink } from '../shared/types';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Card, Button, Table } from '@polkadot/react-components';
+import { Card, Table } from '@polkadot/react-components';
 import { useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { formatNumber } from '@polkadot/util';
 
@@ -49,7 +49,7 @@ function filterContracts (api: ApiPromise, keyringContracts: string[] = []): Con
     .filter((contract): contract is ContractPromise => !!contract);
 }
 
-function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messageId, fromAcct, username, postMessage }: Props): React.ReactElement<Props> {
+function ContractsModal ({  contracts: keyringContracts, initMessageIndex, messageId, fromAcct, username, postMessage }: Props): React.ReactElement<Props> {
   const _initIndex: number = (initMessageIndex > -1) ? initMessageIndex: 0;
   let _initContractIndex: number = 0;
   const { t } = useTranslation();
@@ -131,17 +131,6 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
 
  return (
     <>
-      {!contract && (
-        <Card>
-          {t<string>('Load Geode Social Contract')}
-          <Button
-            icon={(isLoadContract) ? 'plus' : 'sign-in-alt'}
-            label={t<string>('Load')}
-            onClick={toggleIsLoad} 
-          />
-        <br />
-        </Card>
-      )}
       {!contract && isLoadContract && (
         <ContractAdd 
             onClose={toggleIsLoad} 
@@ -199,6 +188,6 @@ function ContractsTable ({  contracts: keyringContracts, initMessageIndex, messa
   );
 }
 
-export default React.memo(ContractsTable);
+export default React.memo(ContractsModal);
 
 

@@ -8,7 +8,8 @@ import { useCodes } from '../useCodes';
 
 import styled from 'styled-components';
 import { __RouterContext } from 'react-router';
-import ContractsTable from './ContractsTable';
+//import ContractsTable from './ContractsTable';
+import ContractsModal from './ContractsModal';
 
 interface Props {
   className?: string;
@@ -28,7 +29,7 @@ function CallFollow ({ className = '', onClear, messageId, fromAcct, username, p
     function MakeAccountFollow(): JSX.Element {
     return(
         <div>
-                <ContractsTable
+                <ContractsModal
                         contracts={allContracts}
                         updated={codeTrigger}
                         initMessageIndex={4}
