@@ -18,11 +18,12 @@ import ContractAdd from './Add';
 import CallCard from './CallCard';
 import Contract from '../shared/Contract';
 import { getContractForAddress } from './util';
-// uncomment for test configuration - - - - >
-import JSONContractAddress from '../shared/geode_contracts_test.json';
 import CallModal from './CallModal';
+
+// uncomment for test configuration - - - - >
+//import JSONContractAddress from '../shared/geode_contracts_test.json';
 // uncomment for production chain - - - - >
-//import JSONContractAddress from '../shared/geode_contracts.json';
+import JSONContractAddress from '../shared/geode_contracts.json';
 
 export interface Props {
   contracts: string[];
