@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xfb967118944ffa7f2d8bb725b94100d3d0f300f86695bc003a1cc29d420a00e9",
+    "hash": "0x90da10efe6cb5ef3ea15a7263b320a23f3504d576140e17caa25fa397207b5f4",
     "language": "ink! 4.2.0",
     "compiler": "rustc 1.70.0-nightly",
     "build_info": {
@@ -162,15 +162,6 @@
             }
           },
           {
-            "label": "file_hash",
-            "type": {
-              "displayName": [
-                "Hash"
-              ],
-              "type": 10
-            }
-          },
-          {
             "label": "file_url",
             "type": {
               "displayName": [
@@ -212,15 +203,6 @@
                 "Vec"
               ],
               "type": 4
-            }
-          },
-          {
-            "label": "file_hash",
-            "type": {
-              "displayName": [
-                "Hash"
-              ],
-              "type": 10
             }
           },
           {
@@ -442,15 +424,6 @@
             }
           },
           {
-            "label": "file_hash",
-            "type": {
-              "displayName": [
-                "Hash"
-              ],
-              "type": 10
-            }
-          },
-          {
             "label": "file_url",
             "type": {
               "displayName": [
@@ -652,15 +625,6 @@
             }
           },
           {
-            "label": "file_hash",
-            "type": {
-              "displayName": [
-                "Hash"
-              ],
-              "type": 10
-            }
-          },
-          {
             "label": "file_url",
             "type": {
               "displayName": [
@@ -850,15 +814,6 @@
                 "Vec"
               ],
               "type": 4
-            }
-          },
-          {
-            "label": "file_hash",
-            "type": {
-              "displayName": [
-                "Hash"
-              ],
-              "type": 10
             }
           },
           {
@@ -1756,15 +1711,6 @@
                           "layout": {
                             "leaf": {
                               "key": "0xb2660d46",
-                              "ty": 10
-                            }
-                          },
-                          "name": "file_hash"
-                        },
-                        {
-                          "layout": {
-                            "leaf": {
-                              "key": "0xb2660d46",
                               "ty": 4
                             }
                           },
@@ -1847,15 +1793,6 @@
                             }
                           },
                           "name": "message"
-                        },
-                        {
-                          "layout": {
-                            "leaf": {
-                              "key": "0x8b406896",
-                              "ty": 10
-                            }
-                          },
-                          "name": "file_hash"
                         },
                         {
                           "layout": {
@@ -1948,15 +1885,6 @@
                           "layout": {
                             "leaf": {
                               "key": "0x271ff112",
-                              "ty": 10
-                            }
-                          },
-                          "name": "file_hash"
-                        },
-                        {
-                          "layout": {
-                            "leaf": {
-                              "key": "0x271ff112",
                               "ty": 4
                             }
                           },
@@ -2039,15 +1967,6 @@
                             }
                           },
                           "name": "message"
-                        },
-                        {
-                          "layout": {
-                            "leaf": {
-                              "key": "0xd56d3356",
-                              "ty": 10
-                            }
-                          },
-                          "name": "file_hash"
                         },
                         {
                           "layout": {
@@ -2874,11 +2793,6 @@
                 "typeName": "Vec<u8>"
               },
               {
-                "name": "file_hash",
-                "type": 10,
-                "typeName": "Hash"
-              },
-              {
                 "name": "file_url",
                 "type": 4,
                 "typeName": "Vec<u8>"
@@ -2984,11 +2898,6 @@
                 "name": "message",
                 "type": 4,
                 "typeName": "Vec<u8>"
-              },
-              {
-                "name": "file_hash",
-                "type": 10,
-                "typeName": "Hash"
               },
               {
                 "name": "file_url",

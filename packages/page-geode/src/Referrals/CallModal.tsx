@@ -599,7 +599,7 @@ function CallModal ({ className = '', programID,
           )
           : (
             <>
-            {messageIndex===4 && (<>
+            {
               <Button
               icon='sign-in-alt'
               //isDisabled={!isValid}
@@ -607,7 +607,7 @@ function CallModal ({ className = '', programID,
               onClick={()=>{setParams([...params]);
                             setSaved(true);}}
             />            
-            </>)}
+            }
 
             { <TxButton
               accountId={accountId}

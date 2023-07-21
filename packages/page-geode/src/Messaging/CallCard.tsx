@@ -2,7 +2,7 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 // packages/page-geode/src/LifeAndWork/CallCard.tsx
-import { Input } from 'semantic-ui-react'
+import { Input, Label } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -15,7 +15,7 @@ import type { CallResult } from '../shared/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Expander, Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
+import { Expander, LabelHelp, Badge, Card, Button, Dropdown, InputAddress, InputBalance, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
@@ -26,14 +26,10 @@ import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
 //import Details from './Details';
 import AllowedDetails from './AllowedDetails';
+import SettingsDetails from './SettingsDetails';
 //import SearchDetails from './SearchDetails';
 
 import { getCallMessageOptions } from '../shared/util';
-import JSONhelp from '../shared/geode_messaging_help.json';
-import JSONnote from '../shared/geode_messaging_note.json';
-import JSONtier1 from '../shared/geode_messaging_tier1_help.json';
-import JSONtier2 from '../shared/geode_messaging_tier2_help.json';
-import JSONTitle from '../shared/geode_messaging_info.json';
 import InBoxDetails from './InBoxDetails';
 
 interface Props {
@@ -59,13 +55,18 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
   const [isViaCall, toggleViaCall] = useToggle();
-  //const [isMenu, setIsMenu] = useState(false);
+  
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
   const [isCalled, toggleIsCalled] = useToggle(false);
+  const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
 
-  
+  const [_username, setUsername] = useState<string>('');
+  const [_myInterest, setMyInterest] = useState<string>('');
+  const [_feeBalance, setFeeBalance] = useState<string>('');
+  const [_isHide, toggleIsHide] = useToggle(false);
+
   const isTest: boolean = false;
   //const isTestData: boolean = false; //takes out code elements we only see for test
 
@@ -157,27 +158,20 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));      
   const isClosed = (isCalled && (messageIndex === 26 ||
                                  messageIndex === 27 || 
-                                 messageIndex===28));
+                                 messageIndex===28 ||
+                                 messageIndex===38));
                                
   return (
     <Card >
         <h2>
         <Badge icon='info' color={'blue'} />   
         <strong>{t<string>(' Geode Private Messaging ')}{' '}</strong>
-        {messageIndex>25 && (<>{' - '}{JSONTitle[messageIndex-21]}</>)}
         </h2>
         <Expander 
             className='viewInfo'
             isOpen={false}
             summary={<strong>{t<string>('Instructions: ')}</strong>}>
-            {messageIndex>25 && (<>
-              {t<string>(JSONhelp[messageIndex - 21])}<br /><br />
-              {t<string>(JSONnote[messageIndex - 21])}<br /><br />
-              <Badge color='blue' icon='info'/>
-              {t<string>(JSONtier1[messageIndex - 21])}<br />
-              <Badge color='blue' icon='info'/>
-              {t<string>(JSONtier2[messageIndex - 21])}
-            </>)}
+              {'put help here'}
         </Expander>
 
         {isTest && (
@@ -223,7 +217,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />              
             </>
             )}
-            {!isClosed && (<>
+            {messageIndex!=0 && !isClosed && (<>
               <Params
               onChange={setParams}
               params={
@@ -233,9 +227,75 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               }              
               registry={contract.abi.registry}
             />
+            </>)}
+
+            {messageIndex===0 && (<>
+              <LabelHelp help={t<string>('Enter your user name.')}/>{' '}          
+              <strong>{t<string>('User Name: ')}</strong>
+              <Input 
+                  label={_username.length>0? params[0]=_username: params[0]=''}
+                  type="text"
+                  //defaultValue={hextoString(paramToNum(displayName))}
+                  value={_username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[0]? 'blue': 'grey'}>
+                    {params[0]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+              </Input>
+
+              <LabelHelp help={t<string>('Enter your interest words seperated by a comma.')}/>{' '}          
+              <strong>{t<string>('Interest Words: ')}</strong>
+              <Input 
+                  label={_myInterest.length>0? params[1]=_myInterest: params[1]=''}
+                  type="text"
+                  //defaultValue={hextoString(paramToNum(displayName))}
+                  value={_myInterest}
+                  onChange={(e) => {
+                    setMyInterest(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[1]? 'blue': 'grey'}>
+                    {params[1]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+              </Input>
             
+              <LabelHelp help={t<string>('Enter your Fee Balance.')}/>{' '}          
+              <strong>{t<string>('Fee Balance: ')}</strong>
+              <Input 
+                  label={_feeBalance.length>0? params[2]=_feeBalance: params[2]=''}
+                  type="text"
+                  //defaultValue={hextoString(paramToNum(displayName))}
+                  value={_feeBalance}
+                  onChange={(e) => {
+                    setFeeBalance(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[2]? 'blue': 'grey'}>
+                    {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+              </Input>
+
+              <br /><br />
+              <LabelHelp help={t<string>('Select Yes/No to Hide Your Account.')}/> {' '}         
+              <strong>{t<string>('Hide Your Account: ')}</strong>
+              <br /><br />
+              <Toggle
+                className='booleantoggle'
+                label={<strong>{t<string>(boolToString(params[3] = _isHide))}</strong>}
+                onChange={() => {
+                  toggleIsHide()
+                  params[3] = !_isHide;
+                  setParams([...params]);
+                }}
+                value={_isHide}
+              />
+
             
             </>)}
+            
           </>
         )}
 
@@ -302,6 +362,18 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         }      
         </Card>    
         </>
+        )}
+
+        {outcomes.length > 0 && messageIndex===38 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <SettingsDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
         )}
 
         {outcomes.length > 0 && messageIndex===26 && (

@@ -24,12 +24,16 @@ interface Props {
 export default function Messaging ({ className = '' }: Props): React.ReactElement {
     const { t } = useTranslation();
     // main_menus
-    const [isInBox, toggleInBox] = useToggle();
-    const [isPaidInBox, togglePaidInBox] = useToggle();
-    const [isUpdate, toggleUpdate] = useToggle();
+    const [isInBox, toggleInBox] = useToggle(false);
+    const [isPaidInBox, togglePaidInBox] = useToggle(false);
+    const [isUpdate, toggleUpdate] = useToggle(false);
+    const [isShowUpdate, toggleShowUpdate] = useToggle(false);
+    const [isUpdateUpdate, toggleUpdateUpdate] = useToggle(false);
     const [isAllowedAccount, toggleAllowedAccount] = useToggle();
     const [isMyGroup, toggleMyGroup] = useToggle();
     const [isLists, toggleLists] = useToggle();
+
+
     // sub_menus_Inbox
     //const [isSearchKeyword, toggleSearchKeyword] = useToggle();
     //const [isSearchAccount, toggleSearchAccount] = useToggle();
@@ -42,7 +46,7 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
     //const [isBlockAcct, toggleBlockAcct] = useToggle();
     //const [isUnBlockAcct, toggleUnBlockAcct] = useToggle();
     //const [isDeleteMsg, toggleDeleteMsg] = useToggle();
-    const deployApp: boolean = false;
+    const deployApp: boolean = true;
 
 
     const refTitle: string[] = 
@@ -86,7 +90,7 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
           <>
           <Button
             icon={(isUpdate) ? 'minus' : 'plus'}
-            label={t('Update Settings')}
+            label={t('Settings')}
             onClick={toggleUpdate}>
           </Button>    
           </>
@@ -126,8 +130,36 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
         {isAllowedAccount && (<>{refTitle[3]}</>)}
         {isMyGroup && (<>{refTitle[4]}</>)}
         {isLists && (<>{refTitle[5]}</>)}
-        </Card>                     
+        </Card>    
+        {isUpdate && (<>
+        <Card>
+        <Button
+            icon={(isShowUpdate) ? 'minus' : 'plus'}
+            label={t('Show Settings')}
+            onClick={toggleShowUpdate}>
+          </Button>    
+          <Button
+            icon={(isUpdateUpdate) ? 'minus' : 'plus'}
+            label={t('Update Settings')}
+            onClick={toggleUpdateUpdate}>
+          </Button>    
+
+        </Card>
+        </>)}
+
         </Table>
+        {isUpdateUpdate && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={0}
+        />)}
+        {isShowUpdate && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={38}
+        />)}
         {isInBox && (
           <ContractsTable
             contracts={allContracts}

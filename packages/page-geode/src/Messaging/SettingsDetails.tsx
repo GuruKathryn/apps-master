@@ -25,101 +25,32 @@ interface Props {
     outcome: CallResult;
   }
   
-  type ConversationObj = {
-    messageId: string,
-    fromAcct: string,
-    fromUsername: string,
-    toAcct: string,
-    message: string,
-    fileHash: string,
-    fileUrl: string,
-    timestamp: number
+type SettingsObj = {
+    interests: string[],
+    inboxFee: string[],
+    lastupdate: number[],
   }
 
-  type List_messagesObj = {
-    messageId: string,
-    fromAcct: string,
-    username: string,
-    toListId: string,
-    toListName: string,
-    message: string,
-    fileHash: string,
-    fileUrl: string,
-    timestamp: number
-  }
-
-  type PeopleObj = {
-    allowedAccount: string,
-    username: string,
-    conversation: ConversationObj[]
+type SettingsDetail = {
+  ok: SettingsObj
   }
   
-  type GroupObj = {
-    allowedList: string,
-    listName: string,
-    listMessages: List_messagesObj
-  }
-
-  type ListsObj = {
-    allowedList: string,
-    listName: string,
-    listMessages: List_messagesObj
-  }
-
-  type InBoxObj = {
-    blockedAccts: string[],
-    people: PeopleObj[],
-    groups: GroupObj[],
-    lists: ListsObj[]
-  }
-
-  type InBoxDetail = {
-  ok: InBoxObj
-  }
-  
-function InBoxDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function SettingsDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
 //    const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
 //    const searchWords: string[] = JSONprohibited;
 
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
-    const inBoxDetail: InBoxDetail = Object.create(_Obj);
-
-    const [isSearchKeyword, toggleSearchKeyword] = useToggle(false);
-    const [isSearchAccount, toggleSearchAccount] = useToggle(false);
-    const [_toAcct, setToAcct] = useState('');
-
-    const [isMessage, setMessage] = useState(false);
-
-    const [count, setCount] = useState(0);
-
+    const settingsDetail: SettingsDetail = Object.create(_Obj);
 
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-
-    const _reset = useCallback(
-      () => {setMessage(false);
-            },
-      []
-    )
-    
-    const _makeMessage = useCallback(
-      () => {setMessage(true);
-            },
-      []
-    )
     
     function hextoHuman(_hexIn: string): string {
       const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
       return(_Out)
     }
     
-    function blockAccount(_acct: string): boolean {
-      const _blocked: boolean = ((inBoxDetail.ok.blockedAccts.length>0 ? inBoxDetail.ok.blockedAccts : []).find(_blk => _blk === _acct))
-       ? true : false
-      return(_blocked)
-    }  
-
     function timeStampToDate(tstamp: number): JSX.Element {
       try {
        const event = new Date(tstamp);
@@ -183,23 +114,13 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
                   label={t<string>(' Close ')}
                   onClick={onClear}
                 />
-              <Button
-                  icon={isSearchKeyword? 'minus': 'plus'}
-                  label={t<string>(' Search By Keyword ')}
-                  onClick={toggleSearchKeyword}
-                />
-              <Button
-                  icon={isSearchAccount? 'minus': 'plus'}
-                  label={t<string>(' Search by Account ')}
-                  onClick={toggleSearchAccount}
-                />
               </Table.Cell>
               </Table.Row>
             </Table>
           </div>
       )}  
       
-function GetMessages(): JSX.Element {
+function ShowData(): JSX.Element {
       try {
 
         return(
@@ -218,60 +139,13 @@ function GetMessages(): JSX.Element {
 
           <Table.Row>
             <Table.Cell verticalAlign='top'>
-            <h3><LabelHelp help={t<string>(' Your Inbox ')} />
-                <strong>{t<string>(' People: ')}</strong></h3> 
-          
-                {inBoxDetail.ok.people.length>0 && 
-                  inBoxDetail.ok.people.map((_people, inbox: number)=> <>
-                  <h2><strong>{'@'}{hextoHuman(_people.username)}</strong>
-                  {' ('}<AccountName value={_people.allowedAccount} withSidebar={true}/>{') '}
-                  <Badge icon='envelope' color={'blue'}
-                                  onClick={()=>{<>
-                                  {setToAcct(_people.allowedAccount)}
-                                  {setCount(count + 1)}
-                                  {_makeMessage()}</>}}/>                        
-                  </h2>
-
-                  <Expander 
-                    className='message'
-                    isOpen={false}
-                    summary={<Label size={'mini'} color='orange' circular> {'View'}</Label>}>
-                  {_people.conversation.length>0 &&
-                    _people.conversation.map(_conversation => <>
-                      {timeStampToDate(_conversation.timestamp)}{' '}<br />
-                      {_conversation.toAcct===from? (<>
-                        <Label 
-                          color='blue' textAlign='left' pointing= 'right'>
-                          {hextoHuman(_conversation.message)}{' '}
-                        </Label>
-                        <IdentityIcon value={_conversation.fromAcct} />
-                        {' ('}<AccountName value={_conversation.fromAcct} withSidebar={true}/>{') '}
-                      </>): (<>
-                        <IdentityIcon value={_conversation.fromAcct} />
-                        {' ('}<AccountName value={_conversation.fromAcct} withSidebar={true}/>{') '}
-                        <Label  color='grey' textAlign='left' pointing='left'>
-                          {hextoHuman(_conversation.message)}{' '}
-                        </Label>
-                      </>)}
-                      {(_conversation.fileUrl != '0x') && (
-                      <>
-                        <Label  as='a' color='orange' circular size={'mini'}
-                        href={isHex(_conversation.fileUrl) ? withHttp(hexToString(_conversation.fileUrl).trim()) : ''} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        >{t<string>('Link')}
-                        </Label>{' '}
-                      </>)}
-                      
-                      
-                      <br /><br />
-                    
-                    </>)}
-                   </Expander>
-
+            <h2><LabelHelp help={t<string>(' Your Interest Areas: ')} />
+                <strong>{t<string>(' Interests: ')}</strong></h2> 
+                {settingsDetail.ok.interests.length>0 && 
+                  settingsDetail.ok.interests.map((_data, index: number)=> <>
+                  <h3><strong>{hextoHuman(_data)}</strong></h3>
                 </>)
                 }
-            
             </Table.Cell>
 
           </Table.Row>
@@ -312,15 +186,7 @@ function GetMessages(): JSX.Element {
             timeDate={when} 
             callFrom={2}/>
       <ListAccount />
-      <GetMessages />
-      {isMessage && (<>
-        {_toAcct}
-        <CallSendMessage
-                callIndex={1}
-                toAcct={_toAcct}
-                onReset={() => _reset()}
-            />      
-        </>)}
+      <ShowData />
     </Card>
     </StyledDiv>
   );
@@ -334,4 +200,4 @@ const StyledDiv = styled.div`
     margin: 0.25rem 0.5rem;
   }
 `;
-export default React.memo(InBoxDetails);
+export default React.memo(SettingsDetails);

@@ -8,18 +8,21 @@ import { useCodes } from '../useCodes';
 import styled from 'styled-components';
 import { __RouterContext } from 'react-router';
 import ContractsTable from './ContractsTable';
+import ContractsModal from './ContractsModal';
 
 interface Props {
   className?: string;
   onClear?: () => void;
   messageId?: string;
   fromAcct?: string;
+  toAcct?: string;
   username?: string;
   postMessage?: string;
+  onReset?: () => void;
   callIndex: number;
 }
 
-function CallSendMessage ({ className = '', onClear, messageId, fromAcct, username, postMessage, callIndex }: Props): React.ReactElement<Props> | null {
+function CallSendMessage ({ className = '', onClear, messageId, fromAcct, toAcct, username, postMessage, callIndex, onReset }: Props): React.ReactElement<Props> | null {
     const { allContracts } = useContracts();
     const { allCodes, codeTrigger } = useCodes();
 //todo: code for allCodes:
@@ -28,11 +31,20 @@ function CallSendMessage ({ className = '', onClear, messageId, fromAcct, userna
     function SendMessage(): JSX.Element {
     return(
         <div>
+          {callIndex===1? <>
+            <ContractsModal
+                toAcct={toAcct}
+                contracts={allContracts}
+                updated={codeTrigger}
+                initMessageIndex={callIndex}
+            />                                   
+            </>: <>
             <ContractsTable
                 contracts={allContracts}
                 updated={codeTrigger}
                 initMessageIndex={callIndex}
-            />                       
+            />                                   
+            </>}
         </div>
     )
 }

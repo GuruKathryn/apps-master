@@ -1,18 +1,20 @@
 // Copyright 2017-2022 @polkadot/app-contracts authors & contributors
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
-import { Input } from 'semantic-ui-react'
+import { Input, Label } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
-import type { CallResult } from '../shared/types';
+//import type { CallResult } from '../shared/types';
+import CopyInline from '../shared/CopyInline';
+
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Expander, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
+import { Expander, LabelHelp, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { isHex, stringToHex, hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
@@ -21,11 +23,13 @@ import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
 import { getCallMessageOptions } from '../shared/util';
+import { toAddress } from '@polkadot/react-components/util';
 
 interface Props {
   className?: string;
   messageId: string;
   fromAcct?: string;
+  toAcct?: string;
   username?: string;
   contract: ContractPromise;
   messageIndex: number;
@@ -36,7 +40,7 @@ interface Props {
 
 const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 
-function CallModal ({ className = '', messageId, fromAcct, username, contract, messageIndex, onCallResult, onChangeMessage, onClose }: Props): React.ReactElement<Props> | null {
+function CallModal ({ className = '', messageId, fromAcct, toAcct, username, contract, messageIndex, onCallResult, onChangeMessage, onClose }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
   const message = contract.abi.messages[messageIndex];
@@ -47,9 +51,17 @@ function CallModal ({ className = '', messageId, fromAcct, username, contract, m
   const [value, isValueValid, setValue] = useFormField<BN>(BN_ZERO);
 //  const [outcomes, setOutcomes] = useState<CallResult[]>([]);
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
-  let [params, setParams] = useState<unknown[]>([]);
+  const [params, setParams] = useState<unknown[]>([]);
+//  const _defaultRecipient ='5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc';
+//  const [recipientValue, setRecipientValue] = useAccountId(_defaultRecipient);
+  const [recipientValue, setRecipientValue] = useAccountId(toAcct);
+  const [messageValue, setMessageValue] = useState<string>('');
+  const [fileLinkValue, setFileLinkValue] = useState<string>('')
   
   const [isViaCall, toggleViaCall] = useToggle();
+
+  const paramToString = (_string: string|undefined) => _string? _string : '';
+
 
   const weight = useWeight();
   const dbValue = useDebounce(value);
@@ -227,12 +239,63 @@ function CallModal ({ className = '', messageId, fromAcct, username, contract, m
               options={getCallMessageOptions(contract)}
               value={messageIndex}
             />            
-            </>)}
               <Params
               onChange={setParams}
               params={message? message.args: undefined}
               registry={contract.abi.registry}
-            />            
+            />    
+            </>)}  
+            {messageIndex===1 && (<>
+              <br />
+              <LabelHelp help={t<string>('Select Message Recipient.')}/>{' '}          
+              <strong>{t<string>('Message Recipient: ')}</strong>{' '}
+              {params[0] = recipientValue}<br />
+              <InputAddress
+                defaultValue={paramToString(toAcct)}
+                label={t<string>('Recipient Account')}
+                labelExtra={
+                <Available
+                    label={t<string>('transferrable')}
+                    params={recipientValue}
+                />
+                }
+                onChange={setRecipientValue}
+                type='account'
+                value={recipientValue}
+              />
+
+              <LabelHelp help={t<string>('Enter your message here..')}/>{' '}          
+              <strong>{t<string>('Message: ')}</strong>
+              <Input 
+                label={messageValue? params[1]=messageValue: params[1]=''}
+                type="text"
+                //defaultValue={''}
+                value={messageValue}
+                onChange={(e) => {
+                  setMessageValue(e.target.value);
+                  setParams([...params]);
+                }}
+              ><input />
+              <Label color={params[1]? 'blue': 'grey'}>
+                    {params[1]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+          </Input>
+
+          <LabelHelp help={t<string>('Enter a link to a file.')}/>{' '}          
+          <strong>{t<string>('File Link: ')}</strong>
+          <Input 
+            label={fileLinkValue? params[2]=fileLinkValue: params[2]=''}
+            type="text"
+            value={fileLinkValue}
+            //defaultValue={''}
+            onChange={(e) => {
+              setFileLinkValue(e.target.value);
+              setParams([...params]);
+            }}
+            ><input />
+            <Label color={params[2]? 'blue': 'grey'}>
+                    {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+          </Input>            
+            </>)}      
         </>
         )}
 
