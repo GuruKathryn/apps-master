@@ -32,7 +32,10 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
     const [isAllowedAccount, toggleAllowedAccount] = useToggle();
     const [isMyGroup, toggleMyGroup] = useToggle();
     const [isLists, toggleLists] = useToggle();
-
+    const [isMyLists, toggleMyLists] = useToggle();
+    const [isMyPaidLists, toggleMyPaidLists] = useToggle();
+    const [isSubLists, toggleSubLists] = useToggle();
+    const [isFindLists, toggleFindLists] = useToggle(); 
 
     // sub_menus_Inbox
     //const [isSearchKeyword, toggleSearchKeyword] = useToggle();
@@ -143,7 +146,34 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
             label={t('Update Settings')}
             onClick={toggleUpdateUpdate}>
           </Button>    
-
+        </Card>
+        </>)}
+        {isLists && (<>
+        <Card>
+          <Button
+            icon={(isMyLists) ? 'minus' : 'plus'}
+            label={t('My Lists')}
+            isDisabled={isMyPaidLists || isSubLists || isFindLists }
+            onClick={toggleMyLists}>
+          </Button>    
+          <Button
+            icon={(isMyPaidLists) ? 'minus' : 'plus'}
+            label={t('My Paid Lists')}
+            isDisabled={isMyLists || isSubLists || isFindLists }
+            onClick={toggleMyPaidLists}>
+          </Button>    
+          <Button
+            icon={(isSubLists) ? 'minus' : 'plus'}
+            label={t('Subscribed Lists')}
+            isDisabled={isMyLists || isMyPaidLists || isFindLists }
+            onClick={toggleSubLists}>
+          </Button>    
+          <Button
+            icon={(isFindLists) ? 'minus' : 'plus'}
+            label={t('Find Lists')}
+            isDisabled={isMyLists || isMyPaidLists || isSubLists }
+            onClick={toggleFindLists}>
+          </Button>    
         </Card>
         </>)}
 
@@ -154,11 +184,24 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
           updated={codeTrigger}
           initMessageIndex={0}
         />)}
+
         {isShowUpdate && (
           <ContractsTable
           contracts={allContracts}
           updated={codeTrigger}
           initMessageIndex={38}
+        />)}
+        {isFindLists && (          
+        <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={36}
+        />)}
+        {isMyLists && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={33}
         />)}
         {isInBox && (
           <ContractsTable

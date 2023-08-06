@@ -15,8 +15,8 @@ module.exports = merge(
       open: false,
       port: 3000,
       allowedHosts: [
-        '.getgeode.com',
-        'getgeode.com'
+        '.geodeapps.com',
+        'geodeapps.com'
       ],
       static: path.resolve(__dirname, 'build')
     },

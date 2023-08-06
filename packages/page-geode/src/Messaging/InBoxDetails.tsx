@@ -63,7 +63,7 @@ interface Props {
   type ListsObj = {
     allowedList: string,
     listName: string,
-    listMessages: List_messagesObj
+    listMessages: List_messagesObj[]
   }
 
   type InBoxObj = {
@@ -88,9 +88,11 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
 
     const [isSearchKeyword, toggleSearchKeyword] = useToggle(false);
     const [isSearchAccount, toggleSearchAccount] = useToggle(false);
-    const [_toAcct, setToAcct] = useState('');
 
+    const [_toAcct, setToAcct] = useState('');
+    const [_username, setUsername] = useState('');
     const [isMessage, setMessage] = useState(false);
+    const [isListMsg, setListMsg] = useState(false);
 
     const [count, setCount] = useState(0);
 
@@ -99,16 +101,25 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
 
     const _reset = useCallback(
       () => {setMessage(false);
+             setListMsg(false);
             },
       []
     )
     
     const _makeMessage = useCallback(
       () => {setMessage(true);
+             setListMsg(false);
             },
       []
     )
-    
+
+    const _makeListMsg = useCallback(
+      () => {setMessage(false);
+             setListMsg(true);
+            },
+      []
+    )
+
     function hextoHuman(_hexIn: string): string {
       const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
       return(_Out)
@@ -198,7 +209,7 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
             </Table>
           </div>
       )}  
-      
+
 function GetMessages(): JSX.Element {
       try {
 
@@ -261,11 +272,8 @@ function GetMessages(): JSX.Element {
                         rel="noopener noreferrer"
                         >{t<string>('Link')}
                         </Label>{' '}
-                      </>)}
-                      
-                      
+                      </>)}                     
                       <br /><br />
-                    
                     </>)}
                    </Expander>
 
@@ -280,6 +288,45 @@ function GetMessages(): JSX.Element {
             <Table.Cell verticalAlign='top'>
             <h3><LabelHelp help={t<string>(' Your Lists ')} />
                 <strong>{t<string>(' Lists: ')}</strong></h3> 
+                {inBoxDetail.ok.lists.length>0 &&
+                 inBoxDetail.ok.lists.map((_lists, index: number) =>
+                <>
+                  <h2>{_lists.listName && <>{'@'}{hextoHuman(_lists.listName)}{' '}</>}
+                  
+                    <Badge icon='envelope' color={'blue'}
+                                  onClick={()=>{<>
+                                  {setToAcct(_lists.allowedList)}
+                                  {setUsername(_lists.listName)}
+                                  {setCount(count + 1)}
+                                  {_makeListMsg()}</>}}/>                  
+                  
+                  </h2>                        
+                  <Expander 
+                    className='listMessage'
+                    isOpen={false}
+                    summary={<Label size={'mini'} color='orange' circular> {'Messages'}</Label>}>
+                    
+                    {_lists.listMessages.map(_message => <>
+                      {timeStampToDate(_message.timestamp)}<br />
+                      <IdentityIcon value={_message.fromAcct} />
+                      {' ('}<AccountName value={_message.fromAcct} withSidebar={true}/>{') '}
+                      {hextoHuman(_message.username)}
+                      <Label color='blue' textAlign='left' pointing='left'>
+                          {hextoHuman(_message.message)}
+                      </Label>
+                      {(_message.fileUrl != '0x') && (
+                      <>
+                        <Label  as='a' color='orange' circular size={'mini'}
+                        href={isHex(_message.fileUrl) ? withHttp(hexToString(_message.fileUrl).trim()) : ''} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        >{t<string>('Link')}
+                        </Label>{' '}
+                      </>)} <br /><br />
+                    </>)}
+                  </Expander>
+                </>)
+                }
             </Table.Cell>
           </Table.Row>
 
@@ -314,10 +361,17 @@ function GetMessages(): JSX.Element {
       <ListAccount />
       <GetMessages />
       {isMessage && (<>
-        {_toAcct}
         <CallSendMessage
                 callIndex={1}
                 toAcct={_toAcct}
+                onReset={() => _reset()}
+            />      
+        </>)}
+        {isListMsg && (<>
+        <CallSendMessage
+                callIndex={15}
+                toAcct={_toAcct}
+                username={_username}
                 onReset={() => _reset()}
             />      
         </>)}

@@ -191,7 +191,7 @@ function BrowseDetails ({ className = '', onClear, onClose, isAccount, outcome: 
                     <Grid.Row>
                       <Grid.Column>
                         {renderLink(_programs.photo)}                  
-                          <Label as='a' size='small' 
+                          <Label as='a' size='large' 
                                 color={'orange'}
                                 onClick={()=>{
                                         <>
@@ -201,8 +201,6 @@ function BrowseDetails ({ className = '', onClear, onClose, isAccount, outcome: 
                                        {setCount(count + 1)}
                                        {_makeClaim()}
                                           </>}} >{'Claim'}</Label>
-                        
-
                       </Grid.Column>
                       <Grid.Column>
                       <h3><strong>{t<string>('Title: ')}</strong>{hextoHuman(_programs.title)}</h3>

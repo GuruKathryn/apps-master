@@ -1,5 +1,6 @@
 // Copyright 2017-2023 @polkadot/app-staking authors & contributors
 // SPDX-License-Identifier: Apache-2.0
+import { Container } from 'semantic-ui-react'
 
 import type { ApiPromise } from '@polkadot/api';
 import type { ContractPromise } from '@polkadot/api-contract';
@@ -15,9 +16,9 @@ import { formatNumber } from '@polkadot/util';
 
 import { useTranslation } from '../translate';
 import ContractAdd from './Add';
-//import CallCard from './CallCard';
+import CallCard from './CallCard';
 import CallModal from './CallModal';
-//import CallSubCard from './CallSubCard';
+import CallSubCard from './CallSubCard';
 import Contract from '../shared/Contract';
 import { getContractForAddress } from '../shared/util';
 
@@ -33,6 +34,8 @@ export interface Props {
   updated: number;
   initMessageIndex: number;
   toAcct?: string;
+  messageId?: string;
+  username?: string;
 }
 
 interface Indexes {
@@ -47,7 +50,7 @@ function filterContracts (api: ApiPromise, keyringContracts: string[] = []): Con
     .filter((contract): contract is ContractPromise => !!contract);
 }
 
-function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct }: Props): React.ReactElement<Props> {
+function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct, messageId, username }: Props): React.ReactElement<Props> {
   const _initIndex: number = (initMessageIndex > -1) ? initMessageIndex: 0;
   let _initContractIndex: number = 0;
   const { t } = useTranslation();
@@ -59,7 +62,7 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
   console.log(contractIndex);
 
   //const [isTableOpen, toggleTable] = useToggle();
-  const isTableOpen = true;
+  const isTableOpen = false;
   const [isLoadContract, toggleIsLoad] = useToggle();
   // set to true to test contracts functionality
   const isTest: boolean = false;
@@ -131,7 +134,7 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
 
  return (
     <>
-      {!contract && isLoadContract && (
+      {isTest && !contract && isLoadContract && (
         <ContractAdd 
             onClose={toggleIsLoad} 
             defaultAddress ={contractAddress}/>
@@ -155,15 +158,32 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
           />
         ))}
       </Table>}
-      {(messageIndex===1) && isCallOpen && contract &&(
-        <CallModal 
+
+      {(messageIndex===1 || messageIndex===15 ||
+        messageIndex===18 ||
+        messageIndex===19 || messageIndex===20) 
+       && isCallOpen && contract &&(
+      <CallModal 
         contract={contract}
         messageIndex={messageIndex}
         onCallResult={onCallResult}
         onChangeMessage={_setMessageIndex}
         toAcct={toAcct}
+        messageId={messageId}
+        username={username}
         onClose={_toggleCall}
       />
+      )}
+      {(messageIndex===16) && isCallOpen && contract &&(
+        <Container>
+            <CallCard 
+                contract={contract}
+                messageIndex={messageIndex}
+                //onCallResult={onCallResult}
+                onChangeMessage={_setMessageIndex}
+                onClose={_toggleCall}
+          />
+      </Container>
       )}
     </>
   );

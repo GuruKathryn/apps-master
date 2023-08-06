@@ -31,6 +31,8 @@ import SettingsDetails from './SettingsDetails';
 
 import { getCallMessageOptions } from '../shared/util';
 import InBoxDetails from './InBoxDetails';
+import MyListsDetails from './MyListsDetails';
+import FindListsDetails from './FindListsDetails';
 
 interface Props {
   className?: string;
@@ -122,7 +124,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
       if (!accountId || !message || !value || !weight) {
         return;
       }
-      //{setIsMenu(true)}
       {toggleIsCalled()}
       contract
         .query[message.method](
@@ -156,10 +157,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));      
-  const isClosed = (isCalled && (messageIndex === 26 ||
-                                 messageIndex === 27 || 
-                                 messageIndex===28 ||
-                                 messageIndex===38));
+  const isClosed = (isCalled && (messageIndex === 26 || messageIndex === 27 || 
+                                 messageIndex===28 || messageIndex===33 ||
+                                 messageIndex===36 || messageIndex===38));
                                
   return (
     <Card >
@@ -171,9 +171,26 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             className='viewInfo'
             isOpen={false}
             summary={<strong>{t<string>('Instructions: ')}</strong>}>
-              {'put help here'}
-        </Expander>
+              {messageIndex===33 && (<>
+                <h2><strong>{t<string>('Private Messaging - My Lists')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Managing Your Lists: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to Use then Click View')}<br /> 
+                {'(2) '}{t<string>('You can create New Lists or Delete existing Lists.')}<br />
+                <br />
+                {t<string>('⚠️ Please Note: To view your Lists got to your inbox.')}
+              </>)}
 
+              {messageIndex===16 && (<>
+                <strong>{t<string>('Instructions for Making a List: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br />
+                {'(2) '}{t<string>('Create an @List Name for this New List.')}<br /> 
+                {'(3) '}{t<string>('Select Private (Yes) or Public (No). ')}<br /> 
+                {'(4) '}{t<string>('Add a List description. ')}            
+                <br /><br />
+                {t<string>('⚠️ Please Note: Click Submit to execute this transaction. ')}
+              </>)}
+        </Expander>
+        <br />
         {isTest && (
           <InputAddress
           //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
@@ -217,7 +234,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />              
             </>
             )}
-            {messageIndex!=0 && !isClosed && (<>
+            {messageIndex!=0 && messageIndex!=16 && !isClosed && (<>
               <Params
               onChange={setParams}
               params={
@@ -292,7 +309,56 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 }}
                 value={_isHide}
               />
+            
+            </>)}
 
+            {messageIndex===16 && (<>
+              <LabelHelp help={t<string>('Enter your New List name.')}/>{' '}          
+              <strong>{t<string>('New List Name: ')}</strong>
+              <Input 
+                  label={_username.length>0? params[0]=_username: params[0]=''}
+                  type="text"
+                  //defaultValue={hextoString(paramToNum(displayName))}
+                  value={_username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[0]? 'blue': 'grey'}>
+                    {params[0]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+              </Input>
+
+              <br /><br />
+              <LabelHelp help={t<string>('Select Yes/No to Make this Private/Public.')}/> {' '}         
+              <strong>{t<string>('Make List Private (Yes/No): ')}</strong>
+              <br /><br />
+              <Toggle
+                className='booleantoggle'
+                label={<strong>{t<string>(boolToString(params[1] = _isHide))}</strong>}
+                onChange={() => {
+                  toggleIsHide()
+                  params[1] = !_isHide;
+                  setParams([...params]);
+                }}
+                value={_isHide}
+              />
+              <br /><br />
+              <LabelHelp help={t<string>('Enter the List description.')}/>{' '}          
+              <strong>{t<string>('List Description: ')}</strong>
+              <Input 
+                  label={_myInterest.length>0? params[2]=_myInterest: params[2]=''}
+                  type="text"
+                  //defaultValue={hextoString(paramToNum(displayName))}
+                  value={_myInterest}
+                  onChange={(e) => {
+                    setMyInterest(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[2]? 'blue': 'grey'}>
+                    {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+              </Input>
             
             </>)}
             
@@ -368,6 +434,31 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
               <SettingsDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+        {outcomes.length > 0 && messageIndex===36 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <FindListsDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+
+        {outcomes.length > 0 && messageIndex===33 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <MyListsDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
                 outcome={outcome}

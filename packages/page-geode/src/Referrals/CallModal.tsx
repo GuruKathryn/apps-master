@@ -54,6 +54,7 @@ const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 const paramToNum = (_num: number|undefined) => _num? _num : 0; 
 //const hexParamToString = (_hex: number|undefined) => _hex? hexToString((_hex).toString()): '0';
 const paramToString = (_string: string|undefined) => _string? _string : '';
+const addressToString = (_string: string|null) => _string? _string: '';
 const paramToBool = (_bool: boolean|undefined) => _bool? _bool: false;
 const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
 const refHeader: string[] = ['Make a Claim','Endorse a Claim','','Fund Program','Update Program', 'Deactivate Program', 'Activate Program', 'Claim Approval', 'Reject a Claim']
@@ -133,7 +134,15 @@ function CallModal ({ className = '', programID,
     //       {_num>0? <>{(_num/1000000000000).toString()}{' Geode'}</>: <>{'0'}</>}
     //   </>)
     // }
-
+    function showAddress(_acct: string): JSX.Element {
+      return(<>
+      {(_acct.length===48)? 
+                <><IdentityIcon value={_acct} />{' '}
+                  <AccountName value={_acct} withSidebar={true}/>
+                  {' '}    
+                </>: <>{''}</>}
+            </>)
+    }
 
   function hextoHuman(_hexIn: string): string {
     const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
@@ -372,20 +381,21 @@ function CallModal ({ className = '', programID,
 
           <LabelHelp help={'Account of user that has been referred (Child Account)'}/>{' '}    
           <strong>{t<string>('Child Account: ')}</strong><br />
-          <InputAddress
-           defaultValue={childAccountId}
-           //help={t<string>('Specify the user account to use for this contract call. And fees will be deducted from this account.')}
-           label={t<string>('Child Account')}
-           labelExtra={
-             <Available
-               label={t<string>('transferrable')}
-               params={childAccountId}
-             />
-            }
-           onChange={setChildAccountId}
-           type='account'
-           value={params[2]=childAccountId}
-        />
+          {showAddress(childAccountId ? childAccountId: '')}
+          <Input label={childAccountId? params[2]=childAccountId: params[2]=''}
+            type="text"
+            //defaultValue={hextoHuman(paramToString(title))}
+            value={childAccountId}
+            onChange={(e) => {
+              setChildAccountId(e.target.value);
+            }}
+            ><input />
+            <Label color={addressToString(childAccountId).length===48? 'blue': 'red'}>
+                    {addressToString(childAccountId).length===48? <>{'OK'}</>:<>{'Invalid'}</>}</Label>
+          </Input>
+          
+          
+          
         <LabelHelp help={'Value of amount to pass to Child Account '}/>{' '}    
         <strong>{t<string>('Value: ')}</strong>
         </>)}

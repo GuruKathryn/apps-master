@@ -227,10 +227,9 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           onChangeMessage={_setMessageIndex}
         />
       )}
-      {(messageIndex===0 || 
-        messageIndex===26 || 
-        messageIndex===27 || 
-        messageIndex===28 ||
+      {(messageIndex===0 || messageIndex===26 || 
+        messageIndex===27 || messageIndex===28 || 
+        messageIndex ===33 || messageIndex===36 ||
         messageIndex===38) && isCallOpen && contract && (
         <CallCard
           contract={contract}
