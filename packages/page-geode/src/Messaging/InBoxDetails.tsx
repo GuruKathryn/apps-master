@@ -95,6 +95,10 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
     const [isListMsg, setListMsg] = useState(false);
 
     const [count, setCount] = useState(0);
+    const [countInbox, setCountInbox] = useState(0);
+    const [countLists, setCountLists] = useState(0);
+    const [countGroups, setCountGroups] = useState(0);
+
 
 
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
@@ -219,10 +223,9 @@ function GetMessages(): JSX.Element {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>
-                {' Total InBox: '}
-                {' Total Lists: '}
-                {' Total Groups: '}
-                
+                {' Total InBox: '}{countInbox}{' '}
+                {' Total Lists: '}{countLists}{' '}
+                {' Total Groups: '}{countGroups}{' '}
               </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
@@ -242,13 +245,13 @@ function GetMessages(): JSX.Element {
                                   {setCount(count + 1)}
                                   {_makeMessage()}</>}}/>                        
                   </h2>
-
-                  <Expander 
+                  {_people.conversation.length>0 && (<>
+                    <Expander 
                     className='message'
                     isOpen={false}
                     summary={<Label size={'mini'} color='orange' circular> {'View'}</Label>}>
                   {_people.conversation.length>0 &&
-                    _people.conversation.map(_conversation => <>
+                    _people.conversation.map((_conversation, index: number) => <>
                       {timeStampToDate(_conversation.timestamp)}{' '}<br />
                       {_conversation.toAcct===from? (<>
                         <Label 
@@ -276,12 +279,13 @@ function GetMessages(): JSX.Element {
                       <br /><br />
                     </>)}
                    </Expander>
-
+                   
+                  {setCountInbox(inbox+1)}
+                  </>)}
+                  <Divider />
                 </>)
                 }
-            
             </Table.Cell>
-
           </Table.Row>
 
           <Table.Row>
@@ -291,7 +295,8 @@ function GetMessages(): JSX.Element {
                 {inBoxDetail.ok.lists.length>0 &&
                  inBoxDetail.ok.lists.map((_lists, index: number) =>
                 <>
-                  <h2>{_lists.listName && <>{'@'}{hextoHuman(_lists.listName)}{' '}</>}
+                  <h2>{_lists.listName && <>
+                    <strong>{'@'}{hextoHuman(_lists.listName)}{' '}</strong></>}
                   
                     <Badge icon='envelope' color={'blue'}
                                   onClick={()=>{<>
@@ -300,13 +305,14 @@ function GetMessages(): JSX.Element {
                                   {setCount(count + 1)}
                                   {_makeListMsg()}</>}}/>                  
                   
-                  </h2>                        
-                  <Expander 
+                  </h2>  
+                  {_lists.listMessages.length>0 && (<>
+                    <Expander 
                     className='listMessage'
                     isOpen={false}
                     summary={<Label size={'mini'} color='orange' circular> {'Messages'}</Label>}>
                     
-                    {_lists.listMessages.map(_message => <>
+                    {_lists.listMessages.map((_message, iLists: number) => <>
                       {timeStampToDate(_message.timestamp)}<br />
                       <IdentityIcon value={_message.fromAcct} />
                       {' ('}<AccountName value={_message.fromAcct} withSidebar={true}/>{') '}
@@ -325,6 +331,10 @@ function GetMessages(): JSX.Element {
                       </>)} <br /><br />
                     </>)}
                   </Expander>
+                  
+                  </>)}       
+                  {setCountLists(index+1)}   
+                  <Divider />         
                 </>)
                 }
             </Table.Cell>

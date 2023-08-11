@@ -159,8 +159,8 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
         ))}
       </Table>}
 
-      {(messageIndex===1 || messageIndex===15 ||
-        messageIndex===18 ||
+      {(messageIndex===1  || messageIndex===15 ||
+        messageIndex===18 || messageIndex===21 ||
         messageIndex===19 || messageIndex===20) 
        && isCallOpen && contract &&(
       <CallModal 

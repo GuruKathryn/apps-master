@@ -309,14 +309,14 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
               </h2>       
             </>)}
 
-            {messageIndex===15 && (<>
+            {(messageIndex===15 || messageIndex===21) && (<>
               <h2>
               <LabelHelp help={t<string>('Name of the List to Send a Message.')}/>{' '}          
               <strong>{'Send Message To: '}{hexToHuman(username)}</strong></h2>
               <br />
               <LabelHelp help={t<string>('This is the List Id for the List to Send a Message.')}/>{' '}          
               <strong>{t<string>('List Id: ')}</strong>{' '}
-              {params[0] = toAcct}
+              {messageIndex===15? params[0] = toAcct: params[0] = messageId}
               <br /><br />
               <LabelHelp help={t<string>('Enter your message here..')}/>{' '}          
               <strong>{t<string>('Message: ')}</strong>

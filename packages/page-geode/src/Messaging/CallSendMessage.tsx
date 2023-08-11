@@ -31,10 +31,10 @@ function CallSendMessage ({ className = '', onClear, messageId, fromAcct, toAcct
     function SendMessage(): JSX.Element {
     return(
         <div>
-          {(callIndex===1 || callIndex===15 ||
-            callIndex ===16 ||
+          {(callIndex===1  || callIndex===15 ||
+            callIndex===16 ||
             callIndex===18 || callIndex===19 ||
-            callIndex===20 )? <>
+            callIndex===20 || callIndex===21 )? <>
             <ContractsModal
                 toAcct={toAcct}
                 messageId={messageId}

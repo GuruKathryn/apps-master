@@ -49,7 +49,7 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
     //const [isBlockAcct, toggleBlockAcct] = useToggle();
     //const [isUnBlockAcct, toggleUnBlockAcct] = useToggle();
     //const [isDeleteMsg, toggleDeleteMsg] = useToggle();
-    const deployApp: boolean = true;
+    const deployApp: boolean = false;
 
 
     const refTitle: string[] = 
@@ -123,6 +123,7 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
           <Button
             icon={(isLists) ? 'minus' : 'plus'}
             label={t('Lists')}
+            isDisabled={isMyLists || isMyPaidLists || isSubLists || isFindLists }
             onClick={toggleLists}>
           </Button>    
           </>
@@ -202,6 +203,18 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
           contracts={allContracts}
           updated={codeTrigger}
           initMessageIndex={33}
+        />)}
+        {isMyPaidLists && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={34}
+        />)}
+        {isSubLists && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={35}
         />)}
         {isInBox && (
           <ContractsTable

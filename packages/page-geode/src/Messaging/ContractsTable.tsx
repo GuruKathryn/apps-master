@@ -219,7 +219,8 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
         messageIndex===4 ||
         messageIndex===5 ||
         messageIndex===6 || 
-        messageIndex===8) && isCallOpen && contract && (
+        messageIndex===8 ||
+        messageIndex===22) && isCallOpen && contract && (
         <CallSubCard
           contract={contract}
           messageIndex={messageIndex}
@@ -227,10 +228,12 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
           onChangeMessage={_setMessageIndex}
         />
       )}
-      {(messageIndex===0 || messageIndex===26 || 
+      {(messageIndex===0  || messageIndex===26 || 
         messageIndex===27 || messageIndex===28 || 
-        messageIndex ===33 || messageIndex===36 ||
-        messageIndex===38) && isCallOpen && contract && (
+        messageIndex===33 || messageIndex===36 ||
+        messageIndex===35 || messageIndex===34 || 
+        messageIndex===38) 
+        && isCallOpen && contract && (
         <CallCard
           contract={contract}
           messageIndex={messageIndex}

@@ -10,11 +10,12 @@ import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Badge, Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Divider, Table, Label, Image } from 'semantic-ui-react'
-import CopyInline from '../shared/CopyInline';
+//import CopyInline from '../shared/CopyInline';
 import AccountHeader from '../shared/AccountHeader';
 import { useToggle } from '@polkadot/react-hooks';
 
 import CallSendMessage from './CallSendMessage';
+//import SearchDetails from '../Profile/SearchDetails';
 
 interface Props {
     className?: string;
@@ -22,71 +23,61 @@ interface Props {
     outcome: CallResult;
   }
   
-  type ListsObj = {
+  type ListObj = {
     listId: string,
     owner: string,
     listName: string,
-    hideFromSearch: boolean,
+    totalFee: number,
     description: string,
     listAccounts: string[]
   }
 
-  type ListsDetail = {
-  ok: ListsObj[]
+  type SearchDetail = {
+  ok: ListObj[];
   }
   
-function MyListsDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
-//    const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
+function MyPaidListsDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     const { t } = useTranslation();
-//    const searchWords: string[] = JSONprohibited;
 
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
-    const listsDetail: ListsDetail = Object.create(_Obj);
+    const searchDetail: SearchDetail = Object.create(_Obj);
 
-    const [isMakeList, toggleMakeList] = useToggle(false);
-    // const [isSearchAccount, toggleSearchAccount] = useToggle(false);
-    // const [_toAcct, setToAcct] = useState('');
-
-    //const [isSendToList, setSendToList] = useState(false);
-    const [isDeleteList, setDeleteList] = useState(false);
-    const [isSendMsg, setSendMsg] = useState(false);
+    const [isSendMessage, setSendMessage] = useState(false);
+//    const [isUnsubscribe, setUnsubscribe] = useState(false);
 
     const [_listId, setListId] = useState<string>('');
     const [_listName, setListName] = useState<string>('');
 
+    const [isMakeList, setMakeList] = useToggle(false);
+    const [isDeleteList, setDeleteList] = useToggle(false);
+    const [isFindList, setFindList] = useToggle(false);
+    const [isStats, setStats] = useToggle(false);
+
     const [count, setCount] = useState(0);
     const [listCount, setListCount] = useState(0);
 
+    //const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
+
     const _reset = useCallback(
-      () => {setDeleteList(false);
-             setSendMsg(false);
+      () => {setSendMessage(false);
             },
       []
     )
 
-    const _deleteList = useCallback(
-        () => {setDeleteList(true);
-               setSendMsg(false);
+    const _sendMessage = useCallback(
+        () => {setSendMessage(true);
               },
         []
       )
-
-      const _sendList = useCallback(
-        () => {setDeleteList(false);
-               setSendMsg(true);
-              },
-        []
-      )
-
 
     function hextoHuman(_hexIn: string): string {
       return((isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '')
     }
     
-    function booltoPrivate(_bool: boolean): string {
-      return(_bool? t<string>('Private'): t<string>('Public'))
-    }
+    // function booltoPrivate(_bool: boolean): string {
+    //   return(_bool? t<string>('Private'): t<string>('Public'))
+    // }
 
     function ListAccount(): JSX.Element {
       return(
@@ -97,14 +88,32 @@ function MyListsDetails ({ className = '', onClear, outcome: { from, message, ou
               <Button
                   icon='times'
                   label={t<string>(' Close ')}
+                  isDisabled={isMakeList || isDeleteList || isFindList || isStats }
                   onClick={onClear}
                 />
               <Button
                   icon={isMakeList? 'minus': 'plus'}
-                  label={t<string>(' Make a New List')}
-                  onClick={()=> {<>{toggleMakeList()}
-                                   {_reset()}
-                                   </>}}
+                  label={t<string>(' Make A Paid List ')}
+                  isDisabled={isDeleteList || isFindList || isStats }
+                  onClick={setMakeList}
+                />
+              <Button
+                  icon={isDeleteList? 'minus': 'plus'}
+                  label={t<string>(' Delete A Paid List ')}
+                  isDisabled={isMakeList || isFindList || isStats }
+                  onClick={setDeleteList}
+                />
+              <Button
+                  icon={isFindList? 'minus': 'plus'}
+                  label={t<string>(' Find Account ')}
+                  isDisabled={isMakeList || isDeleteList || isStats }
+                  onClick={setFindList}
+                />
+              <Button
+                  icon={isStats? 'minus': 'plus'}
+                  label={t<string>(' Statistics ')}
+                  isDisabled={isMakeList || isDeleteList || isFindList }
+                  onClick={setStats}
                 />
               </Table.Cell>
               </Table.Row>
@@ -121,7 +130,7 @@ function GetLists(): JSX.Element {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>
-                {t<string>(' Total Lists: ')} {listCount}               
+                {t<string>(' Total Number of Lists: ')} {listCount} {' '}    
               </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
@@ -130,9 +139,8 @@ function GetLists(): JSX.Element {
             <Table.Cell verticalAlign='top'>
             <h3><LabelHelp help={t<string>(' Your Lists ')} />
                 <strong>{t<string>('Your Lists: ')}</strong></h3> 
-                
-                {listsDetail.ok.length>0 &&  
-                  listsDetail.ok.map((_lists, index: number)=> <>
+                {searchDetail.ok.length>0 &&  
+                  searchDetail.ok.map((_lists, index: number)=> <>
                   <h2><strong>{'@'}{hextoHuman(_lists.listName)}</strong>
                   {' ('}<AccountName value={_lists.owner} withSidebar={true}/>{') '}                      
                   </h2>
@@ -140,10 +148,10 @@ function GetLists(): JSX.Element {
                   {_lists.listId}<br />
                   <strong>{t<string>('Description: ')}</strong>{}
                   {hextoHuman(_lists.description)}<br />
-                  <strong>{t<string>('List Type: ')}</strong>
-                  {booltoPrivate(_lists.hideFromSearch)}
+                  <strong>{t<string>('Total Fee: ')}</strong>
+                  {_lists.totalFee}
                   <br /><br />
-                <Expander 
+                  <Expander 
                     className='listAccounts'
                     isOpen={false}
                     summary={<Label size={'small'} color='orange' circular> {'Accounts'}</Label>}>
@@ -154,20 +162,15 @@ function GetLists(): JSX.Element {
                        {' ('}<AccountName value={_listAccounts} withSidebar={true}/>{') '}
                     </>)}
                 </Expander><br /><br />
+
                 {setListCount(index+1)}
                 <Label color='orange' as='a'
-                onClick={()=>{<>
-                        {setListId(_lists.listId)}
-                        {setListName(_lists.listName)}
-                        {setCount(count + 1)}
-                        {_sendList()}</>}}>{'Send to List'}
-                </Label>
-                <Label color='orange' as='a'
-                onClick={()=>{<>
-                        {setListId(_lists.listId)}
-                        {setListName(_lists.listName)}
-                        {setCount(count + 1)}
-                        {_deleteList()}</>}}>{'Delete a List'}
+                       onClick={()=>{<>
+                         {setListId(_lists.listId)}
+                         {setListName(_lists.listName)}
+                         {setCount(count + 1)}
+                         {_sendMessage()}</>}}
+                >{'Send Message'}
                 </Label>
                 <br /><br />
                 </>)
@@ -196,28 +199,26 @@ function GetLists(): JSX.Element {
             timeDate={when} 
             callFrom={2}/>
       <ListAccount />
-      {!isSendMsg && !isDeleteList && isMakeList && (<>
+      {isSendMessage && 
+      !isMakeList && !isDeleteList &&
+      !isFindList && !isStats && (<>
         <CallSendMessage
-                callIndex={16}
-                onReset={() => _reset()}
-            />      
-        </>)}
-      {!isSendMsg && !isMakeList && isDeleteList && (<>
-        <CallSendMessage
-                callIndex={18}
+                callIndex={21}
                 messageId={_listId}
                 username={_listName}
                 onReset={() => _reset()}
-        />
-      </>)}
-      {isSendMsg && !isMakeList && !isDeleteList && (<>
+            />      
+        </>)}
+        {isMakeList && !isDeleteList &&
+         !isFindList && !isStats && (<>
         <CallSendMessage
-                callIndex={15}
-                toAcct={_listId}
-                username={_listName}
+                callIndex={22}
+                //messageId={_listId}
+                //username={_listName}
                 onReset={() => _reset()}
-        />
-      </>)}
+            />      
+        </>)}
+
       <GetLists />
     </Card>
     </StyledDiv>
@@ -232,4 +233,4 @@ const StyledDiv = styled.div`
     margin: 0.25rem 0.5rem;
   }
 `;
-export default React.memo(MyListsDetails);
+export default React.memo(MyPaidListsDetails);

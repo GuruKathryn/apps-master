@@ -33,6 +33,8 @@ import { getCallMessageOptions } from '../shared/util';
 import InBoxDetails from './InBoxDetails';
 import MyListsDetails from './MyListsDetails';
 import FindListsDetails from './FindListsDetails';
+import SubListsDetails from './SubListsDetails';
+import MyPaidListsDetails from './MyPaidListsDetails';
 
 interface Props {
   className?: string;
@@ -159,6 +161,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));      
   const isClosed = (isCalled && (messageIndex === 26 || messageIndex === 27 || 
                                  messageIndex===28 || messageIndex===33 ||
+                                 messageIndex===35 || messageIndex===34 ||
                                  messageIndex===36 || messageIndex===38));
                                
   return (
@@ -454,6 +457,29 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </div>
         )}
 
+        {outcomes.length > 0 && messageIndex===35 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <SubListsDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+        {outcomes.length > 0 && messageIndex===34 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <MyPaidListsDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
 
         {outcomes.length > 0 && messageIndex===33 && (
             <div>
