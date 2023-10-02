@@ -7,23 +7,19 @@ import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
-//import type { CallResult } from '../shared/types';
-import CopyInline from '../shared/CopyInline';
 
-
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Expander, LabelHelp, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
+import { Expander, LabelHelp, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
-import { isHex, stringToHex, hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
+import { isHex, hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
 
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
 import { getCallMessageOptions } from '../shared/util';
-import { toAddress } from '@polkadot/react-components/util';
 
 interface Props {
   className?: string;
@@ -49,38 +45,32 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
   const [estimatedWeight, setEstimatedWeight] = useState<BN | null>(null);
   const [estimatedWeightV2, setEstimatedWeightV2] = useState<WeightV2 | null>(null);
   const [value, isValueValid, setValue] = useFormField<BN>(BN_ZERO);
-//  const [outcomes, setOutcomes] = useState<CallResult[]>([]);
   const [execTx, setExecTx] = useState<SubmittableExtrinsic<'promise'> | null>(null);
   const [params, setParams] = useState<unknown[]>([]);
-//  const _defaultRecipient ='5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc';
-//  const [recipientValue, setRecipientValue] = useAccountId(_defaultRecipient);
   const [recipientValue, setRecipientValue] = useAccountId(toAcct);
   const [messageValue, setMessageValue] = useState<string>('');
-  const [fileLinkValue, setFileLinkValue] = useState<string>('')
-  
+  const [fileLinkValue, setFileLinkValue] = useState<string>('');
+  const [_isHide, toggleIsHide] = useToggle(false);
+
   const [isViaCall, toggleViaCall] = useToggle();
 
   const paramToString = (_string: string|undefined) => _string? _string : '';
   const hexToHuman =(_string: string|undefined) => isHex(_string)? hexToString(_string): '';
+  const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
 
 
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
-  const refHeader: string[] = ['','Send a Message','','','Disallow Account','','Unblock Account','','','',
-                                '','','','','','Send a Message To a List','','','Delete a List','Join a List', 'Unsubscribe'];
-  //const zeroMessageId: string = '0x0000000000000000000000000000000000000000000000000000000000000000';
-  //const isReply: boolean = (messageId===zeroMessageId)? false: true; 
+  const refHeader: string[] = 
+  ['','Send a Message','Send a Message to a Group','','Disallow Account',
+   '','Unblock Account','Delete a Message','','',
+   'Join a Group','Delete Sent Messages from a Group','','Leave a Group','Update Group Settings',
+   'Send a Message To a List','','','Delete a List','Join a List', 'Unsubscribe', 
+   'Send a Message To A Paid List','','Delete a Paid List'];
   // NOTE!:
-
   // for test
   const isShow: boolean = false;
-  //const isShowParams: boolean = true;
-
-  // function hextoHuman(_hexIn: string): string {
-  //   const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
-  //   return(_Out)
-  // }
 
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -129,38 +119,7 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
       });
   }, [api, accountId, contract, message, dbParams, dbValue, weight.isWeightV2]);
 
-  // const _onSubmitRpc = useCallback(
-  //   (): void => {
-  //     if (!accountId || !message || !value || !weight) {
-  //       return;
-  //     }
-
-  //     contract
-  //       .query[message.method](
-  //         accountId,
-  //         { gasLimit: weight.isWeightV2 ? weight.weightV2 : weight.isEmpty ? -1 : weight.weight, storageDepositLimit: null, value: message.isPayable ? value : 0 },
-  //         ...params
-  //       )
-  //       .then((result): void => {
-  //         setOutcomes([{
-  //           ...result,
-  //           from: accountId,
-  //           message,
-  //           params,
-  //           when: new Date()
-  //         }, ...outcomes]);
-  //         onCallResult && onCallResult(messageIndex, result);
-  //       })
-  //       .catch((error): void => {
-  //         console.error(error);
-  //         onCallResult && onCallResult(messageIndex);
-  //       });
-  //   },
-  //   [accountId, contract.query, message, messageIndex, onCallResult, outcomes, params, value, weight]
-  // );
-
   const isValid = !!(accountId && weight.isValid && isValueValid);
-  //const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));
 
   return (
     <>
@@ -180,10 +139,21 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
           <h2><strong>{t<string>('Private Messaging - Send a Message')}</strong></h2><br />
             <strong>{t<string>('Instructions for Sending a Message: ')}</strong><br />
             {'(1) '}{t<string>('Select the From Account')}<br /> 
-            {'(2) '}{t<string>('Select the To Account')}<br />
-            {'(3) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            {'(2) '}{t<string>('Select the To Account (Account to receive your message.)')}<br />
+            {'(3) '}{t<string>('Enter a message.')}<br />
+            {'(4) '}{t<string>('You can add a File Link if you wish or leave blank.')}<br />           
+            {'(5) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
             {t<string>('⚠️ Please Note: Go to Allowed Accounts to add accounts to your message list.')}
+          </>)}
+          {messageIndex===2 && (<>
+          <h2><strong>{t<string>('Private Messaging - Send a Message to a Group')}</strong></h2><br />
+            <strong>{t<string>('Instructions for Sending a Message to a Group: ')}</strong><br />
+            {'(1) '}{t<string>('Select the From Account')}<br /> 
+            {'(2) '}{t<string>('Enter a message text to send to the Group')}<br />
+            {'(3) '}{t<string>('Add a file URL')}<br />
+            {'(4) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
           </>)}
           {messageIndex===4 && (<>
           <h2><strong>{t<string>('Private Messaging - Disallow an Account')}</strong></h2><br />
@@ -203,11 +173,53 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             <br /><br />
             {t<string>('⚠️ NOTE: You can Block accounts by clicking the Block button.')}
           </>)}
+          {messageIndex===7 && (<>
+          <h2><strong>{t<string>('Private Messaging - Delete a Message')}</strong></h2><br />
+            <strong>{t<string>('Instructions: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+            {t<string>('⚠️ NOTE: This will permantely delete this message.')}
+          </>)}
+          {messageIndex===10 && (<>
+          <h2><strong>{t<string>('Private Messaging - Join a Group')}</strong></h2><br />
+            <strong>{t<string>('Instructions: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+          </>)}
+          {messageIndex===11 && (<>
+          <h2><strong>{t<string>('Private Messaging - Delete messages sent to a Group')}</strong></h2><br />
+            <strong>{t<string>('Instructions: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+            {t<string>('⚠️ NOTE: This will permanently delete ALL your messages to this Group.')}
+          </>)}
+          {messageIndex===13 && (<>
+          <h2><strong>{t<string>('Private Messaging - Leave a Group')}</strong></h2><br />
+            <strong>{t<string>('Instructions: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+          </>)}
+          {messageIndex===14 && (<>
+          <h2><strong>{t<string>('Private Messaging - Update Group Settings')}</strong></h2><br />
+            <strong>{t<string>('Instructions: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
+            {'(2) '}{t<string>('Update the Group Name')}<br /> 
+            {'(3) '}{t<string>('Select YES if this Group is Private')}<br /> 
+            {'(4) '}{t<string>('Update the Group description')}<br /> 
+            {'(5) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+          </>)}
           {messageIndex===15 && (<>
           <h2><strong>{t<string>('Private Messaging - Send a Message to a List')}</strong></h2><br />
             <strong>{t<string>('Instructions: ')}</strong><br />
             {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
-            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            {'(2) '}{t<string>('Enter a message to send.')}<br /> 
+            {'(3) '}{t<string>('You can send a file link or leave this field blank.')}<br /> 
+            {'(4) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
           </>)}
           {messageIndex===18 && (<>
@@ -221,7 +233,7 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
           {messageIndex===19 && (<>
           <h2><strong>{t<string>('Private Messaging - Join a List')}</strong></h2><br />
             <strong>{t<string>('Instructions: ')}</strong><br />
-            {'(1) '}{t<string>('Select the your Account to use (call from account)')}<br /> 
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
             {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
             {t<string>('⚠️ NOTE: This will add you to this List and all its messages.')}
@@ -229,16 +241,35 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
           {messageIndex===20 && (<>
           <h2><strong>{t<string>('Private Messaging - Unsubscribe from a List')}</strong></h2><br />
             <strong>{t<string>('Instructions: ')}</strong><br />
-            {'(1) '}{t<string>('Select the your Account to use (call from account)')}<br /> 
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
             {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
             {t<string>('⚠️ NOTE: This will unsubscribe you from the List and all its messages.')}
+          </>)}
+          {messageIndex===21 && (<>
+          <h2><strong>{t<string>('Private Messaging - Send a Message to a PAID List')}</strong></h2><br />
+            <strong>{t<string>('Instructions: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
+            {'(2) '}{t<string>('Enter a message to send to the list.')}<br />
+            {'(3) '}{t<string>('Add a File URL for more information.')}<br />
+            {'(4) '}{t<string>('Enter a Value that will be paid out to the accounts that will view this message.')}<br />
+            {t<string>('⚠️ NOTE: The value must be great than or equal to the Total Fee listed for the Paid List.')}<br />
+            {'(5) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+            {t<string>('⚠️ NOTE: This will send a message to all Accounts in the Paid List.')}
+          </>)}
+          {messageIndex===23 && (<>
+          <h2><strong>{t<string>('Private Messaging - Delete a PAID List')}</strong></h2><br />
+            <strong>{t<string>('Instructions: ')}</strong><br />
+            {'(1) '}{t<string>('Select the Account to use (call from account)')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+            {t<string>('⚠️ NOTE: This will delete the Paid List and all its messages.')}
           </>)}
         </Expander>
         <br />
         {isShow && (<>
           <InputAddress
-          //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
           isDisabled
           label={t<string>('contract to use')}
           type='contract'
@@ -248,7 +279,6 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
 
         <InputAddress
           defaultValue={accountId}
-          //help={t<string>('Specify the user account to use for this contract call. And fees will be deducted from this account.')}
           label={t<string>('call from account')}
           labelExtra={
             <Available
@@ -265,7 +295,6 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             {isShow && (<>
               <Dropdown
               defaultValue={messageIndex}
-              //help={t<string>('The message to send to this contract. Parameters are adjusted based on the ABI provided.')}
               isError={message === null}
               label={t<string>('message to send')}
               onChange={onChangeMessage}
@@ -278,12 +307,33 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
               registry={contract.abi.registry}
             />    
             </>)}  
-
-            {messageIndex===20 && (<>
+            {messageIndex===25 && <>
               <h2>
-              <LabelHelp help={t<string>('Name of the List to Unsubscribe From.')}/>{' '}          
-              <strong>{'Unsubscribe from: '}{hexToHuman(username)}</strong><br /><br />
-              <LabelHelp help={t<string>('This is the List Id for the List to Unsubscribe.')}/>{' '}          
+              <LabelHelp help={t<string>('Name of the List to UnBlock.')}/>{' '}          
+                <strong>{t<string>('UnBlock a List:')}</strong><br /><br />
+                <strong>{t<string>('List Id: ')}</strong>{' '}
+                {params[0] = toAcct}<br />  
+              </h2>
+            </>}
+            {messageIndex===24 && <>
+              <h2>
+              <LabelHelp help={t<string>('Name of the List to Block.')}/>{' '}          
+                <strong>{t<string>('Block List: ')}{hexToHuman(username)}</strong><br /><br />
+                <strong>{t<string>('List Id: ')}</strong>{' '}
+                {params[0] = toAcct}<br />  
+              </h2>
+            </>}
+            {(messageIndex===20 || messageIndex===23) &&(<>
+              <h2>
+              {messageIndex===20? <>
+                <LabelHelp help={t<string>('Name of the List to Unsubscribe From.')}/>{' '}          
+                <strong>{t<string>('Unsubscribe from: ')}{hexToHuman(username)}</strong><br /><br />
+                <LabelHelp help={t<string>('This is the List Id for the List to Unsubscribe.')}/>{' '}          
+              </>: <>
+                <LabelHelp help={t<string>('Name of the Paid List to Delete.')}/>{' '}          
+                <strong>{t<string>('Delete Paid List: ')}{hexToHuman(username)}</strong><br /><br />
+                <LabelHelp help={t<string>('This is the List Id for the List to Delete.')}/>{' '}          
+              </>}
               <strong>{t<string>('List Id: ')}</strong>{' '}
               {params[0] = messageId}<br />  
               </h2>       
@@ -292,7 +342,7 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             {messageIndex===19 && (<>
               <h2>
               <LabelHelp help={t<string>('Name of the List to Join.')}/>{' '}          
-              <strong>{'Join: '}{hexToHuman(username)}</strong><br /><br />
+              <strong>{t<string>('Join: ')}{hexToHuman(username)}</strong><br /><br />
               <LabelHelp help={t<string>('This is the List Id for the List to Join.')}/>{' '}          
               <strong>{t<string>('List Id: ')}</strong>{' '}
               {params[0] = messageId}
@@ -302,7 +352,7 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             {messageIndex===18 && (<>
               <h2>
               <LabelHelp help={t<string>('Name of the List to Delete.')}/>{' '}          
-              <strong>{'Delete: '}{hexToHuman(username)}</strong><br /><br />
+              <strong>{t<string>('Delete: ')}{hexToHuman(username)}</strong><br /><br />
               <LabelHelp help={t<string>('This is the List Id for the List to Delete.')}/>{' '}          
               <strong>{t<string>('List Id: ')}</strong>{' '}
               {params[0] = messageId}
@@ -312,7 +362,8 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             {(messageIndex===15 || messageIndex===21) && (<>
               <h2>
               <LabelHelp help={t<string>('Name of the List to Send a Message.')}/>{' '}          
-              <strong>{'Send Message To: '}{hexToHuman(username)}</strong></h2>
+              <strong>{t<string>('Send Message To: ')}{hexToHuman(username)}</strong></h2>
+              <h3><strong>{t<string>('⚠️ PLEASE NOTE: You can only send messages to Lists that you created and own.')}</strong></h3>
               <br />
               <LabelHelp help={t<string>('This is the List Id for the List to Send a Message.')}/>{' '}          
               <strong>{t<string>('List Id: ')}</strong>{' '}
@@ -323,7 +374,6 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
               <Input 
                 label={messageValue? params[1]=messageValue: params[1]=''}
                 type="text"
-                //defaultValue={''}
                 value={messageValue}
                 onChange={(e) => {
                   setMessageValue(e.target.value);
@@ -331,7 +381,7 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
                 }}
               ><input />
               <Label color={params[1]? 'blue': 'grey'}>
-                    {params[1]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+                    {params[1]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
               </Input>
               <LabelHelp help={t<string>('Enter a link to a file.')}/>{' '}          
               <strong>{t<string>('File Link: ')}</strong>
@@ -339,18 +389,148 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
                 label={fileLinkValue? params[2]=fileLinkValue: params[2]=''}
                 type="text"
                 value={fileLinkValue}
-                //defaultValue={''}
                 onChange={(e) => {
                   setFileLinkValue(e.target.value);
                   setParams([...params]);
                 }}
                 ><input />
                 <Label color={params[2]? 'blue': 'grey'}>
-                        {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+                        {params[2]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
               </Input>            
-
-
             </>)}
+
+            {messageIndex===14 && (<>
+              <h2><strong>{t<string>('Group: ')}{hexToHuman(username)}</strong>{' '}</h2>
+              <strong>{t<string>('Group Id: ')}</strong>{' '}
+              {params[0] = messageId}
+              <br /><br />
+              <LabelHelp help={t<string>('Enter your Updated Group name.')}/>{' '}          
+              <strong>{t<string>(' Group Name: ')}</strong>
+              <Input 
+                label={messageValue? params[1]=messageValue: params[1]=''}
+                type="text"
+                value={messageValue}
+                onChange={(e) => {
+                  setMessageValue(e.target.value);
+                  setParams([...params]);
+                }}
+              ><input />
+              <Label color={params[1]? 'blue': 'grey'}>
+                    {params[1]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
+              </Input>
+
+              <br /><br />
+              <LabelHelp help={t<string>('Select Yes/No to Make this Group Private/Public.')}/> {' '}         
+              <strong>{t<string>('Make Group Private (Yes/No): ')}</strong>
+              <br /><br />
+              <Toggle
+                className='booleantoggle'
+                label={<strong>{t<string>(boolToString(params[2] = _isHide))}</strong>}
+                onChange={() => {
+                  toggleIsHide()
+                  params[2] = !_isHide;
+                  setParams([...params]);
+                }}
+                value={_isHide}
+              />
+              <br /><br />
+              <LabelHelp help={t<string>('Enter the Group description.')}/>{' '}          
+              <strong>{t<string>('Group Description: ')}</strong>
+              <Input 
+                label={fileLinkValue? params[3]=fileLinkValue: params[3]=''}
+                type="text"
+                value={fileLinkValue}
+                onChange={(e) => {
+                  setFileLinkValue(e.target.value);
+                  setParams([...params]);
+                }}
+                ><input />
+                <Label color={params[3]? 'blue': 'grey'}>
+                        {params[3]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
+              </Input>            
+              <br /><br />            
+            </>)}
+
+            {messageIndex===13 && (<>
+              <h2>
+              <LabelHelp help={t<string>('Name of the Group to Leave.')}/>{' '}          
+              <strong>{t<string>('Leave Group: ')}{hexToHuman(username)}</strong><br /><br />
+              <LabelHelp help={t<string>('This is the Group Id for the Group to Leave.')}/>{' '}          
+              <strong>{t<string>('Group Id: ')}</strong>{' '}
+              {params[0] = messageId}
+              </h2>       
+            </>)}
+
+
+            {messageIndex===11 && (<>
+              <h2>
+              <LabelHelp help={t<string>('Name of the Group to Delete your Messages from.')}/>{' '}          
+              <strong>{t<string>('Delete Messages to: ')}{hexToHuman(username)}</strong><br /><br />
+              <LabelHelp help={t<string>('This is the Group Id for the Group to Delete your messages from.')}/>{' '}          
+              <strong>{t<string>('Group Id: ')}</strong>{' '}
+              {params[0] = messageId}
+              </h2>       
+            </>)}
+
+            {messageIndex===10 && (<>
+              <h2>
+              <LabelHelp help={t<string>('Name of the Group to Join.')}/>{' '}          
+              <strong>{t<string>('Join Group: ')}{hexToHuman(username)}</strong><br /><br />
+              <LabelHelp help={t<string>('This is the Group Id for the Group to Join.')}/>{' '}          
+              <strong>{t<string>('Group Id: ')}</strong>{' '}
+              {params[0] = messageId}
+              </h2>       
+            </>)}
+
+            {messageIndex===7 && (<>
+              <h2>
+              <LabelHelp help={t<string>('Delete this message.')}/>{' '}          
+              <strong>{t<string>('Delete Message: ')}{hexToHuman(username)}</strong><br /><br />
+              <LabelHelp help={t<string>('This is the Message Id for the Message to Delete.')}/>{' '}          
+              <strong>{t<string>('Message Id: ')}</strong>{' '}
+              {params[0] = messageId}
+              </h2>       
+            </>)}
+
+            {messageIndex===2 && (<>
+              <h2>
+              <LabelHelp help={t<string>('Name of the Group to Send a Message.')}/>{' '}          
+              <strong>{t<string>('Send Message To: ')}{hexToHuman(username)}</strong></h2>
+              <br />
+              <LabelHelp help={t<string>('This is the Group Id for the Group to Send a Message.')}/>{' '}          
+              <strong>{t<string>('Group Id: ')}</strong>{' '}
+              {messageId? params[0] = messageId: params[0] = toAcct}
+              <br /><br />
+              <LabelHelp help={t<string>('Enter your message here..')}/>{' '}          
+              <strong>{t<string>('Message: ')}</strong>
+              <Input 
+                label={messageValue? params[1]=messageValue: params[1]=''}
+                type="text"
+                value={messageValue}
+                onChange={(e) => {
+                  setMessageValue(e.target.value);
+                  setParams([...params]);
+                }}
+              ><input />
+              <Label color={params[1]? 'blue': 'grey'}>
+                    {params[1]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
+              </Input>
+              <LabelHelp help={t<string>('Enter a link to a file.')}/>{' '}          
+              <strong>{t<string>('File Link: ')}</strong>
+              <Input 
+                label={fileLinkValue? params[2]=fileLinkValue: params[2]=''}
+                type="text"
+                value={fileLinkValue}
+                onChange={(e) => {
+                  setFileLinkValue(e.target.value);
+                  setParams([...params]);
+                }}
+                ><input />
+                <Label color={params[2]? 'blue': 'grey'}>
+                        {params[2]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
+              </Input>            
+            </>)}
+
 
 
             {messageIndex===1 && (<>
@@ -377,7 +557,6 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
               <Input 
                 label={messageValue? params[1]=messageValue: params[1]=''}
                 type="text"
-                //defaultValue={''}
                 value={messageValue}
                 onChange={(e) => {
                   setMessageValue(e.target.value);
@@ -385,7 +564,7 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
                 }}
               ><input />
               <Label color={params[1]? 'blue': 'grey'}>
-                    {params[1]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+                    {params[1]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
               </Input>
 
           <LabelHelp help={t<string>('Enter a link to a file.')}/>{' '}          
@@ -394,14 +573,13 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             label={fileLinkValue? params[2]=fileLinkValue: params[2]=''}
             type="text"
             value={fileLinkValue}
-            //defaultValue={''}
             onChange={(e) => {
               setFileLinkValue(e.target.value);
               setParams([...params]);
             }}
             ><input />
             <Label color={params[2]? 'blue': 'grey'}>
-                    {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+                    {params[2]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
           </Input>            
             </>)}      
         </>
@@ -409,7 +587,6 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
 
         {message.isPayable && (
           <InputBalance
-            //help={t<string>('The allotted value for this contract, i.e. the amount transferred to the contract as part of this call.')}
             isError={!isValueValid}
             isZeroable
             label={t<string>('value')}

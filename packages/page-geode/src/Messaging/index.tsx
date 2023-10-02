@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-//import React, { useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -15,7 +14,6 @@ import { useContracts } from '../useContracts';
 import ContractsTable from './ContractsTable';
 
 import Summary from './Summary';
-//import Details from './Details';
 
 interface Props {
     className?: string;
@@ -25,31 +23,31 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
     const { t } = useTranslation();
     // main_menus
     const [isInBox, toggleInBox] = useToggle(false);
+    const [isMyInbox, toggleMyInBox] = useToggle(false);
+    const [isAcct, toggleAcct] = useToggle(false);
+    const [isKeyword, toggleKeyword] = useToggle(false);
+
     const [isPaidInBox, togglePaidInBox] = useToggle(false);
     const [isUpdate, toggleUpdate] = useToggle(false);
     const [isShowUpdate, toggleShowUpdate] = useToggle(false);
     const [isUpdateUpdate, toggleUpdateUpdate] = useToggle(false);
     const [isAllowedAccount, toggleAllowedAccount] = useToggle();
+
+    const [isGroups, toggleGroups] = useToggle(false);
     const [isMyGroup, toggleMyGroup] = useToggle();
+    const [isFindGroups, toggleFindGroups] = useToggle(false);
+    const [isJoinGroups, toggleJoinGroups] = useToggle(false);
+    const [isLeaveGroups, toggleLeaveGroups] = useToggle();
+
     const [isLists, toggleLists] = useToggle();
     const [isMyLists, toggleMyLists] = useToggle();
     const [isMyPaidLists, toggleMyPaidLists] = useToggle();
     const [isSubLists, toggleSubLists] = useToggle();
     const [isFindLists, toggleFindLists] = useToggle(); 
-
-    // sub_menus_Inbox
-    //const [isSearchKeyword, toggleSearchKeyword] = useToggle();
-    //const [isSearchAccount, toggleSearchAccount] = useToggle();
-    // sub_menu_Paid_Inbox
-    //const [isBlockList, toggleBlockList] = useToggle();
-    //const [isUnBlockList, toggleUnBlockList] = useToggle();
-    // sub_menu_Allowed_Account
-    //const [isAddAcct, toggleAddAcct] = useToggle();
-    //const [isRemoveAcct, toggleRemoveAcct] = useToggle();
-    //const [isBlockAcct, toggleBlockAcct] = useToggle();
-    //const [isUnBlockAcct, toggleUnBlockAcct] = useToggle();
-    //const [isDeleteMsg, toggleDeleteMsg] = useToggle();
-    const deployApp: boolean = false;
+    const [isFindAccts, toggleFindAccts] = useToggle();
+    const [isGetStats, toggleGetStats] = useToggle();
+    // set to TRUE to deploy this app
+    const deployApp: boolean = true;
 
 
     const refTitle: string[] = 
@@ -72,15 +70,16 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
             <Card>
             {!deployApp && (<><strong>{'Coming Soon!'}</strong></>)}
 
-        {deployApp && !isLists && !isMyGroup && !isAllowedAccount && !isPaidInBox && !isUpdate && (
+        {deployApp && !isLists && !isGroups && !isAllowedAccount && !isPaidInBox && !isUpdate && (
         <><Button
                 icon={(isInBox) ? 'minus' : 'plus'}
                 label={t<string>('Inbox')}
+                isDisabled={isMyInbox || isKeyword || isAcct  }
                 onClick={toggleInBox}>
           </Button>
           </>
         )}
-        {deployApp && !isLists && !isMyGroup && !isAllowedAccount && !isInBox && !isUpdate && (
+        {deployApp && !isLists && !isGroups && !isAllowedAccount && !isInBox && !isUpdate && (
           <>
               <Button
                 icon={(isPaidInBox) ? 'minus' : 'plus'}
@@ -89,16 +88,17 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
               </Button>    
           </>
         )}
-        {deployApp && !isLists && !isMyGroup && !isAllowedAccount && !isInBox && !isPaidInBox && (
+        {deployApp && !isLists && !isGroups && !isAllowedAccount && !isInBox && !isPaidInBox && (
           <>
           <Button
             icon={(isUpdate) ? 'minus' : 'plus'}
             label={t('Settings')}
+            isDisabled={isUpdateUpdate || isShowUpdate}
             onClick={toggleUpdate}>
           </Button>    
           </>
         )}
-        {deployApp && !isLists && !isUpdate && !isMyGroup && !isInBox && !isPaidInBox && (
+        {deployApp && !isLists && !isUpdate && !isGroups && !isInBox && !isPaidInBox && (
           <>
           <Button
             icon={(isAllowedAccount) ? 'minus' : 'plus'}
@@ -111,19 +111,20 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
         {deployApp && !isLists && !isUpdate && !isAllowedAccount && !isInBox && !isPaidInBox && (
           <>
           <Button
-            icon={(isMyGroup) ? 'minus' : 'plus'}
-            label={t('My Groups')}
-            onClick={toggleMyGroup}>
+            icon={(isGroups) ? 'minus' : 'plus'}
+            label={t('Groups')}
+            isDisabled={isMyGroup || isFindGroups || isJoinGroups || isLeaveGroups}
+            onClick={toggleGroups}>
           </Button>    
           </>
         )}
 
-        {deployApp && !isUpdate && !isMyGroup && !isAllowedAccount && !isInBox && !isPaidInBox && (
+        {deployApp && !isUpdate && !isGroups && !isAllowedAccount && !isInBox && !isPaidInBox && (
           <>
           <Button
             icon={(isLists) ? 'minus' : 'plus'}
             label={t('Lists')}
-            isDisabled={isMyLists || isMyPaidLists || isSubLists || isFindLists }
+            isDisabled={isMyLists || isMyPaidLists || isSubLists || isFindLists || isFindAccts || isGetStats}
             onClick={toggleLists}>
           </Button>    
           </>
@@ -140,43 +141,112 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
         <Button
             icon={(isShowUpdate) ? 'minus' : 'plus'}
             label={t('Show Settings')}
+            isDisabled={isUpdateUpdate}
             onClick={toggleShowUpdate}>
           </Button>    
           <Button
             icon={(isUpdateUpdate) ? 'minus' : 'plus'}
             label={t('Update Settings')}
+            isDisabled={isShowUpdate}
             onClick={toggleUpdateUpdate}>
           </Button>    
         </Card>
         </>)}
+
+        {isInBox && (<>
+        <Card>
+          <Button
+            icon={(isMyInbox) ? 'minus' : 'plus'}
+            label={t('My Inbox')}
+            isDisabled={isKeyword || isAcct  }
+            onClick={toggleMyInBox}>
+          </Button>    
+          <Button
+            icon={(isKeyword) ? 'minus' : 'plus'}
+            label={t('Search by Keyword')}
+            isDisabled={isMyInbox || isAcct }
+            onClick={toggleKeyword}>
+          </Button>    
+          <Button
+            icon={(isAcct) ? 'minus' : 'plus'}
+            label={t('Search by Account')}
+            isDisabled={isMyInbox || isKeyword }
+            onClick={toggleAcct}>
+          </Button>       
+        </Card>
+        </>)}
+
+
         {isLists && (<>
         <Card>
           <Button
             icon={(isMyLists) ? 'minus' : 'plus'}
             label={t('My Lists')}
-            isDisabled={isMyPaidLists || isSubLists || isFindLists }
+            isDisabled={isMyPaidLists || isSubLists || isFindLists || isFindAccts || isGetStats}
             onClick={toggleMyLists}>
           </Button>    
           <Button
             icon={(isMyPaidLists) ? 'minus' : 'plus'}
             label={t('My Paid Lists')}
-            isDisabled={isMyLists || isSubLists || isFindLists }
+            isDisabled={isMyLists || isSubLists || isFindLists || isFindAccts || isGetStats}
             onClick={toggleMyPaidLists}>
           </Button>    
           <Button
             icon={(isSubLists) ? 'minus' : 'plus'}
             label={t('Subscribed Lists')}
-            isDisabled={isMyLists || isMyPaidLists || isFindLists }
+            isDisabled={isMyLists || isMyPaidLists || isFindLists || isFindAccts || isGetStats}
             onClick={toggleSubLists}>
           </Button>    
           <Button
             icon={(isFindLists) ? 'minus' : 'plus'}
             label={t('Find Lists')}
-            isDisabled={isMyLists || isMyPaidLists || isSubLists }
+            isDisabled={isMyLists || isMyPaidLists || isSubLists || isFindAccts || isGetStats}
             onClick={toggleFindLists}>
+          </Button>    
+          <Button
+            icon={(isFindAccts) ? 'minus' : 'plus'}
+            label={t('Find Accounts')}
+            isDisabled={isMyLists || isMyPaidLists || isSubLists || isFindLists || isGetStats}
+            onClick={toggleFindAccts}>
+          </Button>    
+          <Button
+            icon={(isGetStats) ? 'minus' : 'plus'}
+            label={t('Statistics')}
+            isDisabled={isMyLists || isMyPaidLists || isSubLists || isFindLists || isFindAccts}
+            onClick={toggleGetStats}>
           </Button>    
         </Card>
         </>)}
+
+        {isGroups && (<>
+        <Card>
+          <Button
+            icon={(isMyGroup) ? 'minus' : 'plus'}
+            label={t('My Groups')}
+            isDisabled={isFindGroups || isLeaveGroups || isJoinGroups  }
+            onClick={toggleMyGroup}>
+          </Button>    
+          <Button
+            icon={(isFindGroups) ? 'minus' : 'plus'}
+            label={t('Find Groups')}
+            isDisabled={isMyGroup || isLeaveGroups || isJoinGroups }
+            onClick={toggleFindGroups}>
+          </Button>    
+          <Button
+            icon={(isJoinGroups) ? 'minus' : 'plus'}
+            label={t('Join a Group')}
+            isDisabled={isMyGroup || isFindGroups || isLeaveGroups}
+            onClick={toggleJoinGroups}>
+          </Button>       
+          <Button
+            icon={(isLeaveGroups) ? 'minus' : 'plus'}
+            label={t('Leave a Group')}
+            isDisabled={isMyGroup || isFindGroups || isJoinGroups }
+            onClick={toggleLeaveGroups}>
+          </Button>       
+        </Card>
+        </>)}
+
 
         </Table>
         {isUpdateUpdate && (
@@ -186,11 +256,17 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
           initMessageIndex={0}
         />)}
 
-        {isShowUpdate && (
+        {isGetStats && (
           <ContractsTable
           contracts={allContracts}
           updated={codeTrigger}
           initMessageIndex={38}
+        />)}
+        {isShowUpdate && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={39}
         />)}
         {isFindLists && (          
         <ContractsTable
@@ -216,7 +292,39 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
           updated={codeTrigger}
           initMessageIndex={35}
         />)}
-        {isInBox && (
+        {isFindAccts && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={37}
+        />)}
+        {isMyGroup && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={29}
+        />)}
+        {isAcct && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={31}
+        />)}
+        {isKeyword && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={30}
+        />)}
+
+        {isFindGroups && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={32}
+        />)}
+
+        {isMyInbox && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
@@ -233,6 +341,18 @@ export default function Messaging ({ className = '' }: Props): React.ReactElemen
           contracts={allContracts}
           updated={codeTrigger}
           initMessageIndex={28}
+        />)}
+        {isJoinGroups && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={10}
+        />)}
+        {isLeaveGroups && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={13}
         />)}
 
 

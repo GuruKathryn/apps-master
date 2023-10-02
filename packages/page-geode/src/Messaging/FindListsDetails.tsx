@@ -8,14 +8,11 @@ import { useTranslation } from '../translate';
 import type { CallResult } from '../shared/types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Badge, Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { Divider, Table, Label, Image } from 'semantic-ui-react'
-import CopyInline from '../shared/CopyInline';
+import { Button, AccountName, LabelHelp, Card } from '@polkadot/react-components';
+import { Table, Label} from 'semantic-ui-react'
 import AccountHeader from '../shared/AccountHeader';
-import { useToggle } from '@polkadot/react-hooks';
 
 import CallSendMessage from './CallSendMessage';
-import SearchDetails from '../Profile/SearchDetails';
 
 interface Props {
     className?: string;
@@ -42,17 +39,10 @@ interface Props {
   }
   
 function FindListsDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
-//    const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
-//    const searchWords: string[] = JSONprohibited;
-
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const searchDetail: SearchDetail = Object.create(_Obj);
-
-    //const [isJoinList, toggleJoinList] = useToggle(false);
-    // const [isSearchAccount, toggleSearchAccount] = useToggle(false);
-    // const [_toAcct, setToAcct] = useState('');
 
     const [isJoinList, setJoinList] = useState(false);
     const [isUnsubscribe, setUnsubscribe] = useState(false);
@@ -61,8 +51,6 @@ function FindListsDetails ({ className = '', onClear, outcome: { from, message, 
 
     const [count, setCount] = useState(0);
     const [listCount, setListCount] = useState(0);
-
-    //const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
 
     const _reset = useCallback(
       () => {setJoinList(false);

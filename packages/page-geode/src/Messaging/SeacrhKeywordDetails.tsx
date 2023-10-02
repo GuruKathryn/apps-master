@@ -11,7 +11,6 @@ import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Badge, Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
 import { Divider, Table, Label } from 'semantic-ui-react'
 import AccountHeader from '../shared/AccountHeader';
-import { useToggle } from '@polkadot/react-hooks';
 
 import CallSendMessage from './CallSendMessage';
 
@@ -21,59 +20,50 @@ interface Props {
     outcome: CallResult;
   }
   
-  type ConversationObj = {
+  type PrivateMessages = {
     messageId: string,
     fromAcct: string,
     fromUsername: string,
     toAcct: string,
     message: string,
-    fileHash: string,
     fileUrl: string,
     timestamp: number
   }
-
-  type List_messagesObj = {
+  
+  type GroupMessages = {
     messageId: string,
     fromAcct: string,
     username: string,
     toListId: string,
     toListName: string,
     message: string,
-    fileHash: string,
     fileUrl: string,
     timestamp: number
   }
 
-  type PeopleObj = {
-    allowedAccount: string,
+  type ListMessages = {
+    messageId: string,
+    fromAcct: string,
     username: string,
-    conversation: ConversationObj[]
-  }
-  
-  type GroupObj = {
-    allowedList: string,
-    listName: string,
-    listMessages: List_messagesObj[]
-  }
-
-  type ListsObj = {
-    allowedList: string,
-    listName: string,
-    listMessages: List_messagesObj[]
+    toListId: string,
+    toListName: string,
+    message: string,
+    fileUrl: string,
+    timestamp: number
   }
 
   type InBoxObj = {
-    blockedAccts: string[],
-    people: PeopleObj[],
-    groups: GroupObj[],
-    lists: ListsObj[]
+    search: string,
+    privateMessages: PrivateMessages[],
+    groupMessages: GroupMessages[],
+    listMessages: ListMessages[]
   }
 
   type InBoxDetail = {
   ok: InBoxObj
   }
   
-function InBoxDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function SearchKeywordDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     const { t } = useTranslation();
 
     const objOutput: string = stringify(output);
@@ -82,10 +72,8 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
 
     const [_toAcct, setToAcct] = useState('');
     const [_username, setUsername] = useState('');
-    const [_messageId, setMessageId] = useState('');
     const [isMessage, setMessage] = useState(false);
-    const [isStartConversation, toggleStartConversation] = useToggle(false);
-    const [isDelete, setDelete] = useState(false);
+    const [isListMsg, setListMsg] = useState(false);
     const [isGroupMsg, setGroupMsg] = useState(false);
 
     const [count, setCount] = useState(0);
@@ -97,7 +85,7 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
 
     const _reset = useCallback(
       () => {setMessage(false);
-             setDelete(false);
+             setListMsg(false);
              setGroupMsg(false);
             },
       []
@@ -105,22 +93,15 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
     
     const _makeMessage = useCallback(
       () => {setMessage(true);
-             setDelete(false);
+             setListMsg(false);
              setGroupMsg(false);
             },
       []
     )
 
-    const _makeDeleteMsg = useCallback(
-      () => {setMessage(false);
-             setDelete(true);
-             setGroupMsg(false);
-            },
-      []
-    )
     const _makeGroupMsg = useCallback(
       () => {setMessage(false);
-             setDelete(false);
+             setListMsg(false);
              setGroupMsg(true);
             },
       []
@@ -157,12 +138,6 @@ function InBoxDetails ({ className = '', onClear, outcome: { from, message, outp
                   label={t<string>(' Close ')}
                   onClick={onClear}
                 />
-              <Button
-                  icon={'plus'}
-                  label={t<string>(' Start Conversation ')}
-                  onClick={()=> {<>
-                                  {toggleStartConversation()}
-                                  {_reset()}</>}}/>
               </Table.Cell>
               </Table.Row>
             </Table>
@@ -178,9 +153,15 @@ function GetMessages(): JSX.Element {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>
-                {t<string>(' Total InBox: ')}{countInbox}{' '}
-                {t<string>(' Total Lists: ')}{countLists}{' '}
-                {t<string>(' Total Groups: ')}{countGroups}{' '}
+                {' Total InBox: '}{countInbox}{' '}
+                {' Total Lists: '}{countLists}{' '}
+                {' Total Groups: '}{countGroups}{' '}
+                {inBoxDetail.ok.search && (<>
+                  <h3>
+                      <strong>{t<string>(' Search Results for Keyword: ')}</strong>
+                      <IdentityIcon value={inBoxDetail.ok.search} />
+                  </h3>             
+                </>)}
               </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
@@ -190,71 +171,56 @@ function GetMessages(): JSX.Element {
             <h2><LabelHelp help={t<string>(' This is your Inbox. Send messages to people directly by clicking on the blue envelop icon. ')} />
                 <strong>{t<string>(' People: ')}</strong>
                 <Label circular color='blue' size='small'>{countInbox}</Label>
-                </h2> 
+            </h2> 
           
-                {inBoxDetail.ok.people.length>0 && 
-                  inBoxDetail.ok.people
-                    // filter out all empty conversations
-                  .filter(_sub => _sub.conversation.length>0)
+                {inBoxDetail.ok.privateMessages.length>0 && 
+                  inBoxDetail.ok.privateMessages
+                  .sort((a, b) => b.timestamp - a.timestamp) //most recent on top
                   .map((_people, inbox: number)=> <>
-
-                  <h2><strong>{'@'}{hextoHuman(_people.username)}</strong>
-                  {' ('}<AccountName value={_people.allowedAccount} withSidebar={true}/>{') '}
-                  <Badge icon='envelope' color={'blue'}
+                        <h2><strong>{'@'}{hextoHuman(_people.fromUsername)}</strong>
+                        {' ('}<AccountName value={_people.fromAcct} withSidebar={true}/>{') '}
+                        <Badge icon='envelope' color={'blue'}
                                   onClick={()=>{<>
-                                  {setToAcct(_people.allowedAccount)}
+                                  {setToAcct(_people.fromAcct)}
                                   {setCount(count + 1)}
                                   {_makeMessage()}</>}}/>                        
-                  </h2>
-                  {_people.conversation.length>0 && (<>
-                    <Expander 
-                    className='message'
-                    isOpen={false}
-                    summary={<Label size={'small'} color='orange' circular> {t<string>('Messages ✉️')}</Label>}>
-                  {_people.conversation.length>0 &&
-                    _people.conversation
-                      .sort((a, b) => b.timestamp - a.timestamp) //most recent on top
-                      .map((_conversation, index: number) => <>
-                      {timeStampToDate(_conversation.timestamp)}{' '}<br />
-                      {_conversation.toAcct===from? (<>
-                        <Label 
-                          color='blue' textAlign='left' pointing= 'right'>
-                          {hextoHuman(_conversation.message)}{' '}
-                        </Label>
-                        <IdentityIcon value={_conversation.fromAcct} />
-                        {' ('}<AccountName value={_conversation.fromAcct} withSidebar={true}/>{') '}
-                      </>): (<>
-                        <IdentityIcon value={_conversation.fromAcct} />
-                        {' ('}<AccountName value={_conversation.fromAcct} withSidebar={true}/>{') '}
-                        <Label  color='grey' textAlign='left' pointing='left'>
-                          {hextoHuman(_conversation.message)}{' '}
-                        </Label>
-                        <Label as='a' color='orange' circular size='mini'
-                                onClick={()=>{<>
-                                  {setMessageId(_conversation.messageId)}
-                                  {setUsername(_conversation.message)}
-                                  {setCount(count + 1)}
-                                  {_makeDeleteMsg()}</>}}>
-                          <strong>{'X'}</strong></Label>
+                        </h2>
+                  {_people.message.length>0 && 
+                      (<>
+                          <Expander 
+                            className='message'
+                            isOpen={false}
+                            summary={<Label size={'small'} color='orange' circular> {t<string>('Messages ✉️')}</Label>}>                  
+                            {timeStampToDate(_people.timestamp)}{' '}<br />
+                            {_people.toAcct===from? (<>
+                              <Label 
+                                color='blue' textAlign='left' pointing= 'right'>
+                                {hextoHuman(_people.message)}{' '}
+                              </Label>
+                              <IdentityIcon value={_people.fromAcct} />
+                              {' ('}<AccountName value={_people.fromAcct} withSidebar={true}/>{') '}
+                            </>): (<>
+                              <IdentityIcon value={_people.fromAcct} />
+                              {' ('}<AccountName value={_people.fromAcct} withSidebar={true}/>{') '}
+                              <Label  color='grey' textAlign='left' pointing='left'>
+                                {hextoHuman(_people.message)}{' '}
+                              </Label>
+                            </>)}
+                            {(_people.fileUrl != '0x') && (<>
+                              <Label  as='a' color='orange' circular size={'mini'}
+                              href={isHex(_people.fileUrl) ? withHttp(hexToString(_people.fileUrl).trim()) : ''} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              >{t<string>('Link')}
+                              </Label>{' '}
+                            </>)}                     
+                            <br /><br />
+                          </Expander>
+                          {setCountInbox(inbox+1)}
                       </>)}
-                      {(_conversation.fileUrl != '0x') && (
-                      <>
-                        <Label  as='a' color='orange' circular size={'mini'}
-                        href={isHex(_conversation.fileUrl) ? withHttp(hexToString(_conversation.fileUrl).trim()) : ''} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        >{t<string>('Link')}
-                        </Label>{' '}
-                      </>)}                     
-                      <br /><br />
-                    </>)}
-                   </Expander>
-                   
-                  {setCountInbox(inbox+1)}
-                  </>)}
                   <Divider />
-                </>)
-                }
+                </>)}
+
             </Table.Cell>
           </Table.Row>
 
@@ -264,40 +230,37 @@ function GetMessages(): JSX.Element {
                 <strong>{t<string>(' Lists: ')}</strong>
                 <Label circular color='blue' size='small'>{countLists}</Label>
                 </h2> 
-                {inBoxDetail.ok.lists.length>0 &&
-                 inBoxDetail.ok.lists.map((_lists, index: number) =>
+                {inBoxDetail.ok.listMessages.length>0 &&
+                 inBoxDetail.ok.listMessages
+                 .sort((a, b) => b.timestamp - a.timestamp) //most recent on top
+                 .map((_lists, index: number) =>
                 <>
-                  <h2>{_lists.listName && <>
-                    <strong>{'@'}{hextoHuman(_lists.listName)}{' '}</strong></>}
-                  
+                  <h2>{_lists.toListName && <>
+                    <strong>{'@'}{hextoHuman(_lists.toListName)}{' '}</strong></>}                
                   
                   </h2>  
-                  {_lists.listMessages.length>0 && (<>
+                  {_lists.message.length>0 && (<>
                     <Expander 
                     className='listMessage'
                     isOpen={false}
                     summary={<Label size={'small'} color='orange' circular> {'Messages ✉️'}</Label>}>
-                    
-                    {_lists.listMessages
-                    .sort((a, b) => b.timestamp - a.timestamp) //most recent message at the top
-                    .map((_message, iLists: number) => <>
-                      {timeStampToDate(_message.timestamp)}<br />
-                      <IdentityIcon value={_message.fromAcct} />
-                      {' ('}<AccountName value={_message.fromAcct} withSidebar={true}/>{') '}
-                      {hextoHuman(_message.username)}
+                      {timeStampToDate(_lists.timestamp)}<br />
+                      <IdentityIcon value={_lists.fromAcct} />
+                      {' ('}<AccountName value={_lists.fromAcct} withSidebar={true}/>{') '}
+                      {hextoHuman(_lists.username)}
                       <Label color='blue' textAlign='left' pointing='left'>
-                          {hextoHuman(_message.message)}
+                          {hextoHuman(_lists.message)}
                       </Label>
-                      {(_message.fileUrl != '0x') && (
+                      {(_lists.fileUrl != '0x') && (
                       <>
                         <Label  as='a' color='orange' circular size={'mini'}
-                        href={isHex(_message.fileUrl) ? withHttp(hexToString(_message.fileUrl).trim()) : ''} 
+                        href={isHex(_lists.fileUrl) ? withHttp(hexToString(_lists.fileUrl).trim()) : ''} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         >{t<string>('Link')}
                         </Label>{' '}
                       </>)} <br /><br />
-                    </>)}
+                  
                   </Expander>
                   
                   </>)}       
@@ -314,46 +277,45 @@ function GetMessages(): JSX.Element {
                 <strong>{t<string>(' Groups: ')}</strong>
                 <Label circular color='blue' size='small'>{countGroups}</Label>
                 </h2> 
-                {inBoxDetail.ok.groups.length>0 &&
-                 inBoxDetail.ok.groups.map((_groups, index: number) =>
+                {inBoxDetail.ok.groupMessages.length>0 &&
+                 inBoxDetail.ok.groupMessages
+                 .sort((a, b) => b.timestamp - a.timestamp) //most recent on top
+                 .map((_groups, index: number) =>
                 <>
-                  <h2>{_groups.listName && <>
-                    <strong>{'@'}{hextoHuman(_groups.listName)}{' '}</strong></>}
+                  <h2>{_groups.toListName && <>
+                    <strong>{'@'}{hextoHuman(_groups.toListName)}{' '}</strong></>}
                   
                     <Badge icon='envelope' color={'blue'}
                                   onClick={()=>{<>
-                                  {setToAcct(_groups.allowedList)}
-                                  {setUsername(_groups.listName)}
+                                  {setToAcct(_groups.fromAcct)}
+                                  {setUsername(_groups.toListName)}
                                   {setCount(count + 1)}
                                   {_makeGroupMsg()}</>}}/>                  
                   
                   </h2>  
-                  {_groups.listMessages.length>0 && (<>
+                  {_groups.message.length>0 && (<>
                     <Expander 
                     className='listMessage'
                     isOpen={false}
                     summary={<Label size={'small'} color='orange' circular> {'Messages ✉️'}</Label>}>
                     
-                    {_groups.listMessages
-                      .sort((a, b) => b.timestamp - a.timestamp) //most recent at the top
-                      .map((_message, iLists: number) => <>
-                      {timeStampToDate(_message.timestamp)}<br />
-                      <IdentityIcon value={_message.fromAcct} />
-                      {' ('}<AccountName value={_message.fromAcct} withSidebar={true}/>{') '}
-                      {hextoHuman(_message.username)}
+                      {timeStampToDate(_groups.timestamp)}<br />
+                      <IdentityIcon value={_groups.fromAcct} />
+                      {' ('}<AccountName value={_groups.fromAcct} withSidebar={true}/>{') '}
+                      {hextoHuman(_groups.username)}
                       <Label color='blue' textAlign='left' pointing='left'>
-                          {hextoHuman(_message.message)}
+                          {hextoHuman(_groups.message)}
                       </Label>
-                      {(_message.fileUrl != '0x') && (
+                      {(_groups.fileUrl != '0x') && (
                       <>
                         <Label  as='a' color='orange' circular size={'mini'}
-                        href={isHex(_message.fileUrl) ? withHttp(hexToString(_message.fileUrl).trim()) : ''} 
+                        href={isHex(_groups.fileUrl) ? withHttp(hexToString(_groups.fileUrl).trim()) : ''} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         >{t<string>('Link')}
                         </Label>{' '}
                       </>)} <br /><br />
-                    </>)}
+                    
                   </Expander>
                   
                   </>)}       
@@ -394,18 +356,10 @@ function GetMessages(): JSX.Element {
                 onReset={() => _reset()}
             />      
         </>)}
-        {isStartConversation && (<>
+        {isListMsg && (<>
         <CallSendMessage
-                callIndex={1}
-                toAcct={''}
-                onReset={() => _reset()}
-            />      
-        </>)}
-        {isDelete && (<>
-        <CallSendMessage
-                callIndex={7}
-                //toAcct={_toAcct}
-                messageId={_messageId}
+                callIndex={15}
+                toAcct={_toAcct}
                 username={_username}
                 onReset={() => _reset()}
             />      
@@ -431,4 +385,4 @@ const StyledDiv = styled.div`
     margin: 0.25rem 0.5rem;
   }
 `;
-export default React.memo(InBoxDetails);
+export default React.memo(SearchKeywordDetails);

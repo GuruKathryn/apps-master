@@ -1,26 +1,21 @@
 // Copyright 2017-2023 @polkadot/app-whitelist authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-//import React from 'react';
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { useTranslation } from '../translate';
 import type { CallResult } from '../shared/types';
 import styled from 'styled-components';
-import { stringify, hexToString, isHex } from '@polkadot/util';
+import { stringify } from '@polkadot/util';
 import { useToggle } from '@polkadot/react-hooks';
-import { Badge, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { Table, Label } from 'semantic-ui-react'
-import CopyInline from '../shared/CopyInline';
+import { Button, AccountName, IdentityIcon, Card } from '@polkadot/react-components';
+import { Table} from 'semantic-ui-react'
 import CallSendMessage from './CallSendMessage';
 
-//import JSONprohibited from '../shared/geode_prohibited.json';
-//{ Ok: { allowedAccounts: [ 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY ] blockedAccounts: [ 5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy ] } }
 interface Props {
     className?: string;
     onClear?: () => void;
     outcome: CallResult;
     onClose?: () => void;
-//    onReset?: boolean;
   }
   
   type AllowBlockObj = {
@@ -42,17 +37,7 @@ function AllowedDetails ({ className = '', onClear, outcome: { from, message, ou
     const [isDelete, toggleDelete] = useToggle(false);
     const [isRemove, toggleRemove] = useToggle(false);
     const [isUnBlock, toggleUnBlock] = useToggle(false);
-    
-
-    // const _reset = useCallback(
-    //   () => {setRemove(false);
-    //          setUnBlock(false)},
-    //   []
-    // )
-    
-    
-    //const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-    
+        
     function ListAccount(): JSX.Element {
       return(
           <div>
@@ -109,7 +94,7 @@ try{
         <Table stretch>
           <Table.Row>
             <Table.Cell verticalAlign='top'>
-            <strong>{'Allowed Accounts: '}</strong><br />
+            <strong>{t<string>('Allowed Accounts: ')}</strong><br />
             {allowBlockDetail.ok.allowedAccounts.map((_out, index: number) => 
             <>
               <IdentityIcon value={_out} />
@@ -120,7 +105,7 @@ try{
       </Table.Row>
       <Table.Row>
             <Table.Cell verticalAlign='top'>
-            <strong>{'Blocked Accounts: '}</strong><br />
+            <strong>{t<string>('Blocked Accounts: ')}</strong><br />
             {allowBlockDetail.ok.blockedAccounts.map((_out, index: number) => 
             <>
               <IdentityIcon value={_out} />

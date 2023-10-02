@@ -18,15 +18,14 @@ import { useTranslation } from '../translate';
 import ContractAdd from './Add';
 import CallCard from './CallCard';
 import CallModal from './CallModal';
-import CallSubCard from './CallSubCard';
 import Contract from '../shared/Contract';
 import { getContractForAddress } from '../shared/util';
 
 // * * * * * * * * * * * * * * * * * * * * * * * *
 // * uncomment for test configuration - - - - >  *
-import JSONContractAddress from '../shared/geode_contracts_test.json';
+// * import JSONContractAddress from '../shared/geode_contracts_test.json';
 // * uncomment for production chain - - - - - >  *
-// * import JSONContractAddress from '../shared/geode_contracts.json';
+import JSONContractAddress from '../shared/geode_contracts.json';
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
 export interface Props {
@@ -61,7 +60,6 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
   const [contractLinks, setContractLinks] = useState<Record<string, ContractLink[]>>({});
   console.log(contractIndex);
 
-  //const [isTableOpen, toggleTable] = useToggle();
   const isTableOpen = false;
   const [isLoadContract, toggleIsLoad] = useToggle();
   // set to true to test contracts functionality
@@ -159,10 +157,15 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
         ))}
       </Table>}
 
-      {(messageIndex===1  || messageIndex===15 ||
+      {(messageIndex===1  || messageIndex===2  ||
+        messageIndex===7  || messageIndex===10 ||
+        messageIndex===11 || messageIndex===13 ||
+        messageIndex===14 || messageIndex===15 ||
         messageIndex===18 || messageIndex===21 ||
-        messageIndex===19 || messageIndex===20) 
-       && isCallOpen && contract &&(
+        messageIndex===19 || messageIndex===20 ||
+        messageIndex===23 || messageIndex===24 ||
+        messageIndex===25) 
+        && isCallOpen && contract &&(
       <CallModal 
         contract={contract}
         messageIndex={messageIndex}
@@ -174,12 +177,11 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
         onClose={_toggleCall}
       />
       )}
-      {(messageIndex===16) && isCallOpen && contract &&(
+      {(messageIndex===9 || messageIndex===16) && isCallOpen && contract &&(
         <Container>
             <CallCard 
                 contract={contract}
                 messageIndex={messageIndex}
-                //onCallResult={onCallResult}
                 onChangeMessage={_setMessageIndex}
                 onClose={_toggleCall}
           />

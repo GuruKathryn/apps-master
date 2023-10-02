@@ -8,14 +8,12 @@ import { useTranslation } from '../translate';
 import type { CallResult } from '../shared/types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Badge, Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { Divider, Table, Label, Image } from 'semantic-ui-react'
-//import CopyInline from '../shared/CopyInline';
+import { Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Table, Label} from 'semantic-ui-react'
 import AccountHeader from '../shared/AccountHeader';
 import { useToggle } from '@polkadot/react-hooks';
 
 import CallSendMessage from './CallSendMessage';
-//import SearchDetails from '../Profile/SearchDetails';
 
 interface Props {
     className?: string;
@@ -44,29 +42,33 @@ function MyPaidListsDetails ({ className = '', onClear, outcome: { from, message
     const searchDetail: SearchDetail = Object.create(_Obj);
 
     const [isSendMessage, setSendMessage] = useState(false);
-//    const [isUnsubscribe, setUnsubscribe] = useState(false);
+    const [isDeleteList, setDeleteList] = useState(false);
 
     const [_listId, setListId] = useState<string>('');
     const [_listName, setListName] = useState<string>('');
 
     const [isMakeList, setMakeList] = useToggle(false);
-    const [isDeleteList, setDeleteList] = useToggle(false);
-    const [isFindList, setFindList] = useToggle(false);
-    const [isStats, setStats] = useToggle(false);
 
     const [count, setCount] = useState(0);
     const [listCount, setListCount] = useState(0);
 
-    //const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
-
     const _reset = useCallback(
       () => {setSendMessage(false);
+             setDeleteList(false);
             },
       []
     )
 
     const _sendMessage = useCallback(
         () => {setSendMessage(true);
+               setDeleteList(false);
+              },
+        []
+      )
+
+      const _deleteList = useCallback(
+        () => {setSendMessage(false);
+               setDeleteList(true);
               },
         []
       )
@@ -75,10 +77,6 @@ function MyPaidListsDetails ({ className = '', onClear, outcome: { from, message
       return((isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '')
     }
     
-    // function booltoPrivate(_bool: boolean): string {
-    //   return(_bool? t<string>('Private'): t<string>('Public'))
-    // }
-
     function ListAccount(): JSX.Element {
       return(
           <div>
@@ -88,32 +86,13 @@ function MyPaidListsDetails ({ className = '', onClear, outcome: { from, message
               <Button
                   icon='times'
                   label={t<string>(' Close ')}
-                  isDisabled={isMakeList || isDeleteList || isFindList || isStats }
+                  isDisabled={isMakeList}
                   onClick={onClear}
                 />
               <Button
                   icon={isMakeList? 'minus': 'plus'}
                   label={t<string>(' Make A Paid List ')}
-                  isDisabled={isDeleteList || isFindList || isStats }
-                  onClick={setMakeList}
-                />
-              <Button
-                  icon={isDeleteList? 'minus': 'plus'}
-                  label={t<string>(' Delete A Paid List ')}
-                  isDisabled={isMakeList || isFindList || isStats }
-                  onClick={setDeleteList}
-                />
-              <Button
-                  icon={isFindList? 'minus': 'plus'}
-                  label={t<string>(' Find Account ')}
-                  isDisabled={isMakeList || isDeleteList || isStats }
-                  onClick={setFindList}
-                />
-              <Button
-                  icon={isStats? 'minus': 'plus'}
-                  label={t<string>(' Statistics ')}
-                  isDisabled={isMakeList || isDeleteList || isFindList }
-                  onClick={setStats}
+                  onClick={()=> {<>{setMakeList()}{_reset()}</>}}
                 />
               </Table.Cell>
               </Table.Row>
@@ -170,7 +149,15 @@ function GetLists(): JSX.Element {
                          {setListName(_lists.listName)}
                          {setCount(count + 1)}
                          {_sendMessage()}</>}}
-                >{'Send Message'}
+                >{t('Send Message')}
+                </Label>
+                <Label color='orange' as='a'
+                       onClick={()=>{<>
+                         {setListId(_lists.listId)}
+                         {setListName(_lists.listName)}
+                         {setCount(count + 1)}
+                         {_deleteList()}</>}}
+                >{t('Delete Paid List')}
                 </Label>
                 <br /><br />
                 </>)
@@ -199,9 +186,8 @@ function GetLists(): JSX.Element {
             timeDate={when} 
             callFrom={2}/>
       <ListAccount />
-      {isSendMessage && 
-      !isMakeList && !isDeleteList &&
-      !isFindList && !isStats && (<>
+      {!isDeleteList && isSendMessage && 
+      !isMakeList && (<>
         <CallSendMessage
                 callIndex={21}
                 messageId={_listId}
@@ -209,16 +195,21 @@ function GetLists(): JSX.Element {
                 onReset={() => _reset()}
             />      
         </>)}
-        {isMakeList && !isDeleteList &&
-         !isFindList && !isStats && (<>
+        {!isDeleteList && isMakeList && (<>
         <CallSendMessage
                 callIndex={22}
-                //messageId={_listId}
-                //username={_listName}
                 onReset={() => _reset()}
             />      
         </>)}
-
+        {isDeleteList && !isSendMessage && 
+        !isMakeList && (<>
+        <CallSendMessage
+                callIndex={23}
+                messageId={_listId}
+                username={_listName}
+                onReset={() => _reset()}
+            />      
+        </>)}
       <GetLists />
     </Card>
     </StyledDiv>

@@ -9,7 +9,7 @@ import type { CallResult } from '../shared/types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Button, LabelHelp, Card } from '@polkadot/react-components';
-import { Table, Label, Divider } from 'semantic-ui-react'
+import { Label, Table, Divider } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import AccountHeader from '../shared/AccountHeader';
 
@@ -20,6 +20,11 @@ interface Props {
   }
   
 type SettingsObj = {
+    callerInterests: string,
+    callerInboxFee: number,
+    callerLastUpdate: number,
+    callerHide: boolean,
+    callerUsername: string
     interests: string[],
     inboxFee: number[],
     lastUpdate: number[]
@@ -29,7 +34,7 @@ type SettingsDetail = {
   ok: SettingsObj
   }
   
-function SettingsDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
+function UserSettingsDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     const { t } = useTranslation();
 
     const objOutput: string = stringify(output);
@@ -37,8 +42,12 @@ function SettingsDetails ({ className = '', onClear, outcome: { from, message, o
     const settingsDetail: SettingsDetail = Object.create(_Obj);
 
     function feeAverage(_fee: number[]): string {
-      return(_fee.reduce((a,b) => a+b)/_fee.length).toString()
-  }
+        return(_fee.reduce((a,b) => a+b)/_fee.length).toString()
+    }
+
+    function booltoHuman(_bool: boolean): string {
+        return(_bool? t<string>('Private'): t<string>('Public'))
+    }
 
     function hextoHuman(_hexIn: string): string {
       const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
@@ -70,7 +79,7 @@ function SettingsDetails ({ className = '', onClear, outcome: { from, message, o
     .replace(/[‒–—―…]|--|\.\.\./g, ' ') // Strip dashes and ellipses
     .replace(/[!?;:.,]\B/g, '')); // Strip punctuation marks
   }
-
+  
   function ShowOrderByAlpha(inStr: string, inArr: string[]): JSX.Element {
     return(
             <>{inArr.map((_word, index: number) => 
@@ -95,7 +104,7 @@ function SettingsDetails ({ className = '', onClear, outcome: { from, message, o
                 )}</>)}</>
               )
   }
-
+  
   // function ShowOrderByFreq(inStr: string, inArr: string[]): JSX.Element {
   //   const arr = orderByFrequency(inStr, inArr);
   //   return (
@@ -126,6 +135,7 @@ function SettingsDetails ({ className = '', onClear, outcome: { from, message, o
   //         .sort((a, b) => b.freq - a.freq)
   // }
   
+  
 
     function ListAccount(): JSX.Element {
       return(
@@ -151,13 +161,20 @@ function ShowData(): JSX.Element {
         const modArr: string[] = (settingsDetail.ok.interests.map(_w => hextoHuman(_w).trimStart() + ', ')).concat();
         const strArr: string = JSON.stringify(modArr.toString().split(','));
         const strObj: string[] = removeDuplicates(removeSpaces(JSON.parse(strArr)));
-
+    
         return(
           <div>
           <Table stretch>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>
+                <h2><strong>{t<string>('Your Settings:')}</strong></h2>
+                <strong>{t<string>('User Name: ')}</strong>{hextoHuman(settingsDetail.ok.callerUsername)}<br />
+                <strong>{t<string>('Last Update: ')}</strong>{timeStampToDate(settingsDetail.ok.callerLastUpdate)}<br />
+                <strong>{t<string>('Paid Inbox Fee: ')}</strong>{settingsDetail.ok.callerInboxFee}{' Geode'}<br />
+                <strong>{t<string>('Account Type: ')}</strong>{booltoHuman(settingsDetail.ok.callerHide)}< br />
+                <strong>{t<string>('Interests: ')}</strong>
+                {hexToString(settingsDetail.ok.callerInterests)}
                 
               </Table.HeaderCell>
             </Table.Row>
@@ -166,13 +183,17 @@ function ShowData(): JSX.Element {
           <Table.Row>
             <Table.Cell verticalAlign='top'>
             <h2><LabelHelp help={t<string>(' Interest Areas: ')} />
+                <strong>{t<string>(' Interests: ')}</strong></h2> 
+
+
             <strong>{'Interest Word Analysis :'}</strong><br /><br />
               {t<string>('(1) Total Number of Users In Data: ') } <strong>{maxIndex}</strong><br />
               {t<string>('(2) Total Number of Unique Words/Phrases: ')}<strong>{strObj.length}</strong><br /><br />
-            </h2> 
-                <>
+
+              <>
                   <br />
                   <u><strong>{t<string>(' Interest Words by User Accounts:')}</strong></u><br /><br />
+                  
                   {settingsDetail.ok.interests.map((_word, index: number) => 
                     <>
                     <CopyInline value={hextoHuman(_word)} label={''}/>
@@ -181,13 +202,14 @@ function ShowData(): JSX.Element {
                   }    
                 <Divider />
                 </>
+
                 <>
-                  <u><strong>{t<string>('Interest Words: ')}</strong></u><br /><br />
-                  {ShowOrderByAlpha(strArr, strObj)}            
-                  <br /><br />
+                <br /><br />
+
+                <u><strong>{t<string>('Interest Words: ')}</strong></u><br /><br />
+                {ShowOrderByAlpha(strArr, strObj)}            
+                <br /><br />
                 </> 
-
-
 
             </Table.Cell>
           </Table.Row>
@@ -198,14 +220,13 @@ function ShowData(): JSX.Element {
                 <strong>{t<string>(' Fees: ')}</strong>
                 {t<string>('Average Fee: ')}<strong>{averageFee}</strong>
             </h2> 
-
-            <br />
+                <br />
                 <u><strong>{t<string>('Fees by Users: ')}</strong></u><br /><br />
                 {settingsDetail.ok.inboxFee.length>0 && 
                   settingsDetail.ok.inboxFee.map((_data, index: number)=> <>
                   <CopyInline value={_data.toString()} label={''}/>
 
-                  <strong>{_data}{t(' Geode')}</strong><br />
+                  <strong>{_data}{' Geode'}</strong><br />
                 </>)
                 }
             </Table.Cell>
@@ -260,4 +281,4 @@ const StyledDiv = styled.div`
     margin: 0.25rem 0.5rem;
   }
 `;
-export default React.memo(SettingsDetails);
+export default React.memo(UserSettingsDetails);

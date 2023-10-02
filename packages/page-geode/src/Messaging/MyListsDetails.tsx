@@ -8,9 +8,8 @@ import { useTranslation } from '../translate';
 import type { CallResult } from '../shared/types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Badge, Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { Divider, Table, Label, Image } from 'semantic-ui-react'
-import CopyInline from '../shared/CopyInline';
+import { Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Table, Label} from 'semantic-ui-react'
 import AccountHeader from '../shared/AccountHeader';
 import { useToggle } from '@polkadot/react-hooks';
 
@@ -36,19 +35,13 @@ interface Props {
   }
   
 function MyListsDetails ({ className = '', onClear, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
-//    const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
-//    const searchWords: string[] = JSONprohibited;
 
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const listsDetail: ListsDetail = Object.create(_Obj);
 
     const [isMakeList, toggleMakeList] = useToggle(false);
-    // const [isSearchAccount, toggleSearchAccount] = useToggle(false);
-    // const [_toAcct, setToAcct] = useState('');
-
-    //const [isSendToList, setSendToList] = useState(false);
     const [isDeleteList, setDeleteList] = useState(false);
     const [isSendMsg, setSendMsg] = useState(false);
 
@@ -160,14 +153,14 @@ function GetLists(): JSX.Element {
                         {setListId(_lists.listId)}
                         {setListName(_lists.listName)}
                         {setCount(count + 1)}
-                        {_sendList()}</>}}>{'Send to List'}
+                        {_sendList()}</>}}>{t('Send to List')}
                 </Label>
                 <Label color='orange' as='a'
                 onClick={()=>{<>
                         {setListId(_lists.listId)}
                         {setListName(_lists.listName)}
                         {setCount(count + 1)}
-                        {_deleteList()}</>}}>{'Delete a List'}
+                        {_deleteList()}</>}}>{t('Delete a List')}
                 </Label>
                 <br /><br />
                 </>)

@@ -6,15 +6,17 @@ import React from 'react';
 
 import { Toggle, Badge, Card, CardSummary, SummaryBox, AccountName, LabelHelp, IdentityIcon } from '@polkadot/react-components';
 import { useTranslation } from '../translate';
-//import { formatNumber } from '@polkadot/util';
-import JSONinfo from '../shared/geode_messaging_info.json';
 import { useToggle } from '@polkadot/react-hooks';
 
 
 function Summary (): React.ReactElement {
   const { t } = useTranslation();
-  const info: string[] = JSONinfo;
-  //const [isShowInfo, toggleShowInfo] = useToggle(true)
+  const info: string[] = [
+    " Private short form messaging between Geode accounts! While you are at it, isn't it time you got paid for your time and attention? Let people know what you are interested in seeing and let advertisers, recruiters, and others pay YOU directly to send DMs to your inbox. ",
+    " ",
+    " Example Geode Messaging accounts you can look up: ",
+    "5DaQjx5i9gcVLrGTAZ5s9KvZtfgBhU6gwtKqmXffot2dDhZm",
+    "5DnfaNLDTkQwRBCRV95cfkRf3Hymaqbd13Bh9ZwMkkFkCptc"];
   const [isShowMore, toggleShowMore] = useToggle(false)
 
   function showAccount(str: string): JSX.Element { 

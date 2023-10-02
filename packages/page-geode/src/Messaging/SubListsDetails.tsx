@@ -8,14 +8,12 @@ import { useTranslation } from '../translate';
 import type { CallResult } from '../shared/types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
-import { Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
+import { Button, AccountName, LabelHelp, Card } from '@polkadot/react-components';
 import { Table, Label } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import AccountHeader from '../shared/AccountHeader';
-//import { useToggle } from '@polkadot/react-hooks';
 
 import CallSendMessage from './CallSendMessage';
-//import SearchDetails from '../Profile/SearchDetails';
 
 interface Props {
     className?: string;
@@ -64,10 +62,6 @@ function SubListsDetails ({ className = '', onClear, outcome: { from, message, o
       return((isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '')
     }
     
-    // function booltoPrivate(_bool: boolean): string {
-    //   return(_bool? t<string>('Private'): t<string>('Public'))
-    // }
-
     function ListAccount(): JSX.Element {
       return(
           <div>

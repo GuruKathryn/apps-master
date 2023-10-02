@@ -36,15 +36,6 @@ function StatDetails ({ className = '', onClear, outcome: { from, message, outpu
     const _Obj = JSON.parse(objOutput);
     const feedDetail: FeedDetail = Object.create(_Obj);
     
-    // function autoCorrect(arr: string[], str: string): JSX.Element {
-    //     arr.forEach(w => str = str.replaceAll(w, '****'));
-    //     arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '****'));
-    //     arr.forEach(w => str = str.replaceAll(w.charAt(0) + w.slice(1).toUpperCase, '****'));        
-    //     arr.forEach(w => str = str.replaceAll(w.toUpperCase(), '****'));
-    //     return (
-    //     <>{t<string>(str)}</>)
-    // }
-
 function hextoHuman(_hexIn: string): string {
         const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): ''
         return(_Out)

@@ -64,7 +64,7 @@ function ListAccount(): JSX.Element {
                 <Badge icon='copy' color='orange' /> 
                 </>)}
                 {callFrom===2 && (<>
-                {t<string>(' Copy a Address: ')}
+                {t<string>(' Copy Address: ')}
                 <Badge icon='copy' color='orange' /> 
                 </>)}
                 {callFrom===3 && (<>

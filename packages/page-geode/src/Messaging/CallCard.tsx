@@ -1,7 +1,6 @@
 // Copyright 2017-2022 @polkadot/app-contracts authors & contributors
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
-// packages/page-geode/src/LifeAndWork/CallCard.tsx
 import { Input, Label } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
@@ -9,8 +8,6 @@ import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import type { CallResult } from '../shared/types';
-//import { blake2AsHex } from '@polkadot/util-crypto';
-//import MessageSignature from '../shared/MessageSignature';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -19,15 +16,12 @@ import { Expander, LabelHelp, Badge, Card, Button, Dropdown, InputAddress, Input
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
 import { BN, BN_ONE, BN_ZERO } from '@polkadot/util';
-//import { Table } from 'semantic-ui-react'
 
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
 import useWeight from '../useWeight';
-//import Details from './Details';
 import AllowedDetails from './AllowedDetails';
 import SettingsDetails from './SettingsDetails';
-//import SearchDetails from './SearchDetails';
 
 import { getCallMessageOptions } from '../shared/util';
 import InBoxDetails from './InBoxDetails';
@@ -35,6 +29,13 @@ import MyListsDetails from './MyListsDetails';
 import FindListsDetails from './FindListsDetails';
 import SubListsDetails from './SubListsDetails';
 import MyPaidListsDetails from './MyPaidListsDetails';
+import MyPaidInBoxDetails from './MyPaidInboxDetails';
+import MyGroupsDetails from './MyGroupsDetails';
+import FindGroupsDetails from './FindGroupsDetails';
+import SearchAccountDetails from './SearchAccountDetails';
+import SearchKeywordDetails from './SeacrhKeywordDetails';
+import FindAccountDetails from './FindAccountDetails';
+import UserSettingsDetails from './UserSettingsDetails';
 
 interface Props {
   className?: string;
@@ -69,6 +70,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [_username, setUsername] = useState<string>('');
   const [_myInterest, setMyInterest] = useState<string>('');
   const [_feeBalance, setFeeBalance] = useState<string>('');
+  const [_fileURL, setFileURL] = useState<string>('');
   const [_isHide, toggleIsHide] = useToggle(false);
 
   const isTest: boolean = false;
@@ -159,10 +161,13 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
   const isValid = !!(accountId && weight.isValid && isValueValid);
   const isViaRpc = (isViaCall || (!message.isMutating && !message.isPayable));      
-  const isClosed = (isCalled && (messageIndex === 26 || messageIndex === 27 || 
-                                 messageIndex===28 || messageIndex===33 ||
+  const isClosed = (isCalled && (messageIndex===26 || messageIndex===27 || 
+                                 messageIndex===28 || messageIndex===29 ||
+                                 messageIndex===30 || messageIndex===31 ||
+                                 messageIndex===32 || messageIndex===33 ||
                                  messageIndex===35 || messageIndex===34 ||
-                                 messageIndex===36 || messageIndex===38));
+                                 messageIndex===36 || messageIndex===37 ||
+                                 messageIndex===38 || messageIndex===39));
                                
   return (
     <Card >
@@ -174,13 +179,113 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             className='viewInfo'
             isOpen={false}
             summary={<strong>{t<string>('Instructions: ')}</strong>}>
+              {messageIndex===39 && (<>
+                <h2><strong>{t<string>('Private Messaging - Settings Analysis')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Settings Analysis: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Click View ')}<br />
+                <br />
+              </>)}
+              {messageIndex===38 && (<>
+                <h2><strong>{t<string>('Private Messaging - Settings Analysis')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Settings Analysis: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Click View ')}<br />
+                <br />
+              </>)}
+              {messageIndex===37 && (<>
+                <h2><strong>{t<string>('Private Messaging - Find Accounts by Interest Words')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Finding Accounts based on Interest Words: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Enter the Interest word to Search (⚠️ NOTE: this is Case Sensitive)')}<br />
+                {'(3) '}{t<string>('Click View ')}<br />
+                <br />
+              </>)}
+              {messageIndex===36 && (<>
+                <h2><strong>{t<string>('Private Messaging - Find a List by Keyword.')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Finding a List by using a Search Keyword: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Enter a Search Keyword (⚠️ NOTE: this is Case Sensitive)')}<br />
+                {'(3) '}{t<string>('Click View ')}<br /><br />
+                {t<string>('⚠️ Note: You can Unsubscribe from a List by clicking the Unsubscribe Button or Join the List by Clicking Join List.')}
+                <br />
+              </>)}
+              {messageIndex===35 && (<>
+                <h2><strong>{t<string>('Private Messaging - Your Subscribed Lists')}</strong></h2><br />
+                <strong>{t<string>('Instructions for getting your Subscribed Lists: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Click View ')}<br /><br />
+                {t<string>('⚠️ Note: You can Unsubscribe from a List by clicking the Unsubscribe Button.')}
+
+                <br />
+              </>)}
+              {messageIndex===34 && (<>
+                <h2><strong>{t<string>('Private Messaging - Paid Lists')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Managing Your Paid Lists: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction and then Click View')}<br /> 
+                {'(2) '}{t<string>('You can create New Paid Lists, Send Messages or Delete existing Paid Lists.')}<br />
+                <br />
+                {t<string>('⚠️ Please Note: To view your Paid Lists got to your PAID Inbox.')}
+              </>)}
+
               {messageIndex===33 && (<>
                 <h2><strong>{t<string>('Private Messaging - My Lists')}</strong></h2><br />
                 <strong>{t<string>('Instructions for Managing Your Lists: ')}</strong><br />
-                {'(1) '}{t<string>('Select the Account to Use then Click View')}<br /> 
+                {'(1) '}{t<string>('Select the Account to use for this transaction and then Click View')}<br /> 
                 {'(2) '}{t<string>('You can create New Lists or Delete existing Lists.')}<br />
                 <br />
                 {t<string>('⚠️ Please Note: To view your Lists got to your inbox.')}
+              </>)}
+              {messageIndex===32 && (<>
+                <h2><strong>{t<string>('Private Messaging - Search for Groups by Keyword')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Searching for Groups by Keywords: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br /> 
+                {'(2) '}{t<string>('Enter the Keyword you wish to Search for Groups.')}<br />
+                {'(3) '}{t<string>('Click View')}<br />
+              </>)}
+              {messageIndex===31 && (<>
+                <h2><strong>{t<string>('Private Messaging - Search Inbox by Accounts')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Searching your Inbox by Accounts: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br /> 
+                {'(2) '}{t<string>('Select the Account you wish to Search for in your Inbox.')}<br />
+                {'(3) '}{t<string>('Click View')}<br />
+              </>)}
+              {messageIndex===30 && (<>
+                <h2><strong>{t<string>('Private Messaging - Search Inbox by Keywords')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Searching your Inbox by Keywords: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br /> 
+                {'(2) '}{t<string>('Enter Keywords you wish to Search for in your Inbox.')}<br />
+                {'(3) '}{t<string>('Click View')}<br />
+              </>)}
+              {messageIndex===29 && (<>
+                <h2><strong>{t<string>('Private Messaging - Managing Your Groups')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Managing Your Groups: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br /> 
+                {'(2) '}{t<string>('Click View')}<br /><br />
+              </>)}
+              {messageIndex===28 && (<>
+                <h2><strong>{t<string>('Private Messaging - Managing Your Inbox')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Managing the Allowed Accounts in Your Inbox: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br /> 
+                {'(2) '}{t<string>('Click View')}<br /><br />
+              </>)}
+              {messageIndex===27 && (<>
+                <h2><strong>{t<string>('Private Messaging - MyPaid Inbox')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Getting your PAID Inbox: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br /> 
+                {'(2) '}{t<string>('Click View')}<br /><br />
+                {t<string>('! IMPORTANT: You Get Paid for receiving these messages. To Block messages from your Inbox click the Block Button. ')}
+
+              </>)}
+              {messageIndex===26 && (<>
+                <h2><strong>{t<string>('Private Messaging - Get Your Inbox')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Getting your Inbox: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br /> 
+                {'(2) '}{t<string>('Click View')}<br /><br />
+                {t<string>('NOTE: ')}<br />
+                {t<string>(' Go to Allowed Accounts to Add people to your Inbox.')}<br />
+                {t<string>(' To Start a conversation with a person in your Allowed Accounts click Start Conversation.')}<br />
+                {t<string>(' Important: To send a message to another account the recipient of the message must add you to their allowed acounts.')}<br />
               </>)}
 
               {messageIndex===16 && (<>
@@ -192,11 +297,44 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 <br /><br />
                 {t<string>('⚠️ Please Note: Click Submit to execute this transaction. ')}
               </>)}
+              {messageIndex===13 && (<>
+                <strong>{t<string>('Instructions for Leaving a Group: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br />
+                {'(2) '}{t<string>('Enter the Group ID.')}<br /> 
+                {'(3) '}{t<string>('Click Submit')}<br /> 
+               </>)}
+              {messageIndex===10 && (<>
+                <strong>{t<string>('Instructions for Joining a Group: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br />
+                {'(2) '}{t<string>('Enter the Group ID.')}<br /> 
+                {'(3) '}{t<string>('Click Submit')}<br /> 
+               </>)}
+               {messageIndex===9 && (<>
+                <strong>{t<string>('Instructions for Making a New Group: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction.')}<br />
+                {'(2) '}{t<string>('Enter the name of the New Group.')}<br /> 
+                {'(3) '}{t<string>('Select whether this will be a Public or Private Group.')}<br /> 
+                {'(4) '}{t<string>('Enter a Description for the New Group.')}<br /> 
+                {'(5) '}{t<string>('Enter the First Message to send to the Group.')}<br />
+                {'(6) '}{t<string>('You can add a URL to File or leave blank.')}<br />
+                {'(7) '}{t<string>('Click Submit')}
+                <br /><br />
+                {t<string>('⚠️ Note: You can update your Group as necessary by clicking the Update Group button in My Groups. ')}
+               </>)}
+              {messageIndex===0 && (<>
+                <strong>{t<string>('Instructions for Updating Your User Settings: ')}</strong><br />
+                {'(1) '}{t<string>('Enter your new user name.')}<br />
+                {'(2) '}{t<string>('Enter interest words if you wish to receive PAID messages. (Seperate Interest words by commas.)')}<br /> 
+                {'(3) '}{t<string>('Enter the Fee you wish to charge for receiving PAID messages.')}<br />
+                {'(4) '}{t<string>('Select Private (Yes) or Public (No) for you Account. Private Accounts are not visible in Searches. ')}<br /> 
+                {'(5) '}{t<string>('Click Submit')}            
+                <br /><br />
+                {t<string>('⚠️ Note: You can change or update your account whenever you wish. ')}
+              </>)}
         </Expander>
         <br />
         {isTest && (
           <InputAddress
-          //help={t<string>('A deployed contract that has either been deployed or attached. The address and ABI are used to construct the parameters.')}
           isDisabled
           label={t<string>('contract to use')}
           type='contract'
@@ -207,7 +345,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         {!isClosed && (<>
           <InputAddress
           defaultValue={accountId}
-          //help={t<string>('Specify the user account to use for this contract call. And fees will be deducted from this account.')}
           label={t<string>('account to use')}
           labelExtra={
             <Available
@@ -227,7 +364,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             <>
             <Dropdown
               defaultValue={messageIndex}
-              //help={t<string>('The message to send to this contract. Parameters are adjusted based on the ABI provided.')}
               isError={message === null}
               label={t<string>('Profile Item')}
               onChange={onChangeMessage}
@@ -237,7 +373,8 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             />              
             </>
             )}
-            {messageIndex!=0 && messageIndex!=16 && !isClosed && (<>
+            {messageIndex!=0  && messageIndex!=9 && 
+             messageIndex!=16 && !isClosed && (<>             
               <Params
               onChange={setParams}
               params={
@@ -255,7 +392,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <Input 
                   label={_username.length>0? params[0]=_username: params[0]=''}
                   type="text"
-                  //defaultValue={hextoString(paramToNum(displayName))}
                   value={_username}
                   onChange={(e) => {
                     setUsername(e.target.value);
@@ -271,7 +407,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <Input 
                   label={_myInterest.length>0? params[1]=_myInterest: params[1]=''}
                   type="text"
-                  //defaultValue={hextoString(paramToNum(displayName))}
                   value={_myInterest}
                   onChange={(e) => {
                     setMyInterest(e.target.value);
@@ -279,7 +414,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                   }}
               ><input />
               <Label color={params[1]? 'blue': 'grey'}>
-                    {params[1]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+                    {params[1]? <>{'OK'}</>:<>{t<string>('Enter Value')}</>}</Label>
               </Input>
             
               <LabelHelp help={t<string>('Enter your Fee Balance.')}/>{' '}          
@@ -287,7 +422,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <Input 
                   label={_feeBalance.length>0? params[2]=_feeBalance: params[2]=''}
                   type="text"
-                  //defaultValue={hextoString(paramToNum(displayName))}
                   value={_feeBalance}
                   onChange={(e) => {
                     setFeeBalance(e.target.value);
@@ -295,7 +429,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                   }}
               ><input />
               <Label color={params[2]? 'blue': 'grey'}>
-                    {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+                    {params[2]? <>{'OK'}</>:<>{t<string>('Enter Value')}</>}</Label>
               </Input>
 
               <br /><br />
@@ -312,16 +446,14 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 }}
                 value={_isHide}
               />
-            
             </>)}
 
-            {messageIndex===16 && (<>
-              <LabelHelp help={t<string>('Enter your New List name.')}/>{' '}          
-              <strong>{t<string>('New List Name: ')}</strong>
+            {messageIndex===9 && (<>
+              <LabelHelp help={t<string>('Enter your New Group name.')}/>{' '}          
+              <strong>{t<string>('New Group Name: ')}</strong>
               <Input 
                   label={_username.length>0? params[0]=_username: params[0]=''}
                   type="text"
-                  //defaultValue={hextoString(paramToNum(displayName))}
                   value={_username}
                   onChange={(e) => {
                     setUsername(e.target.value);
@@ -329,7 +461,87 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                   }}
               ><input />
               <Label color={params[0]? 'blue': 'grey'}>
-                    {params[0]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+                    {params[0]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
+              </Input>
+
+              <br /><br />
+              <LabelHelp help={t<string>('Select Yes/No to Make this Group Private/Public.')}/> {' '}         
+              <strong>{t<string>('Make Group Private (Yes/No): ')}</strong>
+              <br /><br />
+              <Toggle
+                className='booleantoggle'
+                label={<strong>{t<string>(boolToString(params[1] = _isHide))}</strong>}
+                onChange={() => {
+                  toggleIsHide()
+                  params[1] = !_isHide;
+                  setParams([...params]);
+                }}
+                value={_isHide}
+              />
+              <br /><br />
+              <LabelHelp help={t<string>('Enter the Group description.')}/>{' '}          
+              <strong>{t<string>('Group Description: ')}</strong>
+              <Input 
+                  label={_myInterest.length>0? params[2]=_myInterest: params[2]=''}
+                  type="text"
+                  value={_myInterest}
+                  onChange={(e) => {
+                    setMyInterest(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[2]? 'blue': 'grey'}>
+                    {params[2]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
+              </Input>
+              <br /><br />
+              <LabelHelp help={t<string>('Enter the First Message to this Group.')}/>{' '}          
+              <strong>{t<string>('First Group Message: ')}</strong>
+              <Input 
+                  label={_feeBalance.length>0? params[3]=_feeBalance: params[3]=''}
+                  type="text"
+                  value={_feeBalance}
+                  onChange={(e) => {
+                    setFeeBalance(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[3]? 'blue': 'grey'}>
+                    {params[3]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
+              </Input>
+              <br /><br />
+              <LabelHelp help={t<string>('Enter a File URL.')}/>{' '}          
+              <strong>{t<string>('File URL: ')}</strong>
+              <Input 
+                  label={_fileURL.length>0? params[4]=_fileURL: params[4]=''}
+                  type="text"
+                  value={_fileURL}
+                  onChange={(e) => {
+                    setFileURL(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[4]? 'blue': 'grey'}>
+                    {params[4]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
+              </Input>
+            
+            </>)}
+
+
+
+            {messageIndex===16 && (<>
+              <LabelHelp help={t<string>('Enter your New List name.')}/>{' '}          
+              <strong>{t<string>('New List Name: ')}</strong>
+              <Input 
+                  label={_username.length>0? params[0]=_username: params[0]=''}
+                  type="text"
+                  value={_username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setParams([...params]);
+                  }}
+              ><input />
+              <Label color={params[0]? 'blue': 'grey'}>
+                    {params[0]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
               </Input>
 
               <br /><br />
@@ -352,7 +564,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <Input 
                   label={_myInterest.length>0? params[2]=_myInterest: params[2]=''}
                   type="text"
-                  //defaultValue={hextoString(paramToNum(displayName))}
                   value={_myInterest}
                   onChange={(e) => {
                     setMyInterest(e.target.value);
@@ -360,7 +571,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                   }}
               ><input />
               <Label color={params[2]? 'blue': 'grey'}>
-                    {params[2]? <>{'OK'}</>:<>{'Enter Value'}</>}</Label>
+                    {params[2]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
               </Input>
             
             </>)}
@@ -370,7 +581,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
         {message.isPayable && (
           <InputBalance
-            //help={t<string>('The allotted value for this contract, i.e. the amount transferred to the contract as part of this call.')}
             isError={!isValueValid}
             isZeroable
             label={t<string>('value')}
@@ -433,10 +643,34 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
         </>
         )}
 
+        {outcomes.length > 0 && messageIndex===39 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <UserSettingsDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
         {outcomes.length > 0 && messageIndex===38 && (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
               <SettingsDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+        {outcomes.length > 0 && messageIndex===37 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <FindAccountDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
                 outcome={outcome}
@@ -493,13 +727,48 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </div>
         )}
 
-        {outcomes.length > 0 && messageIndex===26 && (
+        {outcomes.length > 0 && messageIndex===32 && (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
-              <InBoxDetails
+              <FindGroupsDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                //isAccount={messageIndex > 1 ? true: false}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+        {outcomes.length > 0 && messageIndex===31 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <SearchAccountDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+        {outcomes.length > 0 && messageIndex===30 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <SearchKeywordDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+        {outcomes.length > 0 && messageIndex===29 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <MyGroupsDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
                 outcome={outcome}
               />
             ))}
@@ -511,13 +780,36 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
               <AllowedDetails
                 key={`outcome-${index}`}
                 onClear={_onClearOutcome(index)}
-                //isAccount={messageIndex > 1 ? true: false}
                 outcome={outcome}
               />
             ))}
             </div>
         )}
-      
+
+        {outcomes.length > 0 && messageIndex===27 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <MyPaidInBoxDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+        {outcomes.length > 0 && messageIndex===26 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <InBoxDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
         </Card>
   );
 }
