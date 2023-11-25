@@ -46,10 +46,11 @@ function ListAccount(): JSX.Element {
           </Item.Description>
         </Item.Content>
         <br />
-        <Toggle
+        {callFrom!=99 && (<>
+          <Toggle
             className='info-toggle'
             label={<><strong>{t<string>(' Key: ')}</strong>
-        {isShowInfo && (
+            {isShowInfo && (
               <>
                 {(callFrom===1 || callFrom===2 || callFrom===0) && (<>
                 {t<string>(' Link to See More: ')}
@@ -83,13 +84,11 @@ function ListAccount(): JSX.Element {
                 </>)}
               </>
             )}
-            
-            
-            
-                      </>}
+            </>}
             onChange={toggleShowInfo}
             value={isShowInfo}
             />
+        </>)}
 
       </div>
     )

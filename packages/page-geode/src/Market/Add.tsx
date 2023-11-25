@@ -109,7 +109,7 @@ function Add ({ defaultAddress, onClose }: Props): React.ReactElement {
   
   return (
     <Modal
-      header={t('Load the Geode Profile Contract to your local browser: (just Click Load!)')}
+      header={t('Load the Geode Market Contract to your local browser: (just Click Load!)')}
       onClose={onClose}
     >
       <Modal.Content>

@@ -2,22 +2,22 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-import { Input, Label } from 'semantic-ui-react'
+import { Input } from 'semantic-ui-react'
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import type { ContractPromise } from '@polkadot/api-contract';
 import type { ContractCallOutcome } from '@polkadot/api-contract/types';
 import type { WeightV2 } from '@polkadot/types/interfaces';
 import type { CallResult } from '../shared/types';
-import CopyInline from '../shared/CopyInline';
+//import CopyInline from '../shared/CopyInline';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Expander, LabelHelp, AccountName, IdentityIcon, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
+import { Expander, Button, Dropdown, InputAddress, InputBalance, Modal, Toggle, TxButton } from '@polkadot/react-components';
 import { useAccountId, useApi, useDebounce, useFormField, useToggle } from '@polkadot/react-hooks';
 import { Available } from '@polkadot/react-query';
-import { isHex, stringToHex, hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
+import { hexToString, BN, BN_ONE, BN_ZERO } from '@polkadot/util';
 
 import { InputMegaGas, Params } from '../shared';
 import { useTranslation } from '../translate';
@@ -45,10 +45,10 @@ interface Props {
 
 const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 const BNtoGeode = (_num: number|undefined) => _num? _num/1000000000000: 0;
-const GeodeToBN = (_num: number|undefined) => _num? _num*1000000000000: 0;
-const paramToNum = (_num: number|undefined) => _num? _num : 0; 
-const paramToString = (_string: string|undefined) => _string? _string : '';
-const paramToBool = (_bool: boolean|undefined) => _bool? _bool: false;
+// const GeodeToBN = (_num: number|undefined) => _num? _num*1000000000000: 0;
+// const paramToNum = (_num: number|undefined) => _num? _num : 0; 
+// const paramToString = (_string: string|undefined) => _string? _string : '';
+// const paramToBool = (_bool: boolean|undefined) => _bool? _bool: false;
 const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
 
 function CallModal ({ className = '', passListingID, passOfferCoin, passAskingCoin, passPrice, passMethod, 
@@ -76,7 +76,7 @@ function CallModal ({ className = '', passListingID, passOfferCoin, passAskingCo
   const [formCountry, setFormCountry] = useState<string>();
   const [formCity, setFormCity] = useState<string>();
   const [formNotes, setFormNotes] = useState<string>();
-  const [formHide, setFormHide] = useState<boolean>();
+  //const [formHide, setFormHide] = useState<boolean>();
 
   const weight = useWeight();
   const dbValue = useDebounce(value);
@@ -86,10 +86,10 @@ function CallModal ({ className = '', passListingID, passOfferCoin, passAskingCo
   const isShow: boolean = false;
   const isShowParams: boolean = true;
 
-  function hextoHuman(_hexIn: string): string {
-    const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
-    return(_Out)
-  }
+  // function hextoHuman(_hexIn: string): string {
+  //   const _Out: string = (isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '';
+  //   return(_Out)
+  // }
 
   useEffect((): void => {
     setEstimatedWeight(null);

@@ -1,8 +1,8 @@
 {
   "source": {
-    "hash": "0x398ccac214b49d79a2d55b39de9c157f99c50e02825f9f16c717fdee14d8800c",
+    "hash": "0x291ce42b9ff50a867b0d43d528f85aa517f01c5d40779effbc800bb73857079a",
     "language": "ink! 4.2.0",
-    "compiler": "rustc 1.70.0-nightly",
+    "compiler": "rustc 1.68.0-nightly",
     "build_info": {
       "build_mode": "Release",
       "cargo_contract_version": "2.0.1",
@@ -57,13 +57,13 @@
         "displayName": [
           "BlockNumber"
         ],
-        "type": 53
+        "type": 62
       },
       "chainExtension": {
         "displayName": [
           "ChainExtension"
         ],
-        "type": 54
+        "type": 63
       },
       "hash": {
         "displayName": [
@@ -1757,7 +1757,7 @@
         "args": [],
         "default": false,
         "docs": [],
-        "label": "view_my_cart",
+        "label": "view_my_buyer_account",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -1766,6 +1766,22 @@
             "MessageResult"
           ],
           "type": 37
+        },
+        "selector": "0x03c7f398"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "view_my_cart",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 46
         },
         "selector": "0x53fd4c6f"
       },
@@ -1791,7 +1807,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 43
+          "type": 52
         },
         "selector": "0x7f95e652"
       },
@@ -1807,7 +1823,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 45
+          "type": 54
         },
         "selector": "0x01f64559"
       },
@@ -1823,7 +1839,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 47
+          "type": 56
         },
         "selector": "0xfba9911d"
       },
@@ -1839,7 +1855,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 51
+          "type": 60
         },
         "selector": "0xdad05fe7"
       }
@@ -4892,6 +4908,333 @@
             "fields": [
               {
                 "name": "buyer",
+                "type": 39,
+                "typeName": "BuyerProfile"
+              },
+              {
+                "name": "product_lists",
+                "type": 40,
+                "typeName": "Vec<ViewProductList>"
+              },
+              {
+                "name": "service_lists",
+                "type": 42,
+                "typeName": "Vec<ViewServiceList>"
+              },
+              {
+                "name": "bookmarked_stores",
+                "type": 31,
+                "typeName": "Vec<SellerProfile>"
+              },
+              {
+                "name": "digital_downloads",
+                "type": 44,
+                "typeName": "Vec<Download>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_marketplace",
+          "geode_marketplace",
+          "ViewBuyerAccount"
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "buyer_account",
+                "type": 3,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "buyer_name",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "buyer_location",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "member_since",
+                "type": 8,
+                "typeName": "u64"
+              },
+              {
+                "name": "reviews",
+                "type": 5,
+                "typeName": "Vec<Hash>"
+              },
+              {
+                "name": "total_carts",
+                "type": 9,
+                "typeName": "u128"
+              },
+              {
+                "name": "total_orders",
+                "type": 9,
+                "typeName": "u128"
+              },
+              {
+                "name": "total_delivered",
+                "type": 9,
+                "typeName": "u128"
+              },
+              {
+                "name": "total_damaged",
+                "type": 9,
+                "typeName": "u128"
+              },
+              {
+                "name": "total_wrong",
+                "type": 9,
+                "typeName": "u128"
+              },
+              {
+                "name": "total_not_received",
+                "type": 9,
+                "typeName": "u128"
+              },
+              {
+                "name": "total_resolved",
+                "type": 9,
+                "typeName": "u128"
+              },
+              {
+                "name": "total_refused",
+                "type": 9,
+                "typeName": "u128"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_marketplace",
+          "geode_marketplace",
+          "BuyerProfile"
+        ]
+      }
+    },
+    {
+      "id": 40,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 41
+          }
+        }
+      }
+    },
+    {
+      "id": 41,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "owner",
+                "type": 3,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "list_id",
+                "type": 6,
+                "typeName": "Hash"
+              },
+              {
+                "name": "list_name",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "items",
+                "type": 23,
+                "typeName": "Vec<Product>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_marketplace",
+          "geode_marketplace",
+          "ViewProductList"
+        ]
+      }
+    },
+    {
+      "id": 42,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 43
+          }
+        }
+      }
+    },
+    {
+      "id": 43,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "owner",
+                "type": 3,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "list_id",
+                "type": 6,
+                "typeName": "Hash"
+              },
+              {
+                "name": "list_name",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "items",
+                "type": 27,
+                "typeName": "Vec<Service>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_marketplace",
+          "geode_marketplace",
+          "ViewServiceList"
+        ]
+      }
+    },
+    {
+      "id": 44,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 45
+          }
+        }
+      }
+    },
+    {
+      "id": 45,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "product_id",
+                "type": 6,
+                "typeName": "Hash"
+              },
+              {
+                "name": "title",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "brand",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "seller_account",
+                "type": 3,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "seller_name",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "description",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "photo",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "more_info",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "file_url",
+                "type": 7,
+                "typeName": "Vec<u8>"
+              }
+            ]
+          }
+        },
+        "path": [
+          "geode_marketplace",
+          "geode_marketplace",
+          "Download"
+        ]
+      }
+    },
+    {
+      "id": 46,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 47
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 16
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 47
+          },
+          {
+            "name": "E",
+            "type": 16
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 47,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "buyer",
                 "type": 3,
                 "typeName": "AccountId"
               },
@@ -4907,12 +5250,12 @@
               },
               {
                 "name": "cart_products",
-                "type": 39,
+                "type": 48,
                 "typeName": "Vec<UnpaidCartProduct>"
               },
               {
                 "name": "cart_services",
-                "type": 41,
+                "type": 50,
                 "typeName": "Vec<UnpaidCartService>"
               }
             ]
@@ -4926,17 +5269,17 @@
       }
     },
     {
-      "id": 39,
+      "id": 48,
       "type": {
         "def": {
           "sequence": {
-            "type": 40
+            "type": 49
           }
         }
       }
     },
     {
-      "id": 40,
+      "id": 49,
       "type": {
         "def": {
           "composite": {
@@ -5022,17 +5365,17 @@
       }
     },
     {
-      "id": 41,
+      "id": 50,
       "type": {
         "def": {
           "sequence": {
-            "type": 42
+            "type": 51
           }
         }
       }
     },
     {
-      "id": 42,
+      "id": 51,
       "type": {
         "def": {
           "composite": {
@@ -5113,7 +5456,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 52,
       "type": {
         "def": {
           "variant": {
@@ -5121,7 +5464,7 @@
               {
                 "fields": [
                   {
-                    "type": 44
+                    "type": 53
                   }
                 ],
                 "index": 0,
@@ -5142,7 +5485,7 @@
         "params": [
           {
             "name": "T",
-            "type": 44
+            "type": 53
           },
           {
             "name": "E",
@@ -5155,7 +5498,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 53,
       "type": {
         "def": {
           "composite": {
@@ -5186,7 +5529,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 54,
       "type": {
         "def": {
           "variant": {
@@ -5194,7 +5537,7 @@
               {
                 "fields": [
                   {
-                    "type": 46
+                    "type": 55
                   }
                 ],
                 "index": 0,
@@ -5215,7 +5558,7 @@
         "params": [
           {
             "name": "T",
-            "type": 46
+            "type": 55
           },
           {
             "name": "E",
@@ -5228,7 +5571,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 55,
       "type": {
         "def": {
           "composite": {
@@ -5264,7 +5607,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 56,
       "type": {
         "def": {
           "variant": {
@@ -5272,7 +5615,7 @@
               {
                 "fields": [
                   {
-                    "type": 48
+                    "type": 57
                   }
                 ],
                 "index": 0,
@@ -5293,7 +5636,7 @@
         "params": [
           {
             "name": "T",
-            "type": 48
+            "type": 57
           },
           {
             "name": "E",
@@ -5306,7 +5649,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 57,
       "type": {
         "def": {
           "composite": {
@@ -5348,7 +5691,7 @@
               },
               {
                 "name": "orders",
-                "type": 49,
+                "type": 58,
                 "typeName": "Vec<OrderData>"
               }
             ]
@@ -5362,17 +5705,17 @@
       }
     },
     {
-      "id": 49,
+      "id": 58,
       "type": {
         "def": {
           "sequence": {
-            "type": 50
+            "type": 59
           }
         }
       }
     },
     {
-      "id": 50,
+      "id": 59,
       "type": {
         "def": {
           "composite": {
@@ -5413,7 +5756,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 60,
       "type": {
         "def": {
           "variant": {
@@ -5421,7 +5764,7 @@
               {
                 "fields": [
                   {
-                    "type": 52
+                    "type": 61
                   }
                 ],
                 "index": 0,
@@ -5442,7 +5785,7 @@
         "params": [
           {
             "name": "T",
-            "type": 52
+            "type": 61
           },
           {
             "name": "E",
@@ -5455,7 +5798,7 @@
       }
     },
     {
-      "id": 52,
+      "id": 61,
       "type": {
         "def": {
           "composite": {
@@ -5481,7 +5824,7 @@
       }
     },
     {
-      "id": 53,
+      "id": 62,
       "type": {
         "def": {
           "primitive": "u32"
@@ -5489,7 +5832,7 @@
       }
     },
     {
-      "id": 54,
+      "id": 63,
       "type": {
         "def": {
           "variant": {}

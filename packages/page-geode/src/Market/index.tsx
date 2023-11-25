@@ -23,41 +23,31 @@ interface Props {
   
 export default function Market ({ className = '' }: Props): React.ReactElement {
     const { t } = useTranslation();
-    const [isUpdate, toggleUpdate] = useToggle();
-    const [isLookUp, toggleLookUp] = useToggle();
-    const [isSearch, toggleSearch] = useToggle();
-    const [isByAccount, toggleByAccount] = useToggle();
-    const [isByKeyword, toggleByKeyword] = useToggle();
+    const [isFindProducts, toggleFindProducts] = useToggle();
+    const [isFindServices, toggleFindServices] = useToggle();
+    const [isMyOrders, toggleMyOrders] = useToggle();
+    const [isMyAccount, toggleMyAccount]=useToggle();
+    const [isMyCart, toggleMyCart] = useToggle();
+    const [isSellerAcct, toggleSellerAcct] = useToggle();
+
+    const [isUpdateSet, toggleUpdateSet] = useToggle();
+    const [isAddProduct, toggleAddProduct] = useToggle();
+    const [isAddService, toggleAddService] = useToggle();
+
     const refTitle: string[] = 
-    [' Create and update your Profile. (Click again to close) ', 
-     ' Lookup an account and display its profile. (Click again to close) ', 
-     ' Search for Profiles by Keyword or by Account. ',
-     ' Search by Account, Enter Account Public Key below. (Click again to close) ',
-     ' Search by Keyword, Enter a Keyword to search all available Public Profiles.'];
+    [' Find Geode Market Products (Click again to close) ', 
+     ' Find Geode Market Services. (Click again to close) ', 
+     ' List of My Orders (Click again to close). ',
+     ' List My Account. (Click again to close) ',
+     ' View My Cart (Click again to close). ',
+     ' Manage Your Seller Account (Click again to close).'];
     const { allCodes, codeTrigger } = useCodes();
     const { allContracts } = useContracts();
     // todo
     console.log(allCodes);
     //todo
-    const deployApp: boolean = false;
-    // const [codeHash, setCodeHash] = useState<string | undefined>();
-    // const [constructorIndex, setConstructorIndex] = useState(0);
-    // const [isDeployOpen, toggleDeploy, setIsDeployOpen] = useToggle();
-
-    // const _onShowDeploy = useCallback(
-    //   (codeHash: string, constructorIndex: number): void => {
-    //     setCodeHash(codeHash || (allCodes && allCodes[0] ? allCodes[0].json.codeHash : undefined));
-    //     setConstructorIndex(constructorIndex);
-    //     toggleDeploy();
-    //   },
-    //   [allCodes, toggleDeploy]
-    // );
-    
-    // const _onCloseDeploy = useCallback(
-    //   () => setIsDeployOpen(false),
-    //   [setIsDeployOpen]
-    // );
-    
+    const deployApp: boolean = true;
+        
   return (
     <StyledDiv className={className}>
     <div>
@@ -66,86 +56,154 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
             <Card>
             {!deployApp && (<><strong>{'Coming Soon!'}</strong></>)}
 
-        {deployApp && !isByKeyword && !isByAccount && !isLookUp && !isSearch && (
+        {deployApp && !isFindServices 
+                   && !isMyOrders  && !isMyAccount && !isMyCart 
+                   && !isSellerAcct && (
         <><Button
-                icon={(isUpdate) ? 'minus' : 'plus'}
-                label={t<string>('Update Your Profile')}
-                onClick={toggleUpdate}>
+                icon={(isFindProducts) ? 'minus' : 'plus'}
+                label={t<string>('Find Products')}
+                onClick={toggleFindProducts}>
           </Button>
           </>
         )}
-        {deployApp && !isByKeyword && !isByAccount && !isUpdate && !isSearch && (
+        {deployApp && !isFindProducts 
+                   && !isMyOrders  && !isMyAccount && !isMyCart 
+                   && !isSellerAcct && (
           <>
               <Button
-                icon={(isLookUp) ? 'minus' : 'plus'}
-                label={t('Account Lookup')}
-                onClick={toggleLookUp}>
+                icon={(isFindServices) ? 'minus' : 'plus'}
+                label={t('Find Services')}
+                onClick={toggleFindServices}>
               </Button>    
           </>
         )}
-        {deployApp && !isByKeyword && !isByAccount && !isUpdate && !isLookUp && (
+        {deployApp && !isFindProducts 
+                   && !isFindServices && !isMyAccount && !isMyCart 
+                   && !isSellerAcct && (
           <>
           <Button
-            icon={(isSearch) ? 'minus' : 'plus'}
-            label={t('Search')}
-            onClick={toggleSearch}>
+            icon={(isMyOrders) ? 'minus' : 'plus'}
+            label={t('My Orders')}
+            onClick={toggleMyOrders}>
           </Button>    
           </>
         )}
-        {isUpdate && (<>{refTitle[0]}</>)}
-        {isLookUp && (<>{refTitle[1]}</>)}
-        {isSearch && (<>{refTitle[2]}</>)}
-        </Card>                     
-        {isSearch && (
+        {deployApp && !isMyOrders && !isFindProducts 
+                   && !isFindServices && !isMyCart 
+                   && !isSellerAcct && (
+          <>
+          <Button
+            icon={(isMyAccount) ? 'minus' : 'plus'}
+            label={t('My Account')}
+            onClick={toggleMyAccount}>
+          </Button>    
+          </>
+        )}
+        {deployApp && !isMyOrders && !isFindProducts 
+                   && !isFindServices && !isMyAccount 
+                   && !isSellerAcct && (
+          <>
+          <Button
+            icon={(isMyCart) ? 'minus' : 'plus'}
+            label={t('My Cart')}
+            onClick={toggleMyCart}>
+          </Button>    
+          </>
+        )}
+        {deployApp && !isMyOrders && !isFindProducts 
+                   && !isFindServices && !isMyAccount 
+                   && !isMyCart && (
+          <>
+          <Button
+            icon={(isSellerAcct) ? 'minus' : 'plus'}
+            label={t('Seller Account')}
+            isDisabled={isUpdateSet || isAddProduct || isAddService}
+            onClick={toggleSellerAcct}>
+          </Button>    
+          </>
+        )}
+
+        {isFindProducts && (<>{refTitle[0]}</>)}
+        {isFindServices && (<>{refTitle[1]}</>)}
+        {isMyOrders && (<>{refTitle[2]}</>)}
+        {isMyAccount && (<>{refTitle[3]}</>)}
+        {isMyCart && (<>{refTitle[4]}</>)}
+        {isSellerAcct && (<>{refTitle[5]}</>)}
+        </Card> 
+
+        {isSellerAcct && (
         <>
           <Card>
-          {!isByKeyword && (
             <>
               <Button
-                icon={(isByAccount) ? 'minus' : 'plus'}
-                label={t('By Account')}
-                onClick={toggleByAccount}>
+                icon={(isUpdateSet) ? 'minus' : 'plus'}
+                label={t('Update Settings')}
+                isDisabled={isAddProduct || isAddService}
+                onClick={toggleUpdateSet}>
               </Button>    
             </>
-          )}
-          {!isByAccount && (
             <>
-            <Button
-              icon={(isByKeyword) ? 'minus' : 'plus'}
-              label={t('By Keyword')}
-              onClick={toggleByKeyword}>
-            </Button>    
+              <Button
+                icon={(isAddProduct) ? 'minus' : 'plus'}
+                label={t('Add Product')}
+                isDisabled={isUpdateSet || isAddService}
+                onClick={toggleAddProduct}>
+              </Button>    
             </>
-          )}
-          {isByAccount && (<>{refTitle[0]}</>)}
-          {isByKeyword && (<>{refTitle[1]}</>)}
+            <>
+              <Button
+                icon={(isAddService) ? 'minus' : 'plus'}
+                label={t('Add Service')}
+                isDisabled={isUpdateSet || isAddProduct}
+                onClick={toggleAddService}>
+              </Button>    
+            </>
           </Card>
         </>
         )}
         </Table>
-        {isUpdate && (
+        {isFindProducts && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={0}
+            initMessageIndex={30}
         />)}
-        {isLookUp && (
+        {isFindServices && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={1}
+            initMessageIndex={31}
         />)}
-        {isByAccount && (
+
+        {isUpdateSet && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={3}
+            initMessageIndex={18}
         />)}
-        {isByKeyword && (
+        {isAddProduct && (
           <ContractsTable
             contracts={allContracts}
             updated={codeTrigger}
-            initMessageIndex={2}
+            initMessageIndex={26}
+        />)}
+        {isAddService && (
+          <ContractsTable
+            contracts={allContracts}
+            updated={codeTrigger}
+            initMessageIndex={28}
+        />)}
+        {isMyCart && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={35}
+        />)}
+        {isSellerAcct && (
+          <ContractsTable
+            contracts={allContracts}
+            updated={codeTrigger}
+            initMessageIndex={37}
         />)}
 
     </div>
