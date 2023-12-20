@@ -32,9 +32,19 @@ function CallSendMessage ({ className = '', onClear, messageId, fromAcct, toAcct
     return(
         <div>
           {(callIndex===0  || callIndex===1  || 
-            callIndex===2  || callIndex===4  || 
+            callIndex===2  || callIndex===3  || 
+            callIndex===4  || 
             callIndex===5  || callIndex===6  ||
-            callIndex===27 || callIndex===29) ? <>
+            callIndex===7  || callIndex===8  ||
+            callIndex===9  || callIndex===10 ||
+            callIndex===11 ||
+            callIndex===12 || callIndex===13 ||
+            callIndex===14 ||
+            callIndex===19 || callIndex===21 ||
+            callIndex===22 || callIndex===23 ||
+            callIndex===24 || callIndex===25 ||
+            callIndex===27 || callIndex===29 ||
+            callIndex===39 ) ? <>
             <ContractsModal
                 toAcct={toAcct}
                 messageId={messageId}

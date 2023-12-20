@@ -196,7 +196,7 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
     function accountInfo(_acct: string): JSX.Element {
       return(<>
           <IdentityIcon value={_acct}/>{' | '}
-          <AccountName value={_acct}/>{' | '}
+          <AccountName value={_acct} withSidebar={true}/>{' | '}
           {acctToShort(_acct)}{' '}
           <CopyInline value={_acct} label={''}/>
       </>)
@@ -244,7 +244,7 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
               <Table.Row>
               <Table.HeaderCell>
                 
-                <h2><strong>{'Buyer: '}</strong>{accountInfo(profileDetail.ok.buyer)}<br /><br />
+                <h2><strong>{t('Buyer: ')}</strong>{accountInfo(profileDetail.ok.buyer)}<br /><br />
                 
                 <Label  as='a' 
                         color='orange' 
@@ -255,8 +255,8 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
                             {setCount(count + 1)}
                             {_makeCheckoutUpdate()}</>}}
                         >{t<string>('Checkout')}</Label><br /><br />
-                    <strong>{'Total in Cart: '}</strong>{microToGeode(profileDetail.ok.cartTotal)}{' Geode'}<br />
-                    <strong>{'Number of Items: '}</strong>
+                    <strong>{t('Total in Cart: ')}</strong>{microToGeode(profileDetail.ok.cartTotal)}{t(' Geode')}<br />
+                    <strong>{t('Number of Items: ')}</strong>
                     <Label  color='blue' circular size='large'>
                         {profileDetail.ok.totalItems}
                     </Label>
@@ -280,7 +280,7 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
                                   rel="noopener noreferrer"
                       /> 
                       <Item.Content>
-                                  <Item.Header as='a'>{'Product: '}
+                                  <Item.Header as='a'>{t('Product: ')}
                                   <Label as='a' 
                                        color='orange' 
                                        circular 
@@ -289,7 +289,7 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
                                                {setUsername(_product.title)}
                                                {setCount(count + 1)}
                                                {_makeAddToCartUpdate()}</>}}
-                                >{'Update Quantity'}</Label>
+                                >{t('Update Quantity')}</Label>
                                   <Label as='a' 
                                        color='orange' 
                                        circular 
@@ -298,7 +298,7 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
                                                {setUsername(_product.title)}
                                                {setCount(count + 1)}
                                                {_makeAddToListUpdate()}</>}}
-                                >{'Remove Item'}</Label>
+                                >{t('Remove Item')}</Label>
                                   </Item.Header>
                                   <Item.Meta>
                                       <h3><strong>{hextoHuman(_product.title)}</strong></h3>

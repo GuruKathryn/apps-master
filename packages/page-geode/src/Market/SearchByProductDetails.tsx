@@ -1,34 +1,33 @@
-// Copyright 2017-2023 @polkadot/app-whitelist authors & contributors
+// Copyright 2017-2023 @polkadot authors & contributors
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-//import React from 'react';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
 import type { CallResult } from './types';
 import styled from 'styled-components';
 import { stringify, hexToString, isHex } from '@polkadot/util';
 import { Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } from '@polkadot/react-components';
-import { Divider, Item, Message, Table, Label, Image } from 'semantic-ui-react'
+import { Grid, Divider, Item, Message, Table, Label, Image } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import AccountHeader from '../shared/AccountHeader';
-//import { useToggle } from '@polkadot/react-hooks';
 import CallSendMessage from './CallSendMessage';
-
-//import JSONprohibited from '../shared/geode_prohibited.json';
 
 interface Props {
     className?: string;
     onClear?: () => void;
     isAccount?: boolean;
     outcome: CallResult;
-    //onClose: () => void;
   }
   
-//   type Reviews = {
-//     // todo - type structure of reviews
-//     submitted: string
-//   }
+  type Review = {
+    reviewId: string,
+    accountId: string,
+    reviewer: string,
+    rating: number,
+    review: string,
+    timestamp: number
+  }
 
   type Products = {
     productId: string,
@@ -40,7 +39,9 @@ interface Props {
     sellerAccount: string,
     sellerName: string,
     description: string,
-    reviews: string[],
+    reviewAverage: number,
+    reviewCount: number,
+    reviews: Review[],
     inventory: number,
     photoOrYoutubeLink1: string,
     photoOrYoutubeLink2: string,
@@ -48,8 +49,7 @@ interface Props {
     moreInfoLink: string,
     deliveryInfo: string,
     productLocation: string,
-    digitalFileUrl: string,
-    zenoPercent: string,
+    zenoPercent: number,
     zenoBuyers: string[]
   }
 
@@ -65,7 +65,6 @@ interface Props {
 function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
-//    const searchWords: string[] = JSONprohibited;
 
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
@@ -76,13 +75,19 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
     const [isAddToList, setAddToList] = useState(false);
     const [_username, setUsername] = useState('');
     const [_messageId, setMessageId] = useState('');
-
+    const [_filter, setFilter] = useState('none'); // all // digital // physical // in_stock // 
+    const [_sort, setSort] = useState('none');
 
     const withHttp = (url: string) => url.replace(/^(?:(.*:)?\/\/)?(.*)/i, (match, schemma, nonSchemmaUrl) => schemma ? match : `http://${nonSchemmaUrl}`);
     const hextoPhoto = (_url: string) => (isHex(_url) ? withHttp(hexToString(_url).trim()) : defaultImage);
     const acctToShort = (_acct: string) => (_acct.length>7 ? _acct.slice(0,7)+'...' : _acct);
     const microToGeode = (_num: number) => (_num>-1 ? _num/1000000000000: 0);
     const boolToHuman = (_bool: boolean) => (_bool? 'Yes': 'No');
+    const numCheck = (_num: number) => (_num>-1 ? _num: 0);
+    const rateCheck = (_num: number) => ((_num>-1 && _num<6)? _num: 0);
+    const dateCheck = (_num: number) => (_num>0? timeStampToDate(_num): t('No Date'));
+    const rating: string[] = ['','⭐️','⭐️⭐️','⭐️⭐️⭐️','⭐️⭐️⭐️⭐️','⭐️⭐️⭐️⭐️⭐️'];
+    const numToPercent = (_num: number) => ((_num>-1 && _num<=100)? _num.toString(): '0')+ ' %';
 
     const _reset = useCallback(
       () => {setAddToCart(false);
@@ -105,20 +110,33 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
       []
     )
 
-
-    // function autoCorrect(arr: string[], str: string): JSX.Element {
-    //     arr.forEach(w => str = str.replaceAll(w, '****'));
-    //     arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '****'));
-    //     arr.forEach(w => str = str.replaceAll(w.charAt(0) + w.slice(1).toUpperCase, '****'));        
-    //     arr.forEach(w => str = str.replaceAll(w.toUpperCase(), '****'));
-    //     return (
-    //     <>{t<string>(str)}</>)
-    // }
-
     function hextoHuman(_hexIn: string): string {
         return((isHex(_hexIn))? t<string>(hexToString(_hexIn).trim()): '')
       }
+
+    function numBadge(_num: number): JSX.Element {
+        return(<>
+          <Label circular size='small' color='blue'>
+            {numCheck(_num)}
+          </Label>
+        </>)
+      }
   
+      function timeStampToDate(tstamp: number): JSX.Element {
+        try {
+         const event = new Date(tstamp);
+         return (
+              <><i>{event.toDateString()}{' '}
+                   {event.toLocaleTimeString()}{' '}</i></>
+          )
+        } catch(error) {
+         console.error(error)
+         return(
+             <><i>{t<string>('No Date')}</i></>
+         )
+        }
+     }
+
     function photoLink(_url: string, _title: string): JSX.Element {
         return(<>
         {_url.length>2 &&
@@ -131,12 +149,9 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
     }
 
     function showPhoto(_url: string): JSX.Element {
-      
-     // {withHttp(hexToString(_url).trim())==='https:www.yuoutube.com'? }
       return(<>
       {_url.length>2 && 
-      <>
-        
+      <>        
         <Image as='a' 
                   size='tiny' 
                   width={150}
@@ -146,9 +161,7 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
                   href={isHex(_url) ? withHttp(hexToString(_url).trim()) : ''} 
                   target="_blank" 
                   rel="noopener noreferrer"
-      />      
-      </>}
-      </>)
+      /></>}</>)
     }
 
     function renderLink(_link: string): JSX.Element {
@@ -169,30 +182,54 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
       )
     }
     
+  function t_strong(_str: string): JSX.Element{return(<><strong>{t<string>(_str)}</strong></>)}
+
+  function withCopy(_str: string): JSX.Element {
+      return(<>
+      {_str}{' '}
+      <CopyInline value={_str} label={''}/>
+      </>)
+  }
+
+  function withHelp(_str: string, _help: string): JSX.Element {
+      return(<>
+      <LabelHelp help={t<string>(_help)} />
+      {' '}{t<string>(_str)}
+      </>)
+  }
+
+  function SortMenu(_productBool: boolean): JSX.Element {
+    const _menu: string[] = _productBool? 
+          ['None','Rating','Price','All','Digital','Physical','In Stock']:
+          ['None','Rating','Price','All','Online','In Person','In Stock'];
+    return(<>
+          <Label size='big'>{t_strong(' Sort: ')}</Label>
+          <Label as='a' size='big' onClick={()=> <>{_reset()}{setSort('none')}</>}>
+                  {_sort==='none'? <u>{t(_menu[0])}</u>: <>{t(_menu[0])}</>}</Label>
+          <Label as='a' size='big' onClick={()=> <>{_reset()}{setSort('rating')}</>}>
+                  {_sort==='rating'? <u>{t(_menu[1])}</u>: <>{t(_menu[1])}</>}</Label>
+          <Label as='a' size='big' onClick={()=> <>{_reset()}{setSort('price')}</>}>
+                  {_sort==='price'? <u>{t(_menu[2])}</u>: <>{t(_menu[2])}</>}</Label>
+          <Label size='big'>{t_strong(' Filter: ')}</Label>
+          <Label as='a' size='big' onClick={()=> <>{_reset()}{setFilter('none')}</>}>
+                  {_filter==='none'? <u>{t(_menu[3])}</u>: <>{t(_menu[3])}</>}</Label>
+          <Label as='a' size='big' onClick={()=> <>{_reset()}{setFilter('digital')}</>}>
+                  {_filter==='digital'? <u>{t(_menu[4])}</u>: <>{t(_menu[4])}</>}</Label>
+          <Label as='a' size='big' onClick={()=> <>{_reset()}{setFilter('physical')}</>}>
+                  {_filter==='physical'? <u>{t(_menu[5])}</u>: <>{t(_menu[5])}</>}</Label>
+          <Label as='a' size='big' onClick={()=> <>{_reset()}{setFilter('in_stock')}</>}>
+                  {_filter==='in_stock'? <u>{t(_menu[6])}</u>: <>{t(_menu[6])}</>}</Label>
+    </>)
+  }
 
     function accountInfo(_acct: string): JSX.Element {
       return(<>
           <IdentityIcon value={_acct}/>
-          <AccountName value={_acct}/>
+          <AccountName value={_acct} withSidebar={true}/>
           {acctToShort(_acct)}{' '}
           <CopyInline value={_acct} label={''}/>
       </>)
   }
-
-    //   function timeStampToDate(tstamp: number): JSX.Element {
-    //     try {
-    //      const event = new Date(tstamp);
-    //      return (
-    //           <><i>{event.toDateString()}{' '}
-    //                {event.toLocaleTimeString()}{' '}</i></>
-    //       )
-    //     } catch(error) {
-    //      console.error(error)
-    //      return(
-    //          <><i>{t<string>('No Date')}</i></>
-    //      )
-    //     }
-    //  }
   
     function ListAccount(): JSX.Element {
       return(
@@ -211,94 +248,140 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
           </div>
       )}
       
+      function ShowProduct(_product: any): JSX.Element {
+        return(<>
+                        <Message>
+                          <Item.Group>
+                          <Item>
+                          <Item.Image as='a' size='tiny' 
+                                      src={hextoPhoto(_product.photoOrYoutubeLink1)} 
+                                      rounded 
+                                      href={isHex(_product.photoOrYoutubeLink1) ? withHttp(hexToString(_product.photoOrYoutubeLink1).trim()) : ''} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                          /> 
+                          <Item.Content>
+                                      <Item.Header as='a'>{hextoHuman(_product.title)+' '}
+                                      <Label as='a' 
+                                             color='orange' 
+                                             circular 
+                                             onClick={()=>{<>
+                                                     {setMessageId(_product.productId)}
+                                                     {setUsername(_product.title)}
+                                                     {setCount(count + 1)}
+                                                     {_makeAddToCartUpdate()}</>}}
+                                      >{'Add to Cart'}</Label>
+                                      <Label as='a' 
+                                             color='orange' 
+                                             circular 
+                                             onClick={()=>{<>
+                                                     {setMessageId(_product.productId)}
+                                                     {setUsername(_product.title)}
+                                                     {setCount(count + 1)}
+                                                     {_makeAddToListUpdate()}</>}}
+                                      >{'Add to List'}</Label>
+                                      {photoLink(_product.moreInfoLink, 'More Info')}
+                                      </Item.Header>
+                                      <Item.Meta>
+                                          <h3>{t_strong('Description: ')}<strong>{hextoHuman(_product.description)}</strong></h3>
+                                      </Item.Meta>
+                                      <Item.Description>
+                                        {t_strong('Price: ')}{microToGeode(_product.price)}{' Geode'}<br />
+                                        {t_strong('Inventory: ')}{_product.inventory}<br />
+                                        {t_strong('Product Rating: ')}{rating[rateCheck(_product.reviewAverage)]}<br />
+                                        {t_strong('Number of Reviews: ')}{numBadge(_product.reviewCount)}<br />
+                                        <strong>{withCopy('Product ID: ')}</strong>{acctToShort(_product.productId)}<br />
+                                        {_product.reviews.length>0 && <>
+                                          <Expander className='productReviews' isOpen={false}
+                                          summary={<Label size={'small'} color='orange' circular> {t<string>('Reviews: ')}</Label>}>
+                                          <strong>{t<string>('Reviews: ')}</strong><br />
+                                            {_product.reviews.length>0 && 
+                                            _product.reviews.map((_review: any, index: number)=> <>
+                                                {index+1}{'. '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
+                                            </>)}
+                                          </Expander>                                  
+                                        </>}
+                                      </Item.Description>
+                                      <Item.Extra>
+                                      <Expander 
+                                          className='productDetails'
+                                          isOpen={false}
+                                          summary={<Label size={'small'} color='orange' circular> {t<string>('Details: ')}</Label>}>
+                                          <Grid columns={2} divided>
+                                              <Grid.Column>
+                                              {t_strong('Seller Account: ')}{accountInfo(_product.sellerAccount)}<br />
+                                              {t_strong('Seller Name: ')}{hextoHuman(_product.sellerName)}<br />
+                                              {t_strong('Location: ')}{hextoHuman(_product.productLocation)}<br />
+                                              {t_strong('Brand: ')}{hextoHuman(_product.brand)}<br />
+                                              {t_strong('Category: ')}{hextoHuman(_product.category)}<br />
+                                              {t_strong('Delivery Info: ')}{hextoHuman(_product.deliveryInfo)}<br />
+                                              {t_strong('Digital Product: ')}{boolToHuman(_product.digital)}<br />
+                                              {t_strong('Zeno Percent: ')}{numToPercent(_product.zenoPercent)}<br />
+                                              {t_strong('Number of Zeno Accounts: ')}{numCheck(_product.zenoBuyers.length)}<br />
+                                              </Grid.Column>
+                                              <Grid.Column>
+                                              {renderLink(_product.photoOrYoutubeLink1)}
+                                              {renderLink(_product.photoOrYoutubeLink2)}
+                                              {renderLink(_product.photoOrYoutubeLink3)}
+                                              </Grid.Column>
+                                          </Grid>
+                                        </Expander>
+                                      </Item.Extra>
+                                  </Item.Content>
+                          </Item>
+                          </Item.Group>
+                      </Message>
+        </>)
+      }
+      
+
       function ShowProfile(): JSX.Element {
-        try {
-          //const _bannerUrl: string = (isHex(profileDetail.ok.seller.bannerUrl) ? withHttp(hexToString(profileDetail.ok.seller.bannerUrl).trim()) : defaultImage);
-          return(
-            <div>
-            <Table stretch>
-            <Table.Header>
-              <Table.Row>
-              </Table.Row>
-            </Table.Header>
-              <Table.Cell verticalAlign='top'>
-                  <h2><LabelHelp help={t<string>(' List of Products currently being offered. ')} />
-                  {' '}<strong><i>{t<string>('List of Products: ')}</i></strong></h2>
-                  {profileDetail.ok.products.length>0 && 
-                      profileDetail.ok.products.map((_product, index: number)=> <>
-                  <Message>
-                      <Item.Group>
-                      <Item>
-                      <Item.Image as='a' size='tiny' 
-                                  src={hextoPhoto(_product.photoOrYoutubeLink1)} 
-                                  rounded 
-                                  href={isHex(_product.photoOrYoutubeLink1) ? withHttp(hexToString(_product.photoOrYoutubeLink1).trim()) : ''} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                      /> 
-                      <Item.Content>
-                                  <Item.Header as='a'>{'Product: '}
-                                  <Label as='a' 
-                                       color='orange' 
-                                       circular 
-                                       onClick={()=>{<>
-                                               {setMessageId(_product.productId)}
-                                               {setUsername(_product.title)}
-                                               {setCount(count + 1)}
-                                               {_makeAddToCartUpdate()}</>}}
-                                >{'Add To Cart'}</Label>
-                                  <Label as='a' 
-                                       color='orange' 
-                                       circular 
-                                       onClick={()=>{<>
-                                               {setMessageId(_product.productId)}
-                                               {setUsername(_product.title)}
-                                               {setCount(count + 1)}
-                                               {_makeAddToListUpdate()}</>}}
-                                >{'Add To List'}</Label>
-                                  {photoLink(_product.moreInfoLink, 'More Info')}
-                                  </Item.Header>
-                                  <Item.Meta>
-                                      <h3><strong>{hextoHuman(_product.title)}</strong></h3>
-                                  </Item.Meta>
-                                  <Item.Description>
-                                      <strong>{t<string>('Description: ')}</strong>{hextoHuman(_product.description)}<br />
-                                      <strong>{t<string>('Price: ')}</strong>{microToGeode(_product.price)}{t(' Geode')}<br />
-                                      <strong>{t<string>('Reviews: ')}</strong>{'4.5 ⭐️'}<br />
-                                      {t<string>('Product ID: ')}{acctToShort(_product.productId)}
-                                      {' '}<CopyInline value={_product.productId} label={''}/><br />
-                                      
-                                  </Item.Description>
-                                  <Item.Extra>
-                                  <Expander 
-                                    className='message'
-                                    isOpen={false}
-                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Details')}</Label>}>
-                                      <strong>{t<string>('Inventory: ')}</strong>{_product.inventory}<br />
-                                      <strong>{t<string>('Seller Account: ')}</strong>{accountInfo(_product.sellerAccount)}<br />
-                                      <strong>{t<string>('Seller Name: ')}</strong>{hextoHuman(_product.sellerName)}<br />
-                                      <strong>{t<string>('Location: ')}</strong>{hextoHuman(_product.productLocation)}<br />
-                                      <strong>{t<string>('Brand: ')}</strong>{hextoHuman(_product.brand)}<br />
-                                      <strong>{t<string>('Category: ')}</strong>{hextoHuman(_product.category)}<br />
-                                      <strong>{t<string>('Delivery Info: ')}</strong>{hextoHuman(_product.deliveryInfo)}<br />
-                                      <strong>{t<string>('Zeno Percent: ')}</strong>{_product.zenoPercent}<br />
-                                      <strong>{t<string>('Digital Product: ')}</strong>{boolToHuman(_product.digital)}<br />
-                                      {_product.digital && <>
-                                      {t<string>('File Url: ')}{' '}{ photoLink(_product.digitalFileUrl, 'Link')}<br />
-                                      </>}
-                                      {renderLink(_product.photoOrYoutubeLink1)}
-                                      {renderLink(_product.photoOrYoutubeLink2)}
-                                      {renderLink(_product.photoOrYoutubeLink3)}
-                                    </Expander>
-                                  </Item.Extra>
-                              </Item.Content>
-                      </Item>
-                      </Item.Group>
-                  </Message>
-                  
-                  </>)}
-                  <Divider />
-                  
+          try {
+            return(
+              <div>
+              <Table stretch>
+              <Table.Header>
+                <Table.Row>
+                </Table.Row>
+              </Table.Header>
+                <Table.Cell verticalAlign='top'>
+                <h2>{t_strong('Results for Keyword Search: ')}
+                        {profileDetail.ok.search.length>2? '"' + hextoHuman(profileDetail.ok.search) + '"': t('All Products')}</h2>
+                        {profileDetail.ok.products.length>0 && <>
+                <h2><strong><i>{withHelp('Products: ', ' Products currently being offered by this store. ')}</i></strong>                
+                {SortMenu(true)}</h2>
+
+                {_sort==='price'? <>
+                {profileDetail.ok.products.length>0 && profileDetail.ok.products
+                  .filter(_obj => (_filter==='digital' && _obj.digital===true) || 
+                  (_filter==='in_stock' && _obj.inventory>0) ||
+                  (_filter==='none' && _obj.inventory>-1) ||
+                  (_filter==='physical' && _obj.digital===false)) 
+                  .sort((a, b) => b.price - a.price)               
+                  .map((_product)=> <>{ShowProduct(_product)}
+                </>)} 
+                </>: 
+                _sort==='rating'? <>
+                {profileDetail.ok.products.length>0 && profileDetail.ok.products  
+                  .filter(_obj => (_filter==='digital' && _obj.digital===true) || 
+                                  (_filter==='in_stock' && _obj.inventory>0) ||
+                                  (_filter==='none' && _obj.inventory>-1) ||
+                                  (_filter==='physical' && _obj.digital===false)) 
+                  .sort((a,b) => b.reviewAverage - a.reviewAverage)            
+                  .map((_product)=> <>{ShowProduct(_product)}
+                  </>)}                                        
+                </>:
+                <>
+                {profileDetail.ok.products.length>0 && profileDetail.ok.products              
+                  .filter(_obj => (_filter==='digital' && _obj.digital===true) || 
+                  (_filter==='in_stock' && _obj.inventory>0) ||
+                  (_filter==='none' && _obj.inventory>-1) ||
+                  (_filter==='physical' && _obj.digital===false)) 
+                  .map((_product)=> <>{ShowProduct(_product)}
+                  </>)}                          
+                </>}
+              </>}
+              <Divider />
               </Table.Cell>
         </Table>
         </div>   
@@ -307,7 +390,7 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
         console.log(e);
         return(
           <div>
-            <Card>{t<string>('No Seller Data')}</Card>
+            <Card>{t<string>('No Product Data')}</Card>
           </div>
         )
       }
@@ -326,7 +409,6 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
       {isAddToCart && (<>
         <CallSendMessage
                 callIndex={0}
-                //toAcct={_toAcct}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}
@@ -335,7 +417,6 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
         {isAddToList && (<>
         <CallSendMessage
                 callIndex={1}
-                //toAcct={_toAcct}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}

@@ -26,6 +26,10 @@ import SellerDetails from './SellerDetails';
 import MyCartDetails from './MyCartDetails';
 import SearchByProductDetails from './SearchByProductDetails';
 import SearchByServiceDetails from './SearchByServiceDetails';
+import SearchByStoreDetails from './SearchByStoreDetails';
+import MyOrdersDetails from './MyOrdersDetails';
+import MyAccountDetails from './MyAccountDetails';
+import GotoStoreDetails from './GotoStoreDetails';
 
 interface Props {
   className?: string;
@@ -193,6 +197,21 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
                 {'(2) '}{t<string>('Click View ')}<br />
                 {t<string>('NOTE: ')}{t<string>('Use the UPDATE button to change Product or Service details.')}
+                <br />
+              </>)}
+              {messageIndex===36 && (<>
+                <h2><strong>{t<string>('Market - Go To a Seller Account')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Go To a Seller Account: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Select the Account of the Store owner. ')}<br />
+                {'(3) '}{t<string>('Click View ')}<br />
+                <br />
+              </>)}
+              {messageIndex===33 && (<>
+                <h2><strong>{t<string>('Market - My Orders')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Getting Your Orders: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Click View ')}<br />
                 <br />
               </>)}
               {messageIndex===31 && (<>
@@ -895,6 +914,44 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </div>
         )}
 
+        {outcomes.length > 0 && messageIndex===32 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <SearchByStoreDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+
+        {outcomes.length > 0 && messageIndex===33 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <MyOrdersDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+        {outcomes.length > 0 && messageIndex===34 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <MyAccountDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
+
+
         {outcomes.length > 0 && messageIndex===35 && (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
@@ -907,6 +964,17 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </div>
         )}
 
+        {outcomes.length > 0 && messageIndex===36 && (
+            <div>
+            {outcomes.map((outcome, index): React.ReactNode => (
+              <GotoStoreDetails
+                key={`outcome-${index}`}
+                onClear={_onClearOutcome(index)}
+                outcome={outcome}
+              />
+            ))}
+            </div>
+        )}
 
         {outcomes.length > 0 && messageIndex===37 && (
             <div>

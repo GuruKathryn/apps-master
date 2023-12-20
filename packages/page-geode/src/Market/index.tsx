@@ -23,6 +23,8 @@ interface Props {
   
 export default function Market ({ className = '' }: Props): React.ReactElement {
     const { t } = useTranslation();
+    const [isGotoStore, toggleGotoStore] = useToggle();
+    const [isFindStore, toggleFindStore] = useToggle();
     const [isFindProducts, toggleFindProducts] = useToggle();
     const [isFindServices, toggleFindServices] = useToggle();
     const [isMyOrders, toggleMyOrders] = useToggle();
@@ -40,7 +42,9 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
      ' List of My Orders (Click again to close). ',
      ' List My Account. (Click again to close) ',
      ' View My Cart (Click again to close). ',
-     ' Manage Your Seller Account (Click again to close).'];
+     ' Manage Your Seller Account (Click again to close).',
+     ' Find Geode Market Sellers (Click again to close).',
+     ' Go to a Sellers Store (Click again to close).'];
     const { allCodes, codeTrigger } = useCodes();
     const { allContracts } = useContracts();
     // todo
@@ -56,9 +60,20 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
             <Card>
             {!deployApp && (<><strong>{'Coming Soon!'}</strong></>)}
 
-        {deployApp && !isFindServices 
+        {deployApp && !isFindServices && !isFindStore
                    && !isMyOrders  && !isMyAccount && !isMyCart 
-                   && !isSellerAcct && (
+                   && !isSellerAcct && !isFindProducts && (
+        <><Button
+                icon={(isGotoStore) ? 'minus' : 'plus'}
+                label={t<string>('Go to Store')}
+                onClick={toggleGotoStore}>
+          </Button>
+          </>
+        )}
+
+        {deployApp && !isFindServices && !isFindStore
+                   && !isMyOrders  && !isMyAccount && !isMyCart 
+                   && !isSellerAcct && !isGotoStore && (
         <><Button
                 icon={(isFindProducts) ? 'minus' : 'plus'}
                 label={t<string>('Find Products')}
@@ -66,9 +81,9 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
           </Button>
           </>
         )}
-        {deployApp && !isFindProducts 
+        {deployApp && !isFindProducts && !isFindStore
                    && !isMyOrders  && !isMyAccount && !isMyCart 
-                   && !isSellerAcct && (
+                   && !isSellerAcct && !isGotoStore && (
           <>
               <Button
                 icon={(isFindServices) ? 'minus' : 'plus'}
@@ -77,20 +92,21 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
               </Button>    
           </>
         )}
-        {deployApp && !isFindProducts 
-                   && !isFindServices && !isMyAccount && !isMyCart 
-                   && !isSellerAcct && (
+        {deployApp && !isFindProducts && !isFindServices
+                   && !isMyOrders  && !isMyAccount && !isMyCart 
+                   && !isSellerAcct && !isGotoStore && (
           <>
-          <Button
-            icon={(isMyOrders) ? 'minus' : 'plus'}
-            label={t('My Orders')}
-            onClick={toggleMyOrders}>
-          </Button>    
+              <Button
+                icon={(isFindStore) ? 'minus' : 'plus'}
+                label={t('Find Stores')}
+                onClick={toggleFindStore}>
+              </Button>    
           </>
         )}
-        {deployApp && !isMyOrders && !isFindProducts 
+
+        {deployApp && !isMyOrders && !isFindProducts && !isFindStore
                    && !isFindServices && !isMyCart 
-                   && !isSellerAcct && (
+                   && !isSellerAcct && !isGotoStore && (
           <>
           <Button
             icon={(isMyAccount) ? 'minus' : 'plus'}
@@ -99,9 +115,9 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
           </Button>    
           </>
         )}
-        {deployApp && !isMyOrders && !isFindProducts 
+        {deployApp && !isMyOrders && !isFindProducts && !isFindStore
                    && !isFindServices && !isMyAccount 
-                   && !isSellerAcct && (
+                   && !isSellerAcct && !isGotoStore && (
           <>
           <Button
             icon={(isMyCart) ? 'minus' : 'plus'}
@@ -110,9 +126,9 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
           </Button>    
           </>
         )}
-        {deployApp && !isMyOrders && !isFindProducts 
+        {deployApp && !isMyOrders && !isFindProducts && !isFindStore
                    && !isFindServices && !isMyAccount 
-                   && !isMyCart && (
+                   && !isMyCart && !isGotoStore && (
           <>
           <Button
             icon={(isSellerAcct) ? 'minus' : 'plus'}
@@ -129,6 +145,8 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
         {isMyAccount && (<>{refTitle[3]}</>)}
         {isMyCart && (<>{refTitle[4]}</>)}
         {isSellerAcct && (<>{refTitle[5]}</>)}
+        {isFindStore && (<>{refTitle[6]}</>)}
+        {isGotoStore && (<>{refTitle[7]}</>)}
         </Card> 
 
         {isSellerAcct && (
@@ -174,6 +192,12 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
             updated={codeTrigger}
             initMessageIndex={31}
         />)}
+        {isFindStore && (
+          <ContractsTable
+            contracts={allContracts}
+            updated={codeTrigger}
+            initMessageIndex={32}
+        />)}
 
         {isUpdateSet && (
           <ContractsTable
@@ -181,6 +205,13 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
             updated={codeTrigger}
             initMessageIndex={18}
         />)}
+        {isMyAccount && (
+          <ContractsTable
+            contracts={allContracts}
+            updated={codeTrigger}
+            initMessageIndex={34}
+        />)}
+
         {isAddProduct && (
           <ContractsTable
             contracts={allContracts}
@@ -193,11 +224,23 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
             updated={codeTrigger}
             initMessageIndex={28}
         />)}
+        {isMyOrders && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={33}
+        />)}
         {isMyCart && (
           <ContractsTable
           contracts={allContracts}
           updated={codeTrigger}
           initMessageIndex={35}
+        />)}
+        {isGotoStore && (
+          <ContractsTable
+          contracts={allContracts}
+          updated={codeTrigger}
+          initMessageIndex={36}
         />)}
         {isSellerAcct && (
           <ContractsTable
