@@ -84,7 +84,7 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
     const microToGeode = (_num: number) => (_num>-1 ? _num/1000000000000: 0);
     const boolToHuman = (_bool: boolean) => (_bool? 'Yes': 'No');
     const numCheck = (_num: number) => (_num>-1 ? _num: 0);
-    const rateCheck = (_num: number) => ((_num>-1 && _num<6)? _num: 0);
+    const rateCheck = (_num: number) => ((_num>0 && _num<6)? _num: 1);
     const dateCheck = (_num: number) => (_num>0? timeStampToDate(_num): t('No Date'));
     const rating: string[] = ['','⭐️','⭐️⭐️','⭐️⭐️⭐️','⭐️⭐️⭐️⭐️','⭐️⭐️⭐️⭐️⭐️'];
     const numToPercent = (_num: number) => ((_num>-1 && _num<=100)? _num.toString(): '0')+ ' %';
@@ -183,13 +183,7 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
     }
     
   function t_strong(_str: string): JSX.Element{return(<><strong>{t<string>(_str)}</strong></>)}
-
-  function withCopy(_str: string): JSX.Element {
-      return(<>
-      {_str}{' '}
-      <CopyInline value={_str} label={''}/>
-      </>)
-  }
+  function withCopy(_str: string): JSX.Element {return(<>{_str}{' '}<CopyInline value={_str} label={''}/></>)}
 
   function withHelp(_str: string, _help: string): JSX.Element {
       return(<>
@@ -248,7 +242,7 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
           </div>
       )}
       
-      function ShowProduct(_product: any): JSX.Element {
+  function ShowProduct(_product: any): JSX.Element {
         return(<>
                         <Message>
                           <Item.Group>
@@ -262,15 +256,13 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
                           /> 
                           <Item.Content>
                                       <Item.Header as='a'>{hextoHuman(_product.title)+' '}
-                                      <Label as='a' 
-                                             color='orange' 
-                                             circular 
+                                      <Label as='a' color='orange' circular 
                                              onClick={()=>{<>
                                                      {setMessageId(_product.productId)}
                                                      {setUsername(_product.title)}
                                                      {setCount(count + 1)}
                                                      {_makeAddToCartUpdate()}</>}}
-                                      >{'Add to Cart'}</Label>
+                                      >{t('Add to Cart')}</Label>
                                       <Label as='a' 
                                              color='orange' 
                                              circular 
@@ -279,7 +271,7 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
                                                      {setUsername(_product.title)}
                                                      {setCount(count + 1)}
                                                      {_makeAddToListUpdate()}</>}}
-                                      >{'Add to List'}</Label>
+                                      >{t('Add to List')}</Label>
                                       {photoLink(_product.moreInfoLink, 'More Info')}
                                       </Item.Header>
                                       <Item.Meta>
@@ -357,7 +349,7 @@ function SearchByProductDetails ({ className = '', onClear, isAccount, outcome: 
                   (_filter==='in_stock' && _obj.inventory>0) ||
                   (_filter==='none' && _obj.inventory>-1) ||
                   (_filter==='physical' && _obj.digital===false)) 
-                  .sort((a, b) => b.price - a.price)               
+                  .sort((a, b) => a.price - b.price)               
                   .map((_product)=> <>{ShowProduct(_product)}
                 </>)} 
                 </>: 

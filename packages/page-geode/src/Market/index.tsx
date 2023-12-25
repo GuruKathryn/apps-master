@@ -2,10 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from 'react';
-//import React, { useCallback, useState } from 'react';
-
 import styled from 'styled-components';
-
 import { Card, Button, Table } from '@polkadot/react-components';
 import { useToggle } from '@polkadot/react-hooks';
 import { useTranslation } from '../translate';
@@ -13,9 +10,7 @@ import { useCodes } from '../useCodes';
 import { useContracts } from '../useContracts';
 
 import ContractsTable from './ContractsTable';
-
 import Summary from './Summary';
-//import Details from './Details';
 
 interface Props {
     className?: string;
@@ -27,7 +22,6 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
     const [isFindStore, toggleFindStore] = useToggle();
     const [isFindProducts, toggleFindProducts] = useToggle();
     const [isFindServices, toggleFindServices] = useToggle();
-    const [isMyOrders, toggleMyOrders] = useToggle();
     const [isMyAccount, toggleMyAccount]=useToggle();
     const [isMyCart, toggleMyCart] = useToggle();
     const [isSellerAcct, toggleSellerAcct] = useToggle();
@@ -61,7 +55,7 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
             {!deployApp && (<><strong>{'Coming Soon!'}</strong></>)}
 
         {deployApp && !isFindServices && !isFindStore
-                   && !isMyOrders  && !isMyAccount && !isMyCart 
+                   && !isMyAccount && !isMyCart 
                    && !isSellerAcct && !isFindProducts && (
         <><Button
                 icon={(isGotoStore) ? 'minus' : 'plus'}
@@ -72,7 +66,7 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
         )}
 
         {deployApp && !isFindServices && !isFindStore
-                   && !isMyOrders  && !isMyAccount && !isMyCart 
+                   && !isMyAccount && !isMyCart 
                    && !isSellerAcct && !isGotoStore && (
         <><Button
                 icon={(isFindProducts) ? 'minus' : 'plus'}
@@ -82,7 +76,7 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
           </>
         )}
         {deployApp && !isFindProducts && !isFindStore
-                   && !isMyOrders  && !isMyAccount && !isMyCart 
+                   && !isMyAccount && !isMyCart 
                    && !isSellerAcct && !isGotoStore && (
           <>
               <Button
@@ -93,7 +87,7 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
           </>
         )}
         {deployApp && !isFindProducts && !isFindServices
-                   && !isMyOrders  && !isMyAccount && !isMyCart 
+                   && !isMyAccount && !isMyCart 
                    && !isSellerAcct && !isGotoStore && (
           <>
               <Button
@@ -104,7 +98,7 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
           </>
         )}
 
-        {deployApp && !isMyOrders && !isFindProducts && !isFindStore
+        {deployApp && !isFindProducts && !isFindStore
                    && !isFindServices && !isMyCart 
                    && !isSellerAcct && !isGotoStore && (
           <>
@@ -115,7 +109,7 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
           </Button>    
           </>
         )}
-        {deployApp && !isMyOrders && !isFindProducts && !isFindStore
+        {deployApp && !isFindProducts && !isFindStore
                    && !isFindServices && !isMyAccount 
                    && !isSellerAcct && !isGotoStore && (
           <>
@@ -126,7 +120,7 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
           </Button>    
           </>
         )}
-        {deployApp && !isMyOrders && !isFindProducts && !isFindStore
+        {deployApp && !isFindProducts && !isFindStore
                    && !isFindServices && !isMyAccount 
                    && !isMyCart && !isGotoStore && (
           <>
@@ -141,7 +135,6 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
 
         {isFindProducts && (<>{refTitle[0]}</>)}
         {isFindServices && (<>{refTitle[1]}</>)}
-        {isMyOrders && (<>{refTitle[2]}</>)}
         {isMyAccount && (<>{refTitle[3]}</>)}
         {isMyCart && (<>{refTitle[4]}</>)}
         {isSellerAcct && (<>{refTitle[5]}</>)}
@@ -223,12 +216,6 @@ export default function Market ({ className = '' }: Props): React.ReactElement {
             contracts={allContracts}
             updated={codeTrigger}
             initMessageIndex={28}
-        />)}
-        {isMyOrders && (
-          <ContractsTable
-          contracts={allContracts}
-          updated={codeTrigger}
-          initMessageIndex={33}
         />)}
         {isMyCart && (
           <ContractsTable

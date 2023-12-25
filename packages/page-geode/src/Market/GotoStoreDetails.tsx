@@ -557,7 +557,7 @@ function ShowProfile(): JSX.Element {
                 (_filter==='in_stock' && _obj.inventory>0) ||
                 (_filter==='none' && _obj.inventory>-1) ||
                 (_filter==='physical' && _obj.digital===false)) 
-                .sort((a, b) => b.price - a.price)               
+                .sort((a, b) => a.price - b.price)               
                 .map((_product)=> <>{ShowProduct(_product)}
               </>)} 
               </>: 
@@ -591,7 +591,7 @@ function ShowProfile(): JSX.Element {
                                 (_filter==='in_stock' && _obj.inventory>0) ||
                                 (_filter==='none' && _obj.inventory>-1) ||
                                 (_filter==='physical' && _obj.online===false)) 
-                .sort((a, b) => b.price - a.price)               
+                .sort((a, b) => a.price - b.price)               
                 .map((_service)=> <>{ShowService(_service)}
               </>)} 
               </>: 

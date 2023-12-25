@@ -2,7 +2,6 @@
 // Copyright 2017-2023 @blockandpurpose.com
 // SPDX-License-Identifier: Apache-2.0
 
-//import React from 'react';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from '../translate';
 import type { CallResult } from './types';
@@ -12,18 +11,14 @@ import { Toggle, Expander, Button, AccountName, LabelHelp, IdentityIcon, Card } 
 import { Grid, Divider, Item, Message, Table, Label, Image } from 'semantic-ui-react'
 import CopyInline from '../shared/CopyInline';
 import AccountHeader from '../shared/AccountHeader';
-//import { useToggle } from '@polkadot/react-hooks';
 import CallSendMessage from './CallSendMessage';
 import { useToggle } from '@polkadot/react-hooks';
-
-//import JSONprohibited from '../shared/geode_prohibited.json';
 
 interface Props {
     className?: string;
     onClear?: () => void;
     isAccount?: boolean;
     outcome: CallResult;
-    //onClose: () => void;
   }
   
   type Discussion = {
@@ -99,8 +94,8 @@ interface Props {
     quantity: number,
     priceEach: number,
     totalOrderPrice: number,
-    deliveryToAddress: string,
-    deliveryToAccount: string,
+    deliverToAddress: string,
+    deliverToAccount: string,
     trackingInfo: string,
     orderStatus: number,
     timeDelivered: number,
@@ -151,7 +146,7 @@ interface Props {
     photoOrYoutubeLink1: string,
     photoOrYoutubeLink2: string,
     photoOrYoutubeLink3: string,
-    moreInfoLink: string,
+    bookingLink: string,
     deliveryInfo: string,
     serviceLocation: string,
     digitalFileUrl: string,
@@ -201,27 +196,27 @@ interface Props {
 function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from, message, output, params, result, when } }: Props): React.ReactElement<Props> | null {
     const defaultImage: string ='https://react.semantic-ui.com/images/wireframe/image.png';
     const { t } = useTranslation();
-//    const searchWords: string[] = JSONprohibited;
 
     const objOutput: string = stringify(output);
     const _Obj = JSON.parse(objOutput);
     const profileDetail: ProfileDetail = Object.create(_Obj);
 
     const [count, setCount] = useState(0);
-    const [isShowReviews, toggleShowReviews] = useToggle(false);
-    const [isShowDetails, toggleShowDetails] = useToggle(false);
-    const [isShowProductLists, toggleShowProductLists] = useToggle(false);
-    const [isShowServiceLists, toggleShowServiceLists] = useToggle(false);
-    const [isShowBookmarks, toggleShowBookmarks] = useToggle(false);
-    const [isShowDownloads, toggleShowDownloads] = useToggle(false);
-    const [isShowItems, toggleShowItems] = useToggle(false);
+    const [isShowReviews, toggleShowReviews] = useToggle(true);
+    const [isShowProductLists, toggleShowProductLists] = useToggle(true);
+    const [isShowServiceLists, toggleShowServiceLists] = useToggle(true);
+    const [isShowBookmarks, toggleShowBookmarks] = useToggle(true);
+    const [isShowDownloads, toggleShowDownloads] = useToggle(true);
+    const [isShowItems, toggleShowItems] = useToggle(true);
 
     const [isUpdate, setUpdate] = useState(false);
-    const [isRemoveItem, setRemoveItem] = useState(false);
+    const [isRemoveProductItem, setRemoveProductItem] = useState(false);
+    const [isRemoveServiceItem, setRemoveServiceItem] = useState(false);
     const [isCheckout, setCheckout] = useState(false);
     const [_username, setUsername] = useState('');
     const [_messageId, setMessageId] = useState('');
-    //const [_rating, setRating] = useState(0);
+    const [isRemoveProductList, setRemoveProductList] = useState(false);
+    const [isRemoveServiceList, setRemoveServiceList] = useState(false);
     const [isRateItem, setRateItem] = useState(false);
     const [isMessage, setMessage] = useState(false);
     const [isDamaged, setDamaged] = useState(false);
@@ -236,150 +231,149 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
     const acctToShort = (_acct: string) => (_acct.length>7 ? _acct.slice(0,7)+'...' : _acct);
     const microToGeode = (_num: number) => (_num>-1 ? _num/1000000000000: 0);
     const boolToHuman = (_bool: boolean) => (_bool? 'Yes': 'No');
-    //const checkString =(_str: string) => (_str.length>0? _str: '');
-    const rateCheck = (_num: number) => ((_num>-1 && _num<6)? _num: 0);
+    const rateCheck = (_num: number) => ((_num>0 && _num<6)? _num: 1);
     const dateCheck = (_num: number) => (_num>0? timeStampToDate(_num): t('No Date'));
     const numToPercent = (_num: number) => ((_num>-1 && _num<=100)? _num.toString(): '0')+ ' %';
     const rating: string[] = ['','⭐️','⭐️⭐️','⭐️⭐️⭐️','⭐️⭐️⭐️⭐️','⭐️⭐️⭐️⭐️⭐️'];
-    //let total: number = 0;
     const numCheck = (_num: number) => (_num>-1 ? _num: 0);
 
     const numToStatus: string[] = 
-    ['Processing Your Order','Shipped','Delivered','Problem (broken)','Refunded',
-     'Replaced','Problem Denied','','','',
+    ['Awaiting seller confirmation','Shipped','Delivered','Complete', 'Problem',
+     'Refused','','','','',
      '','','','',''];
 
      const numToProblem: string[] = 
-     ['None','Broken','Wrong Item','Missing Parts',
-      'Damaged','','','','',
+     ['None','Damaged','Wrong Item','Did not receive',
+      '','','','','',
       '','','','',''];
 
     const numToResolution: string[] =
-    ['None','Unresolved','Resolved','','',''];
+    ['None','Refunded','Replaced','Resolution denied','',''];
 
 
     const _reset = useCallback(
       () => {setUpdate(false);
-             setRemoveItem(false);
+             setRemoveProductItem(false);
+             setRemoveServiceItem(false);
              setCheckout(false);
              setRateItem(false);
-             //setRateSeller(false);
              setMessage(false);
              setDamaged(false);
              setWrong(false);
              setNotReceived(false);
              setRemoveBookmark(false);
+             setRemoveProductList(false);
+             setRemoveServiceList(false);
             },
       []
     )
 
     const _makeRateItemUpdate = useCallback(
       () => { setUpdate(false);
-              setRemoveItem(false);
+              setRemoveProductItem(false);
+              setRemoveServiceItem(false);
               setCheckout(false);
               setRateItem(true);
-              //setRateSeller(false);
               setMessage(false);
               setDamaged(false);
               setWrong(false);
               setNotReceived(false);
               setRemoveBookmark(false);
-            },
+              setRemoveProductList(false);
+              setRemoveServiceList(false);
+             },
       []
     )
 
-    // const _makeRateSellerUpdate = useCallback(
-    //   () => {setUpdate(false);
-    //          setRemoveItem(false);
-    //          setCheckout(false);
-    //          setRateItem(false);
-    //          setRateSeller(true);
-    //          setMessage(false);
-    //          setDamaged(false);
-    //          setWrong(false);
-    //          setNotReceived(false);
-    //         },
-    //   []
-    // )
-
     const _makeMessageUpdate = useCallback(
       () => { setUpdate(false);
-              setRemoveItem(false);
+              setRemoveProductItem(false);
+              setRemoveServiceItem(false);
               setCheckout(false);
               setRateItem(false);
-              //setRateSeller(false);
               setMessage(true);
               setDamaged(false);
               setWrong(false);
               setNotReceived(false);
               setRemoveBookmark(false);
-            },
+              setRemoveProductList(false);
+              setRemoveServiceList(false);
+             },
       []
     )
 
     const _makeDamagedUpdate = useCallback(
       () => { setUpdate(false);
-              setRemoveItem(false);
+              setRemoveProductItem(false);
+              setRemoveServiceItem(false);
               setCheckout(false);
               setRateItem(false);
-              //setRateSeller(false);
               setMessage(false);
               setDamaged(true);
               setWrong(false);
               setNotReceived(false);
               setRemoveBookmark(false);
-            },
+              setRemoveProductList(false);
+              setRemoveServiceList(false);
+             },
       []
     )
 
     const _makeWrongUpdate = useCallback(
       () => { setUpdate(false);
-              setRemoveItem(false);
+              setRemoveProductItem(false);
+              setRemoveServiceItem(false);
               setCheckout(false);
               setRateItem(false);
-              //setRateSeller(false);
               setMessage(false);
               setDamaged(false);
               setWrong(true);
               setNotReceived(false);
               setRemoveBookmark(false);
-            },
+              setRemoveProductList(false);
+              setRemoveServiceList(false);
+             },
       []
     )
 
     const _makeNotReceivedUpdate = useCallback(
       () => { setUpdate(false);
-              setRemoveItem(false);
+              setRemoveProductItem(false);
+              setRemoveServiceItem(false);
               setCheckout(false);
               setRateItem(false);
-              //setRateSeller(false);
               setMessage(false);
               setDamaged(false);
               setWrong(false);
               setNotReceived(true);
               setRemoveBookmark(false);
-            },
+              setRemoveProductList(false);
+              setRemoveServiceList(false);
+             },
       []
     )
 
     const _makeAddToCartUpdate = useCallback(
       () => { setUpdate(false);
-              setRemoveItem(false);
-              setCheckout(false);
+              setRemoveProductItem(false);
+              setRemoveServiceItem(false);
+              setCheckout(true);
               setRateItem(false);
-              //setRateSeller(false);
               setMessage(false);
               setDamaged(false);
               setWrong(false);
               setNotReceived(false);
               setRemoveBookmark(false);
-            },
+              setRemoveProductList(false);
+              setRemoveServiceList(false);
+             },
       []
     )
 
-    const _makeRemoveItemUpdate = useCallback(
+    const _makeRemoveProductItemUpdate = useCallback(
       () => { setUpdate(false);
-              setRemoveItem(true);
+              setRemoveProductItem(true);
+              setRemoveServiceItem(false);
               setCheckout(false);
               setRateItem(false);
               setMessage(false);
@@ -387,28 +381,50 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
               setWrong(false);
               setNotReceived(false);
               setRemoveBookmark(false);
-            },
+              setRemoveProductList(false);
+              setRemoveServiceList(false);
+             },
+      []
+    )
+
+    const _makeRemoveServiceItemUpdate = useCallback(
+      () => { setUpdate(false);
+              setRemoveProductItem(false);
+              setRemoveServiceItem(true);
+              setCheckout(false);
+              setRateItem(false);
+              setMessage(false);
+              setDamaged(false);
+              setWrong(false);
+              setNotReceived(false);
+              setRemoveBookmark(false);
+              setRemoveProductList(false);
+              setRemoveServiceList(false);
+             },
       []
     )
 
     const _makeAccountUpdate = useCallback(
         () => { setUpdate(true);
-                setRemoveItem(false);
+                setRemoveProductItem(false);
+                setRemoveServiceItem(false);
                 setCheckout(false);
                 setRateItem(false);
-                //setRateSeller(false);
                 setMessage(false);
                 setDamaged(false);
                 setWrong(false);
                 setNotReceived(false);
                 setRemoveBookmark(false);
-              },
+                setRemoveProductList(false);
+                setRemoveServiceList(false);
+                 },
         []
       )
 
       const _makeRemoveBookmarkUpdate = useCallback(
         () => { setUpdate(false);
-                setRemoveItem(false);
+                setRemoveProductItem(false);
+                setRemoveServiceItem(false);
                 setCheckout(false);
                 setRateItem(false);
                 setMessage(false);
@@ -416,27 +432,45 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                 setWrong(false);
                 setNotReceived(false);
                 setRemoveBookmark(true);
-              },
+                setRemoveProductList(false);
+                setRemoveServiceList(false);
+                 },
         []
       )
 
-    // const _rateUser = useCallback(
-    //     (_r: number, _N: number) => {
-    //            const _rr = _rating>-1? _rating: 0;
-    //            const _NN = _N>0? _N: 1;
-    //            setRating((_r + _rr)/_NN)
-    //     },
-    //     []
-    // )
+      const _makeRemoveProductListUpdate = useCallback(
+        () => { setUpdate(false);
+                setRemoveProductItem(false);
+                setRemoveServiceItem(false);
+                setCheckout(false);
+                setRateItem(false);
+                setMessage(false);
+                setDamaged(false);
+                setWrong(false);
+                setNotReceived(false);
+                setRemoveBookmark(false);
+                setRemoveProductList(true);
+                setRemoveServiceList(false);
+                 },
+        []
+      )
 
-    // function autoCorrect(arr: string[], str: string): JSX.Element {
-    //     arr.forEach(w => str = str.replaceAll(w, '****'));
-    //     arr.forEach(w => str = str.replaceAll(w.charAt(0).toUpperCase() + w.slice(1), '****'));
-    //     arr.forEach(w => str = str.replaceAll(w.charAt(0) + w.slice(1).toUpperCase, '****'));        
-    //     arr.forEach(w => str = str.replaceAll(w.toUpperCase(), '****'));
-    //     return (
-    //     <>{t<string>(str)}</>)
-    // }
+      const _makeRemoveServiceListUpdate = useCallback(
+        () => { setUpdate(false);
+                setRemoveProductItem(false);
+                setRemoveServiceItem(false);
+                setCheckout(false);
+                setRateItem(false);
+                setMessage(false);
+                setDamaged(false);
+                setWrong(false);
+                setNotReceived(false);
+                setRemoveBookmark(false);
+                setRemoveProductList(false);
+                setRemoveServiceList(true);
+                 },
+        []
+      )
 
     function t_strong(_str: string): JSX.Element{return(<><strong>{t<string>(_str)}</strong></>)}
 
@@ -452,7 +486,6 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
     }
 
     function showPhoto(_url: string): JSX.Element {
-     // {withHttp(hexToString(_url).trim())==='https:www.yuoutube.com'? }
       return(<>
       {_url.length>2 && 
       <> 
@@ -497,40 +530,18 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
       </>)
   }
 
-  function idNumberShort(_id: string): JSX.Element {
-      return(<>
-        {acctToShort(_id)}{' '}
-        <CopyInline value={_id} label={''}/>
-      </>)
-  }
+  function idNumberShort(_id: string): JSX.Element {return(<>{acctToShort(_id)}{' '}<CopyInline value={_id} label={''}/></>)}
+  function withCopy(_str: string): JSX.Element {return(<>{_str}{' '}<CopyInline value={_str} label={''}/></>)}
+  function withHelp(_str: string, _help: string): JSX.Element {return(<><LabelHelp help={t<string>(_help)} />{' '}{t<string>(_str)}</>)}
+  function numBadge(_num: number): JSX.Element {return(<><Label circular size='small' color='blue'>{numCheck(_num)}</Label></>)}
 
-  function withCopy(_str: string): JSX.Element {
-      return(<>
-      {_str}{' '}
-      <CopyInline value={_str} label={''}/>
-      </>)
-  }
-
-  function withHelp(_str: string, _help: string): JSX.Element {
-      return(<>
-      <LabelHelp help={t<string>(_help)} />
-      {' '}{t<string>(_str)}
-      </>)
-  }
-
-  function numBadge(_num: number): JSX.Element {
+  function messageText(_msg: string, _bfrom: boolean, _url: string): JSX.Element {
     return(<>
-      <Label circular size='small' color='blue'>
-        {numCheck(_num)}
-      </Label>
-    </>)
-  }
-
-  function messageText(_msg: string, _bfrom: boolean): JSX.Element {
-    return(<>
-    {_bfrom? 
-      <Label circular size='small' color='blue' pointing='left'>{hextoHuman(_msg)}</Label> :
-      <Label circular size='small' color='grey' pointing='right'>{hextoHuman(_msg)}</Label>
+    {_bfrom? <>
+             <Label circular size='small' color='blue' pointing='left'>{hextoHuman(_msg)}</Label>{photoLink(_url, 'Link')}</>:
+             <>
+             {photoLink(_url, 'Link')}<Label circular size='small' color='grey' pointing='right'>{hextoHuman(_msg)}</Label>
+             </>
     }
     </>)
   }
@@ -556,363 +567,70 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
             <Table>
               <Table.Row>
               <Table.Cell>
-              <Button
-                  icon='times'
-                  label={t<string>('Close')}
-                  onClick={onClear}
-                />
+              <Button icon='times' label={t<string>('Close')} onClick={onClear}/>
               </Table.Cell>
               </Table.Row>
             </Table>
           </div>
       )}
       
-      function ShowProfile(): JSX.Element {
-        try {
-          return(
-            <div>
-            <Table stretch>
-            <Table.Header>
-              <Table.Row>
-              <Table.HeaderCell>
-                <h2><strong>{withHelp('ACCOUNT: ','This is your user Account. Check your account details, reviews from sellers, product and service lists, and ordered items here.')}</strong>
-                <Label  as='a' color='orange' size='large'
-                        onClick={()=>{<>
-                            {setMessageId(profileDetail.ok.buyer.buyerAccount)}
-                            {setUsername(profileDetail.ok.buyer.buyerName)}
-                            {setCount(count + 1)}
-                            {_makeAccountUpdate()}</>}}
-                        >{t<string>('Update Settings')}</Label>
-                <br /><br />
-                    {t_strong('Name: ')}{hextoHuman(profileDetail.ok.buyer.buyerName)}<br />
-                    {t_strong('Account ID: ')}{accountInfo(profileDetail.ok.buyer.buyerAccount)}<br />
-                    {t_strong('Location: ')}{hextoHuman(profileDetail.ok.buyer.buyerLocation)}<br />
-                    {t_strong('Member since: ')}{dateCheck(profileDetail.ok.buyer.memberSince)}<br />
-                    {t_strong('Buyer Rating: ')}{rating[rateCheck(profileDetail.ok.buyer.reviewAverage)]}<br />
-                    {t_strong('Number of Reviews: ')}{numBadge(profileDetail.ok.buyer.reviewCount)}<br />
-                </h2>
-              </Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
+  function ShowDigitalDownLoads(): JSX.Element {
+    return(<>
+                      <h2><strong><i>{withHelp('Digital Downloads: ', 'List of your Digital Downloads.')}</i></strong>
+                  {numBadge(profileDetail.ok.digitalDownloads.length)}</h2>
+                  {profileDetail.ok.digitalDownloads.length>0? <>
+                    <Toggle className='show-digitaldownloads-toggle'
+                        label={<strong>{t<string>('Show Downloads: ')}</strong>}
+                        onChange={()=> {<>{toggleShowDownloads()}{_reset()}</>}}
+                        value={isShowDownloads}
+                    />
+                  {isShowDownloads && <>
+                    {profileDetail.ok.digitalDownloads.length>0 && profileDetail.ok.digitalDownloads.map((_digital, index: number)=> <>
+                  <Message>
+                      <Item.Group>
+                      <Item>
+                      <Item.Image as='a' size='tiny' 
+                                  src={hextoPhoto(_digital.photo)} 
+                                  rounded 
+                                  href={isHex(_digital.photo) ? withHttp(hexToString(_digital.photo).trim()) : ''} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                /> 
+                      <Item.Content>
+                                  <Item.Header as='a' >{t_strong(hextoHuman(_digital.title))}{' '}
+                                  {photoLink(_digital.fileUrl, 'Get Download')}
+                                  {photoLink(_digital.moreInfo, 'More Info')}
+                                  </Item.Header>
+                                  <Item.Meta>
+                                  <h3>{t_strong('Account ID: ')}{accountInfo(_digital.sellerAccount)}</h3>
+                                  {t_strong('Seller Name: ')}{hextoHuman(_digital.sellerName)}<br />
+                                  </Item.Meta>
+                                  <Item.Description>
+                                  {t_strong('Brand: ')}{hextoHuman(_digital.brand)}<br />
+                                  {t_strong('Description: ')}{hextoHuman(_digital.description)}<br />
+                                  </Item.Description>
+                                  <Item.Extra>
+                                  </Item.Extra>
+                              </Item.Content>
+                      </Item>
+                      </Item.Group>
+                  </Message>
+                  </>)}</>}</>: t<string>('No Digital Downloads.')}
+    </>)
+  }
 
-              <Table.Cell verticalAlign='top'>
-              <h2><strong><i>{withHelp('Buyer Reviews from Sellers: ', 'Buyer Reviews for this Account.')}</i></strong>
-              {numBadge(profileDetail.ok.buyer.reviews.length)}<br />
-              </h2>
-              {profileDetail.ok.buyer.reviews.length>0 && <>
-                <Toggle className='show-review-toggle'
-                        label={<strong>{t<string>('Show Reviews: ')}</strong>}
-                        onChange={()=> {<>{toggleShowReviews()}{_reset()}</>}}
-                        value={isShowReviews}
-                />
-              {isShowReviews && <>
-                    {profileDetail.ok.buyer.reviews.length>0 && 
-                        profileDetail.ok.buyer.reviews.map((_review, index: number) => <>
-                              {index+1}{'. '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
-                        </>)
-                    }
-              </>}</>}
-              <Divider />
-              <h2><strong><i>{withHelp('Order Details: ', 'Order details for this account.')}</i></strong></h2>
-              <Toggle className='show-detail-toggle'
-                        label={<strong>{t<string>('Show Details: ')}</strong>}
-                        onChange={()=> {<>{toggleShowDetails()}{_reset()}</>}}
-                        value={isShowDetails}
-                />
-              {isShowDetails && <>
-                    {t_strong('Total Carts: ')}{profileDetail.ok.buyer.totalCarts}<br />
-                    {t_strong('Total Orders: ')}{profileDetail.ok.buyer.totalOrders}<br />
-                    {t_strong('Total Delivered: ')}{profileDetail.ok.buyer.totalDelivered}<br />
-                    {t_strong('Total Damaged: ')}{profileDetail.ok.buyer.totalDamaged}<br />
-                    {t_strong('Total Wrong: ')}{profileDetail.ok.buyer.totalWrong}<br />
-                    {t_strong('Total NotReceived: ')}{profileDetail.ok.buyer.totalNotReceived}<br />
-                    {t_strong('Total Resolved: ')}{profileDetail.ok.buyer.totalResolved}<br />
-                    {t_strong('Total Refused: ')}{profileDetail.ok.buyer.totalRefused}<br />       
-              </>}
-                    
-              <Divider />
-                  <h2><strong><i>{withHelp('Products Lists: ', 'Product Lists, use the copy button to add to this List.')}</i></strong>
-                  {numBadge(profileDetail.ok.productLists.length)}</h2>
-                  {profileDetail.ok.productLists.length>0? <>
-                    <Toggle className='product-list-toggle'
-                            label={<strong>{t<string>('Show Lists: ')}</strong>}
-                            onChange={()=> {<>
-                                           {toggleShowProductLists()}
-                                           {_reset()}
-                                           </>}}
-                            value={isShowProductLists}
-                    />
-                  {isShowProductLists && <>
-                  {profileDetail.ok.productLists.length>0 && profileDetail.ok.productLists.map((_list, index: number)=> <>
-                      <h3>{t_strong('List Name: ')}{withCopy(hextoHuman(_list.listName))}<br />
-                          {t_strong('Number of Items:')}{numBadge(_list.items.length)}<br />
-                          {t_strong('List Id: ')}{idNumberShort(_list.listId)}</h3>
-                      <Label as='a' color='orange' circular 
-                                    onClick={()=>{<>
-                                      {setMessageId(_list.listId)}
-                                      {setUsername(_list.listName)}
-                                      {setCount(count + 1)}
-                                      {_makeAddToCartUpdate()}</>}}
-                      >{t('Delete List')}</Label>
-                  {_list.items.length>0 && 
-                      _list.items.map((_product, index: number)=> <>
-                      
-                  <Message>
-                      <Item.Group>
-                      <Item>
-                      <Item.Image as='a' size='tiny' 
-                                  src={hextoPhoto(_product.photoOrYoutubeLink1)} 
-                                  rounded 
-                                  href={isHex(_product.photoOrYoutubeLink1) ? withHttp(hexToString(_product.photoOrYoutubeLink1).trim()) : ''} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                /> 
-                      <Item.Content>
-                                  <Item.Header as='a'>{t('Product: ')}
-                                  <Label  as='a' circular color='orange' size='small'
-                                          onClick={()=>{<>
-                                            {setMessageId(_product.productId)}
-                                            {setUsername(_list.listId)}
-                                            {setCount(count + 1)}
-                                            {_makeRemoveItemUpdate()}</>}}
-                                  >{t<string>('Remove Item')}</Label>
-                                  {photoLink(_product.moreInfoLink, 'More Info')}
-                                  </Item.Header>
-                                  <Item.Meta>
-                                      <h2>{t_strong('Product Name:')}{hextoHuman(_product.title)}</h2>
-                                  </Item.Meta>
-                                  <Item.Description>
-                                  {t_strong('Description: ')}{hextoHuman(_product.description)}<br />
-                                  {t_strong('Price: ')}{microToGeode(_product.price)}{' Geode'}<br />
-                                  {t_strong('Rating:')}{rating[rateCheck(_product.reviewAverage)]}<br />
-                                  {t_strong('Number of Reviews: ')}{numBadge(_product.reviewCount)}<br />
-                                  {t_strong('Product ID: ')}{idNumberShort(_product.productId)}<br />
-                                  {_product.reviews.length>0 && <>
-                                    <Expander 
-                                    className='productReviews'
-                                    isOpen={false}
-                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Reviews: ')}</Label>}>
-                                      {_product.reviews.length>0 && 
-                                      _product.reviews.map((_review, index: number)=> <>
-                                          <Label circular color='blue' size='tiny'>{index+1}</Label>
-                                          {' '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
-                                      </>)}
-                                    </Expander>                                  
-                                  </>}
-                                  </Item.Description>
-                                  <Item.Extra>
-                                  <Expander 
-                                    className='productReviews'
-                                    isOpen={false}
-                                    summary={<Label size={'small'} color='orange' circular> {t<string>('More Info: ')}</Label>}>
-                                    <Grid columns={2} divided>
-                                        <Grid.Column>
-                                        {t_strong('Seller Account: ')}{accountInfo(_product.sellerAccount)}<br />
-                                        {t_strong('Seller Name: ')}{hextoHuman(_product.sellerName)}<br />
-                                        {t_strong('Location: ')}{hextoHuman(_product.productLocation)}<br />
-                                        {t_strong('Brand: ')}{hextoHuman(_product.brand)}<br />
-                                        {t_strong('Category: ')}{hextoHuman(_product.category)}<br />
-                                        {t_strong('Inventory: ')}{_product.inventory}<br />
-                                        {t_strong('Delivery Info: ')}{hextoHuman(_product.deliveryInfo)}<br />
-                                        {t_strong('Zeno Percent: ')}{numToPercent(_product.zenoPercent)}<br />
-                                        {t_strong('Number of Zeno Buyers: ')}{_product.zenoBuyers.length}<br />
-                                        {t_strong('Digital Product: ')}{boolToHuman(_product.digital)}<br />
-                                        {_product.digital && <>
-                                          {t_strong('File Url: ')}{' '}{ photoLink(_product.digitalFileUrl, 'Link')}<br />
-                                        </>}
-                                        </Grid.Column>
-                                        <Grid.Column>
-                                        {renderLink(_product.photoOrYoutubeLink1)}<br />
-                                        {renderLink(_product.photoOrYoutubeLink2)}<br />
-                                        {renderLink(_product.photoOrYoutubeLink3)}<br />
-                                        </Grid.Column>
-                                    </Grid>
-                                  </Expander>
-                                  </Item.Extra>
-                              </Item.Content>
-                      </Item>
-                      </Item.Group>
-                  </Message>
-                  </>)}
-                  </>)}</>}
-                  </>: t<string>('No Product Lists.')}
-                  <Divider />
-                  <h2><strong><i>{withHelp('Service Lists: ', 'Service Lists, use the copy button to add to this List.')}</i></strong>
-                  {numBadge(profileDetail.ok.serviceLists.length)}</h2>
-                  {profileDetail.ok.serviceLists.length>0? <>
-                    <Toggle className='service-list-toggle'
-                            label={<strong>{t<string>('Show Lists: ')}</strong>}
-                            onChange={()=> {<>
-                                           {toggleShowServiceLists()}
-                                           {_reset()}
-                                           </>}}
-                            value={isShowServiceLists}
-                    />
-                  {isShowServiceLists && <>
-                    {profileDetail.ok.serviceLists.length>0 && profileDetail.ok.serviceLists.map((_list, index: number)=> <>
-                      <h3>{t_strong('List Name: ')}{withCopy(hextoHuman(_list.listName))}<br />
-                          {t_strong('Number of Items:')}{numBadge(_list.items.length)}<br />
-                          {t_strong('List Id: ')}{idNumberShort(_list.listId)}</h3>
-                      <Label as='a' color='orange' circular 
-                                    onClick={()=>{<>
-                                      {setMessageId(_list.listId)}
-                                      {setUsername(_list.listName)}
-                                      {setCount(count + 1)}
-                                      {_makeAddToCartUpdate()}</>}}
-                      >{t('Delete List')}</Label>
-                  {_list.items.length>0 && 
-                      _list.items.map((_service, index: number)=> <>
-                      
-                  <Message>
-                      <Item.Group>
-                      <Item>
-                      <Item.Image as='a' size='tiny' 
-                                  src={hextoPhoto(_service.photoOrYoutubeLink1)} 
-                                  rounded 
-                                  href={isHex(_service.photoOrYoutubeLink1) ? withHttp(hexToString(_service.photoOrYoutubeLink1).trim()) : ''} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                /> 
-                      <Item.Content>
-                                  <Item.Header as='a'>{t('Product: ')}
-                                  <Label  as='a' circular color='orange' size='small'
-                                          onClick={()=>{<>
-                                            {setMessageId(_service.serviceId)}
-                                            {setUsername(_list.listId)}
-                                            {setCount(count + 1)}
-                                            {_makeRemoveItemUpdate()}</>}}
-                                  >{t<string>('Remove Item')}</Label>
-                                  
-                                  </Item.Header>
-                                  <Item.Meta>
-                                      <h2>{t_strong('Product Name:')}{hextoHuman(_service.title)}</h2>
-                                  </Item.Meta>
-                                  <Item.Description>
-                                  {t_strong('Description: ')}{hextoHuman(_service.description)}<br />
-                                  {t_strong('Price: ')}{microToGeode(_service.price)}{' Geode'}<br />
-                                  {t_strong('Rating:')}{rating[rateCheck(_service.reviewAverage)]}<br />
-                                  {t_strong('Number of Reviews: ')}{numBadge(_service.reviewCount)}<br />
-                                  {t_strong('Product ID: ')}{idNumberShort(_service.serviceId)}<br />
-                                  {_service.reviews.length>0 && <>
-                                    <Expander 
-                                    className='serviceReviews'
-                                    isOpen={false}
-                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Reviews: ')}</Label>}>
-                                      {_service.reviews.length>0 && 
-                                      _service.reviews.map((_review, index: number)=> <>
-                                          <Label circular color='blue' size='tiny'>{index+1}</Label>
-                                          {' '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
-                                      </>)}
-                                    </Expander>                                  
-                                  </>}
-                                  </Item.Description>
-                                  <Item.Extra>
-                                  <Expander 
-                                    className='serviceReviews'
-                                    isOpen={false}
-                                    summary={<Label size={'small'} color='orange' circular> {t<string>('More Info: ')}</Label>}>
-                                    <Grid columns={2} divided>
-                                        <Grid.Column>
-                                        {t_strong('Seller Account: ')}{accountInfo(_service.sellerAccount)}<br />
-                                        {t_strong('Seller Name: ')}{hextoHuman(_service.sellerName)}<br />
-                                        {t_strong('Location: ')}{hextoHuman(_service.serviceLocation)}<br />
-                                        {t_strong('Digital Delivery: ')}{boolToHuman(_service.online)}<br />
-                                        {t_strong('Inventory: ')}{_service.inventory}<br />
-                                        {t_strong('Zeno Percent: ')}{numToPercent(_service.zenoPercent)}<br />
-                                        {t_strong('Number of Zeno Buyers:')}{_service.zenoBuyers.length}
-                                        </Grid.Column>
-                                        <Grid.Column>
-                                        {renderLink(_service.photoOrYoutubeLink1)}<br />
-                                        {renderLink(_service.photoOrYoutubeLink2)}<br />
-                                        {renderLink(_service.photoOrYoutubeLink3)}<br />
-                                        </Grid.Column>
-                                    </Grid>
-                                  </Expander>
-                                  </Item.Extra>
-                              </Item.Content>
-                      </Item>
-                      </Item.Group>
-                  </Message>
-                  </>)}
-                  </>)}</>}                
-                  </>: t<string>('No Service Lists.')}
-                  <Divider />
-                  <h2><strong><i>{withHelp('Bookmarked Stores: ', 'List of your Bookmarked Stores.')}</i></strong>
-                  {numBadge(profileDetail.ok.bookmarkedStores.length)}</h2>
-                  {profileDetail.ok.bookmarkedStores.length>0? <>
-                    <Toggle className='show-bookmarked-toggle'
-                        label={<strong>{t<string>('Show Bookmarks: ')}</strong>}
-                        onChange={()=> {<>{toggleShowBookmarks()}{_reset()}</>}}
-                        value={isShowBookmarks}
-                    />
-                  {isShowBookmarks && <>
-                    {profileDetail.ok.bookmarkedStores.length>0 && profileDetail.ok.bookmarkedStores.map((_store, index: number)=> <>
-                  <Message>
-                      <Item.Group>
-                      <Item>
-                      <Item.Image as='a' size='tiny' 
-                                  src={hextoPhoto(_store.bannerUrl)} 
-                                  rounded 
-                                  href={isHex(_store.bannerUrl) ? withHttp(hexToString(_store.bannerUrl).trim()) : ''} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                /> 
-                      <Item.Content>
-                                  <Item.Header as='a' >{t_strong(hextoHuman(_store.sellerName))}{' '}
-                                  {photoLink(_store.externalLink, 'More Info')}
-                                  <Label  as='a' color='orange' size='large' circular
-                                          onClick={()=>{<>
-                                          {setMessageId(_store.sellerAccount)}
-                                          {setUsername(_store.sellerName)}
-                                          {setCount(count + 1)}
-                                          {_makeRemoveBookmarkUpdate()}</>}}
-                                  >{t<string>('Remove Bookmark')}</Label>
-                                  </Item.Header>
-                                  <Item.Meta>
-                                  <h3>{t_strong('Account ID: ')}{accountInfo(_store.sellerAccount)}</h3>
-                                  {t_strong('Seller Rating: ')}{rating[rateCheck(_store.reviewAverage)]}<br />
-                                  {t_strong('Number of Reviews: ')}{numBadge(_store.reviewCount)}<br />
-                                  {t_strong('Member since: ')}{dateCheck(_store.memberSince)}<br />
-                                  </Item.Meta>
-                                  <Item.Description>
-                                  {t_strong('Store Description: ')}{hextoHuman(_store.storeDescription)}<br />
-                                  {t_strong('Location: ')}{hextoHuman(_store.sellerLocation)}<br />
-                                  </Item.Description>
-                                  <Item.Extra>
-                                  {_store.reviews.length>0 && <>
-                                    <Expander 
-                                    className='seller-Reviews'
-                                    isOpen={false}
-                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Reviews: ')}</Label>}>
-                                      {_store.reviews.length>0 && 
-                                      _store.reviews.map((_review, index: number)=> <>
-                                          <Label circular color='blue' size='tiny'>{index+1}</Label>
-                                          {' '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
-                                      </>)}
-                                    </Expander>                                  
-                                  </>}
-
-                                  </Item.Extra>
-                              </Item.Content>
-                      </Item>
-                      </Item.Group>
-                  </Message>
-                  </>)}</>}</>: t<string>('No Booked Marked Stores.')}
-                  <Divider />
-                  <h2><strong><i>{withHelp('Ordered Items: ', 'List of all your ordered Items.')}</i></strong>
+  function ShowMyOrders(): JSX.Element {
+    return(<>
+                  <h2><strong><i>{withHelp('My Orders: ', 'List of all your ordered Items.')}</i></strong>
                   {numBadge(profileDetail.ok.orders.length)}</h2>
                   {profileDetail.ok.orders.length>0? <>
                   <Toggle className='items-toggle'
                             label={<strong>{t<string>('Show Ordered Items: ')}</strong>}
-                            onChange={()=> {<>
-                                           {toggleShowItems()}
-                                           {_reset()}
-                                           </>}}
+                            onChange={()=> {<>{toggleShowItems()}{_reset()}</>}}
                             value={isShowItems}
-                    /><br />
+                    />
                   {isShowItems && <>
                   {profileDetail.ok.orders.length>0 && profileDetail.ok.orders.map((_cart, index: number) => <>
-                        <strong>{t('Cart Id: ')}</strong>{idNumberShort(_cart.cartId)}
                             <Message>
                                 <Item.Group>
                                 <Item>
@@ -924,7 +642,7 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                                   rel="noopener noreferrer"
                                 /> 
                                 <Item.Content>
-                                  <Item.Header as='a'>{'Product: '}
+                                  <Item.Header as='a'>{hextoHuman(_cart.itemName)}{' '}
                                   <Label as='a' color='orange' circular 
                                          onClick={()=>{<>
                                                {setMessageId(_cart.itemId)}
@@ -962,7 +680,7 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                                     >{t('Not Received')}</Label>
                                   </Item.Header>
                                   <Item.Meta>
-                                      <h3><strong>{hextoHuman(_cart.itemName)}</strong></h3>
+                                      <h3><strong>{'Status: '}<i>{numToStatus[numCheck(_cart.orderStatus)]}</i></strong></h3>
                                   </Item.Meta>
                                   <Item.Description>
                                       {t_strong('Quantity: ')}
@@ -974,7 +692,6 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                                       {t_strong('Seller Account: ')}{accountInfo(_cart.seller)}<br />
                                       {t_strong('Seller Name: ')}{hextoHuman(_cart.sellerName)}<br />
                                       {t_strong('Ordered on: ')}{timeStampToDate(_cart.orderTimestamp)}<br />
-                                      {t_strong('Status: ')}{numToStatus[numCheck(_cart.orderStatus)]}<br />
                                       {_cart.discussion.length>0 && <>
                                       {t_strong('Messages: ')}{numBadge(_cart.discussion.length)}
                                         <Expander 
@@ -983,13 +700,10 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                                         summary={<Label size={'small'} color='orange' circular> {t<string>('View: ')}</Label>}>
                                             {_cart.discussion.length>0 && _cart.discussion.map((_message, index: number)=> <>
                                             {_cart.buyer===_message.fromAcct? 
-                                              <>
-                                              {timeStampToDate(_message.timestamp)}{': '}{accountInfo(_message.fromAcct)}{messageText(_message.message, true)}<br />
+                                              <>{timeStampToDate(_message.timestamp)}{': '}{accountInfo(_message.fromAcct)}{messageText(_message.message, true, _message.mediaUrl)}<br />
                                               </>:
-                                              <>
-                                              {timeStampToDate(_message.timestamp)}{': '}{messageText(_message.message, false)}{accountInfo(_message.fromAcct)}<br />
-                                              </>}
-                                            
+                                              <>{timeStampToDate(_message.timestamp)}{': '}{messageText(_message.message, false, _message.mediaUrl)}{accountInfo(_message.fromAcct)}<br />
+                                            </>}
                                             </>)}
                                       </Expander>      
                                       </>}
@@ -1002,8 +716,9 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                                     <Grid columns={2} divided>
                                       <Grid.Column>
                                       {t_strong('Order Id: ')}{idNumberShort(_cart.orderId)}<br />
-                                      {t_strong('Deliver To Address: ')}{_cart.deliveryToAddress}<br />
-                                      {t_strong('Delivery To Account: ')}{_cart.deliveryToAccount}<br />
+                                      {t_strong('Product Id: ')}{idNumberShort(_cart.itemId)}<br />
+                                      {t_strong('Delivery To Account: ')}{accountInfo(_cart.deliverToAccount)}<br />
+                                      {t_strong('Deliver To Address: ')}{hextoHuman(_cart.deliverToAddress)}<br />
                                       {t_strong('Problems Identified: ')}{numToProblem[numCheck(_cart.problem)]}<br />
                                       {t_strong('Resolution: ')}{numToResolution[numCheck(_cart.resolution)]}<br />
                                       {t_strong('Tracking Info: ')}{hextoHuman(_cart.trackingInfo)}<br />
@@ -1020,51 +735,365 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                       </Item>
                       </Item.Group>
                   </Message>                  
-                  </>)}</>}</>: t<string>('No Ordered Items.')}
-                  <Divider />   
-                  <h2><strong><i>{withHelp('Digital Downloads: ', 'List of your Digital Downloads.')}</i></strong>
-                  {numBadge(profileDetail.ok.digitalDownloads.length)}</h2>
-                  {profileDetail.ok.digitalDownloads.length>0? <>
-                    <Toggle className='show-digitaldownloads-toggle'
-                        label={<strong>{t<string>('Show Downloads: ')}</strong>}
-                        onChange={()=> {<>{toggleShowDownloads()}{_reset()}</>}}
-                        value={isShowDownloads}
+                  </>)}</>}</>: t<string>('No Ordered Items.')}    
+    </>)
+  }
+
+  function ShowBookmarks(): JSX.Element {
+    return(<>
+                      <h2><strong><i>{withHelp('Bookmarked Stores: ', 'List of your Bookmarked Stores.')}</i></strong>
+                  {numBadge(profileDetail.ok.bookmarkedStores.length)}</h2>
+                  {profileDetail.ok.bookmarkedStores.length>0? <>
+                    <Toggle className='show-bookmarked-toggle'
+                        label={<strong>{t<string>('Show Bookmarks: ')}</strong>}
+                        onChange={()=> {<>{toggleShowBookmarks()}{_reset()}</>}}
+                        value={isShowBookmarks}
                     />
-                  {isShowDownloads && <>
-                    {profileDetail.ok.digitalDownloads.length>0 && profileDetail.ok.digitalDownloads.map((_digital, index: number)=> <>
+                  {isShowBookmarks && <>
+                    {profileDetail.ok.bookmarkedStores.length>0 && profileDetail.ok.bookmarkedStores.map((_store, index: number)=> <>
                   <Message>
                       <Item.Group>
                       <Item>
                       <Item.Image as='a' size='tiny' 
-                                  src={hextoPhoto(_digital.photo)} 
+                                  src={hextoPhoto(_store.bannerUrl)} 
                                   rounded 
-                                  href={isHex(_digital.photo) ? withHttp(hexToString(_digital.photo).trim()) : ''} 
+                                  href={isHex(_store.bannerUrl) ? withHttp(hexToString(_store.bannerUrl).trim()) : ''} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
                                 /> 
                       <Item.Content>
-                                  <Item.Header as='a' >{t_strong(hextoHuman(_digital.sellerName))}{' '}
-                                  {photoLink(_digital.fileUrl, 'Get Download')}
-                                  {photoLink(_digital.moreInfo, 'More Info')}
+                                  <Item.Header as='a' >{t_strong(hextoHuman(_store.sellerName))}{' '}
+                                  {photoLink(_store.externalLink, 'More Info')}
+                                  <Label  as='a' color='orange' size='medium' circular
+                                          onClick={()=>{<>
+                                          {setMessageId(_store.sellerAccount)}
+                                          {setUsername(_store.sellerName)}
+                                          {setCount(count + 1)}
+                                          {_makeRemoveBookmarkUpdate()}</>}}
+                                  >{t<string>('Remove Bookmark')}</Label>
                                   </Item.Header>
                                   <Item.Meta>
-                                  <h3>{t_strong('Account ID: ')}{accountInfo(_digital.sellerAccount)}</h3>
-                                  {t_strong('Seller Name: ')}{hextoHuman(_digital.sellerName)}<br />
+                                  <h3>{t_strong('Account ID: ')}{accountInfo(_store.sellerAccount)}</h3>
+                                  {t_strong('Seller Rating: ')}{rating[rateCheck(_store.reviewAverage)]}<br />
+                                  {t_strong('Number of Reviews: ')}{numBadge(_store.reviewCount)}<br />
+                                  {t_strong('Member since: ')}{dateCheck(_store.memberSince)}<br />
                                   </Item.Meta>
                                   <Item.Description>
-                                  {t_strong('Title: ')}{hextoHuman(_digital.title)}<br />
-                                  {t_strong('Store Description: ')}{hextoHuman(_digital.description)}<br />
-                                  {t_strong('Brand: ')}{hextoHuman(_digital.brand)}<br />
+                                  {t_strong('Store Description: ')}{hextoHuman(_store.storeDescription)}<br />
+                                  {t_strong('Location: ')}{hextoHuman(_store.sellerLocation)}<br />
                                   </Item.Description>
                                   <Item.Extra>
-
+                                  {_store.reviews.length>0 && <>
+                                    <Expander 
+                                    className='seller-Reviews'
+                                    isOpen={false}
+                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Reviews: ')}</Label>}>
+                                      {_store.reviews.length>0 && 
+                                      _store.reviews.map((_review, index: number)=> <>
+                                          {index+1}{'. '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
+                                      </>)}
+                                    </Expander>                                  
+                                  </>}
                                   </Item.Extra>
                               </Item.Content>
                       </Item>
                       </Item.Group>
                   </Message>
-                  </>)}</>}</>: t<string>('No Digital Downloads.')}
-     
+                  </>)}</>}</>: t<string>('No Booked Marked Stores.')}
+    </>)
+  }
+
+  function ShowProductList(): JSX.Element {
+    return(<>
+                  <h2><strong><i>{withHelp('Products Lists: ', 'Product Lists, use the copy button to add to this List.')}</i></strong>
+                  {numBadge(profileDetail.ok.productLists.length)}</h2>
+                  {profileDetail.ok.productLists.length>0? <>
+                    <Toggle className='product-list-toggle'
+                            label={<strong>{t<string>('Show Lists: ')}</strong>}
+                            onChange={()=> {<>
+                                           {toggleShowProductLists()}
+                                           {_reset()}
+                                           </>}}
+                            value={isShowProductLists}
+                    />
+                  {isShowProductLists && <>
+                  {profileDetail.ok.productLists.length>0 && profileDetail.ok.productLists.map((_list, index: number)=> <>
+                      <h2><strong>{withCopy(hextoHuman(_list.listName))}</strong>{numBadge(_list.items.length)}
+                      <Label as='a' color='orange' circular 
+                                    onClick={()=>{<>
+                                      {setMessageId(_list.listId)}
+                                      {setUsername(_list.listName)}
+                                      {setCount(count + 1)}
+                                      {_makeRemoveProductListUpdate()}</>}}
+                      >{t('Delete List')}</Label></h2>
+                  {_list.items.length>0 && 
+                      _list.items.map((_product, index: number)=> <>                      
+                  <Message>
+                      <Item.Group>
+                      <Item>
+                      <Item.Image as='a' size='tiny' 
+                                  src={hextoPhoto(_product.photoOrYoutubeLink1)} 
+                                  rounded 
+                                  href={isHex(_product.photoOrYoutubeLink1) ? withHttp(hexToString(_product.photoOrYoutubeLink1).trim()) : ''} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                /> 
+                      <Item.Content>
+                                  <Item.Header as='a'>{hextoHuman(_product.title)}{' '}
+                                  <Label as='a' color='orange' circular size='small'
+                                         onClick={()=>{<>
+                                            {setMessageId(_product.productId)}
+                                            {setUsername(_product.title)}
+                                            {setCount(count + 1)}
+                                            {_makeAddToCartUpdate()}</>}}
+                                      >{t<string>('Add to Cart')}</Label>
+                                  <Label  as='a' circular color='orange' size='small'
+                                          onClick={()=>{<>
+                                            {setMessageId(_product.productId)}
+                                            {setUsername(_list.listId)}
+                                            {setCount(count + 1)}
+                                            {_makeRemoveProductItemUpdate()}</>}}
+                                  >{t<string>('Remove Item')}</Label>
+                                  {photoLink(_product.moreInfoLink, 'More Info')}
+                                  </Item.Header>
+                                  <Item.Meta>
+                                    <h3>{t_strong('Description: ')}{hextoHuman(_product.description)}</h3>
+                                  </Item.Meta>
+                                  <Item.Description>
+                                  {t_strong('Price: ')}{microToGeode(_product.price)}{' Geode'}<br />
+                                  {t_strong('Rating:')}{rating[rateCheck(_product.reviewAverage)]}<br />
+                                  {t_strong('Number of Reviews: ')}{numBadge(_product.reviewCount)}<br />
+                                  {t_strong('Product ID: ')}{idNumberShort(_product.productId)}<br />
+                                  {_product.reviews.length>0 && <>
+                                    <Expander 
+                                    className='productReviews'
+                                    isOpen={false}
+                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Reviews: ')}</Label>}>
+                                      {_product.reviews.length>0 && 
+                                      _product.reviews.map((_review, index: number)=> <>
+                                          {index+1}{'. '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
+                                      </>)}
+                                    </Expander>                                  
+                                  </>}
+                                  </Item.Description>
+                                  <Item.Extra>
+                                  <Expander 
+                                    className='productReviews'
+                                    isOpen={false}
+                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Details: ')}</Label>}>
+                                    <Grid columns={2} divided>
+                                        <Grid.Column>
+                                        {t_strong('Seller Account: ')}{accountInfo(_product.sellerAccount)}<br />
+                                        {t_strong('Seller Name: ')}{hextoHuman(_product.sellerName)}<br />
+                                        {t_strong('Location: ')}{hextoHuman(_product.productLocation)}<br />
+                                        {t_strong('Brand: ')}{hextoHuman(_product.brand)}<br />
+                                        {t_strong('Category: ')}{hextoHuman(_product.category)}<br />
+                                        {t_strong('Inventory: ')}{_product.inventory}<br />
+                                        {t_strong('Delivery Info: ')}{hextoHuman(_product.deliveryInfo)}<br />
+                                        {t_strong('Zeno Percent: ')}{numToPercent(_product.zenoPercent)}<br />
+                                        {t_strong('Number of Zeno Buyers: ')}{_product.zenoBuyers.length}<br />
+                                        {t_strong('Digital Product: ')}{boolToHuman(_product.digital)}<br />
+                                        {_product.digital && <>
+                                          {t_strong('File Url: ')}{' '}{ photoLink(_product.digitalFileUrl, 'Link')}<br />
+                                        </>}
+                                        </Grid.Column>
+                                        <Grid.Column>
+                                        {renderLink(_product.photoOrYoutubeLink1)}<br />
+                                        {renderLink(_product.photoOrYoutubeLink2)}<br />
+                                        {renderLink(_product.photoOrYoutubeLink3)}<br />
+                                        </Grid.Column>
+                                    </Grid>
+                                  </Expander>
+                                  </Item.Extra>
+                              </Item.Content>
+                      </Item>
+                      </Item.Group>
+                  </Message>
+                  </>)}
+                  </>)}</>}
+                  </>: t<string>('No Product Lists.')}    
+    </>)
+  }
+
+  function ShowServiceList(): JSX.Element {
+    return(<>
+                  <h2><strong><i>{withHelp('Service Lists: ', 'Service Lists, use the copy button to add to this List.')}</i></strong>
+                  {numBadge(profileDetail.ok.serviceLists.length)}</h2>
+                  {profileDetail.ok.serviceLists.length>0? <>
+                    <Toggle className='service-list-toggle'
+                            label={<strong>{t<string>('Show Lists: ')}</strong>}
+                            onChange={()=> {<>{toggleShowServiceLists()}{_reset()}</>}}
+                            value={isShowServiceLists}
+                    />
+                  {isShowServiceLists && <>
+                    {profileDetail.ok.serviceLists.length>0 && profileDetail.ok.serviceLists.map((_list, index: number)=> <>
+                      <h2><strong>{withCopy(hextoHuman(_list.listName))}</strong>{numBadge(_list.items.length)}
+                      <Label as='a' color='orange' circular 
+                                    onClick={()=>{<>
+                                      {setMessageId(_list.listId)}
+                                      {setUsername(_list.listName)}
+                                      {setCount(count + 1)}
+                                      {_makeRemoveServiceListUpdate()}</>}}
+                      >{t('Delete List')}</Label></h2>
+                  {_list.items.length>0 && 
+                      _list.items.map((_service, index: number)=> <>
+                  <Message>
+                      <Item.Group>
+                      <Item>
+                      <Item.Image as='a' size='tiny' 
+                                  src={hextoPhoto(_service.photoOrYoutubeLink1)} 
+                                  rounded 
+                                  href={isHex(_service.photoOrYoutubeLink1) ? withHttp(hexToString(_service.photoOrYoutubeLink1).trim()) : ''} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                /> 
+                      <Item.Content>
+                                  <Item.Header as='a'>{hextoHuman(_service.title)}{' '}
+                                  <Label as='a' color='orange' circular size='small'
+                                         onClick={()=>{<>
+                                            {setMessageId(_service.serviceId)}
+                                            {setUsername(_service.title)}
+                                            {setCount(count + 1)}
+                                            {_makeAddToCartUpdate()}</>}}
+                                      >{t<string>('Add to Cart')}</Label>
+                                  <Label  as='a' circular color='orange' size='small'
+                                          onClick={()=>{<>
+                                            {setMessageId(_service.serviceId)}
+                                            {setUsername(_list.listId)}
+                                            {setCount(count + 1)}
+                                            {_makeRemoveServiceItemUpdate()}</>}}
+                                  >{t<string>('Remove Item')}</Label>
+                                  {photoLink(_service.bookingLink, 'Booking Link')}
+                                  </Item.Header>
+                                  <Item.Meta>
+                                      <h3>{t_strong('Description: ')}{hextoHuman(_service.description)}</h3>
+                                  </Item.Meta>
+                                  <Item.Description>
+                                  {t_strong('Price: ')}{microToGeode(_service.price)}{' Geode'}<br />
+                                  {t_strong('Rating:')}{rating[rateCheck(_service.reviewAverage)]}<br />
+                                  {t_strong('Number of Reviews: ')}{numBadge(_service.reviewCount)}<br />
+                                  {t_strong('Product ID: ')}{idNumberShort(_service.serviceId)}<br />
+                                  {_service.reviews.length>0 && <>
+                                    <Expander 
+                                    className='serviceReviews'
+                                    isOpen={false}
+                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Reviews: ')}</Label>}>
+                                      {_service.reviews.length>0 && 
+                                      _service.reviews.map((_review, index: number)=> <>
+                                          {index+1}{'. '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
+                                      </>)}
+                                    </Expander>                                  
+                                  </>}
+                                  </Item.Description>
+                                  <Item.Extra>
+                                  <Expander 
+                                    className='serviceReviews'
+                                    isOpen={false}
+                                    summary={<Label size={'small'} color='orange' circular> {t<string>('Details: ')}</Label>}>
+                                    <Grid columns={2} divided>
+                                        <Grid.Column>
+                                        {t_strong('Seller Account: ')}{accountInfo(_service.sellerAccount)}<br />
+                                        {t_strong('Seller Name: ')}{hextoHuman(_service.sellerName)}<br />
+                                        {t_strong('Location: ')}{hextoHuman(_service.serviceLocation)}<br />
+                                        {t_strong('Online: ')}{boolToHuman(_service.online)}<br />
+                                        {t_strong('Inventory: ')}{_service.inventory}<br />
+                                        {t_strong('Zeno Percent: ')}{numToPercent(_service.zenoPercent)}<br />
+                                        {t_strong('Number of Zeno Buyers:')}{_service.zenoBuyers.length}
+                                        </Grid.Column>
+                                        <Grid.Column>
+                                        {renderLink(_service.photoOrYoutubeLink1)}<br />
+                                        {renderLink(_service.photoOrYoutubeLink2)}<br />
+                                        {renderLink(_service.photoOrYoutubeLink3)}<br />
+                                        </Grid.Column>
+                                    </Grid>
+                                  </Expander>
+                                  </Item.Extra>
+                              </Item.Content>
+                      </Item>
+                      </Item.Group>
+                  </Message>
+                  </>)}
+                  </>)}</>}                
+                  </>: t<string>('No Service Lists.')}    
+    </>)
+  }
+
+  function ShowReviews(): JSX.Element {
+    return(<>
+                  <h2><strong><i>{withHelp('Buyer Reviews from Sellers: ', 'Buyer Reviews for this Account.')}</i></strong>
+              {numBadge(profileDetail.ok.buyer.reviews.length)}<br />
+              </h2>
+              {profileDetail.ok.buyer.reviews.length>0 && <>
+                <Toggle className='show-review-toggle'
+                        label={<strong>{t<string>('Show Reviews: ')}</strong>}
+                        onChange={()=> {<>{toggleShowReviews()}{_reset()}</>}}
+                        value={isShowReviews}
+                />
+              {isShowReviews && <>
+                    {profileDetail.ok.buyer.reviews.length>0 && 
+                        profileDetail.ok.buyer.reviews.map((_review, index: number) => <>
+                              {index+1}{'. '}{dateCheck(_review.timestamp)}{accountInfo(_review.reviewer)}{' | '}{hextoHuman(_review.review)}{' '}{rating[rateCheck(_review.rating)]}<br />
+                        </>)
+                    }
+              </>}</>}
+    </>)
+  }
+
+  function ShowProfile(): JSX.Element {
+        try {
+          return(
+            <div>
+            <Table stretch>
+            <Table.Header>
+              <Table.Row>
+              <Table.HeaderCell>
+                <Grid columns={2} divided>
+                  <Grid.Column>
+                  <h2><strong>{withHelp('ACCOUNT: ','This is your user Account. Check your account details, reviews from sellers, product and service lists, and ordered items here.')}</strong>
+                  <Label  as='a' color='orange' size='large'
+                        onClick={()=>{<>
+                            {setMessageId(profileDetail.ok.buyer.buyerAccount)}
+                            {setUsername(profileDetail.ok.buyer.buyerName)}
+                            {setCount(count + 1)}
+                            {_makeAccountUpdate()}</>}}
+                        >{t<string>('Update Settings')}</Label>
+                  <br /><br />
+                    {t_strong('Name: ')}{hextoHuman(profileDetail.ok.buyer.buyerName)}<br />
+                    {t_strong('Account ID: ')}{accountInfo(profileDetail.ok.buyer.buyerAccount)}<br />
+                    {t_strong('Location: ')}{hextoHuman(profileDetail.ok.buyer.buyerLocation)}<br />
+                    {t_strong('Member since: ')}{dateCheck(profileDetail.ok.buyer.memberSince)}<br />
+                    {t_strong('Buyer Rating: ')}{rating[rateCheck(profileDetail.ok.buyer.reviewAverage)]}<br />
+                    {t_strong('Number of Reviews: ')}{numBadge(profileDetail.ok.buyer.reviewCount)}<br />
+                </h2>
+                  </Grid.Column>
+                  <Grid.Column>
+                  <h3>
+                    {t('Total Orders: ')}{profileDetail.ok.buyer.totalOrders}<br />
+                    {t('Total Delivered: ')}{profileDetail.ok.buyer.totalDelivered}<br />
+                    {t('Total Damaged: ')}{profileDetail.ok.buyer.totalDamaged}<br />
+                    {t('Total Wrong: ')}{profileDetail.ok.buyer.totalWrong}<br />
+                    {t('Total NotReceived: ')}{profileDetail.ok.buyer.totalNotReceived}<br />
+                    {t('Total Resolved: ')}{profileDetail.ok.buyer.totalResolved}<br />
+                    {t('Total Refused: ')}{profileDetail.ok.buyer.totalRefused}<br />   
+                  </h3>    
+                  </Grid.Column>
+                </Grid>
+              </Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+              <Table.Cell verticalAlign='top'>
+              {ShowDigitalDownLoads()}
+              <Divider />    
+              {ShowMyOrders()}
+              <Divider />
+              {ShowBookmarks()}
+              <Divider />
+              {ShowProductList()}
+              <Divider />
+              {ShowServiceList()}
+              <Divider />
+              {ShowReviews()}
+              <Divider />
               </Table.Cell>
         </Table>
         </div>   
@@ -1092,13 +1121,12 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
       {isUpdate && (<>
         <CallSendMessage
                 callIndex={13}
-                //toAcct={_toAcct}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}
             />      
         </>)}
-        {isRemoveItem && (<>
+        {isRemoveProductItem && (<>
         <CallSendMessage
                 callIndex={14}
                 messageId={_messageId}
@@ -1106,10 +1134,17 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                 onReset={() => _reset()}
             />      
         </>)}
+        {isRemoveServiceItem && (<>
+        <CallSendMessage
+                callIndex={15}
+                messageId={_messageId}
+                username={_username}
+                onReset={() => _reset()}
+            />      
+        </>)}
         {isCheckout && (<>
         <CallSendMessage
-                callIndex={6}
-                //toAcct={_toAcct}
+                callIndex={0}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}
@@ -1118,7 +1153,6 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
         {isRateItem && (<>
         <CallSendMessage
                 callIndex={7}
-                //toAcct={_toAcct}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}
@@ -1127,7 +1161,6 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
         {isDamaged && (<>
         <CallSendMessage
                 callIndex={9}
-                //toAcct={_toAcct}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}
@@ -1136,7 +1169,6 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
         {isWrong && (<>
         <CallSendMessage
                 callIndex={10}
-                //toAcct={_toAcct}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}
@@ -1145,7 +1177,6 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
         {isNotReceived && (<>
         <CallSendMessage
                 callIndex={11}
-                //toAcct={_toAcct}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}
@@ -1155,7 +1186,22 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
         {isMessage && (<>
         <CallSendMessage
                 callIndex={12}
-                //toAcct={_toAcct}
+                messageId={_messageId}
+                username={_username}
+                onReset={() => _reset()}
+            />      
+        </>)}
+        {isRemoveProductList && (<>
+        <CallSendMessage
+                callIndex={16}
+                messageId={_messageId}
+                username={_username}
+                onReset={() => _reset()}
+            />      
+        </>)}
+        {isRemoveServiceList && (<>
+        <CallSendMessage
+                callIndex={17}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}
@@ -1165,7 +1211,6 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
         {isRemoveBookmark && (<>
         <CallSendMessage
                 callIndex={39}
-                //toAcct={_toAcct}
                 messageId={_messageId}
                 username={_username}
                 onReset={() => _reset()}

@@ -27,7 +27,6 @@ import MyCartDetails from './MyCartDetails';
 import SearchByProductDetails from './SearchByProductDetails';
 import SearchByServiceDetails from './SearchByServiceDetails';
 import SearchByStoreDetails from './SearchByStoreDetails';
-import MyOrdersDetails from './MyOrdersDetails';
 import MyAccountDetails from './MyAccountDetails';
 import GotoStoreDetails from './GotoStoreDetails';
 
@@ -79,14 +78,9 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const [_photo3, setPhoto3] = useState<string>('');
   const [_delivery, setDelivery] = useState<string>('');
   const [_zeno, setZeno] = useState<string>('');
-  
-  // const [_myInterest, setMyInterest] = useState<string>('');
-  // const [_feeBalance, setFeeBalance] = useState<string>('');
-  // const [_fileURL, setFileURL] = useState<string>('');
   const [_isHide, toggleIsHide] = useToggle(false);
 
   const isTest: boolean = false;
-  //const isTestData: boolean = false; //takes out code elements we only see for test
 
   useEffect((): void => {
     setEstimatedWeight(null);
@@ -176,7 +170,7 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
   const isClosed = (isCalled && (messageIndex===26 || messageIndex===27 || 
                                  messageIndex===28 || messageIndex===29 ||
                                  messageIndex===30 || messageIndex===31 ||
-                                 messageIndex===32 || messageIndex===33 ||
+                                 messageIndex===32 || 
                                  messageIndex===34 || messageIndex===35 ||
                                  messageIndex===36 || messageIndex===37 ||
                                  messageIndex===38 || messageIndex===39));
@@ -191,6 +185,14 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             className='viewInfo'
             isOpen={false}
             summary={<strong>{t<string>('Instructions: ')}</strong>}>
+              {messageIndex===35 && (<>
+                <h2><strong>{t<string>('Market - My Cart')}</strong></h2><br />
+                <strong>{t<string>('Instructions for using My Cart: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Click View ')}<br />
+                <br />
+              </>)}
+
               {messageIndex===37 && (<>
                 <h2><strong>{t<string>('Market - Seller Account')}</strong></h2><br />
                 <strong>{t<string>('Instructions for Market Seller Account: ')}</strong><br />
@@ -207,11 +209,19 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
                 {'(3) '}{t<string>('Click View ')}<br />
                 <br />
               </>)}
-              {messageIndex===33 && (<>
-                <h2><strong>{t<string>('Market - My Orders')}</strong></h2><br />
-                <strong>{t<string>('Instructions for Getting Your Orders: ')}</strong><br />
+              {messageIndex===34 && (<>
+                <h2><strong>{t<string>('Market - My Buyer Account')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Getting Your Buyer Account: ')}</strong><br />
                 {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
                 {'(2) '}{t<string>('Click View ')}<br />
+                <br />
+              </>)}
+              {messageIndex===32 && (<>
+                <h2><strong>{t<string>('Market - Find Stores')}</strong></h2><br />
+                <strong>{t<string>('Instructions for Finding Stores: ')}</strong><br />
+                {'(1) '}{t<string>('Select the Account to use for this transaction. ')}<br /> 
+                {'(2) '}{t<string>('Enter a Search Keyword for the Stores to find or leave blank to return all available stores. ')}<br /> 
+                {'(3) '}{t<string>('Click View ')}<br />
                 <br />
               </>)}
               {messageIndex===31 && (<>
@@ -818,8 +828,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
 
               <br /><br />
             </>)}
-
-
           </>
         )}
 
@@ -926,19 +934,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             </div>
         )}
 
-
-        {outcomes.length > 0 && messageIndex===33 && (
-            <div>
-            {outcomes.map((outcome, index): React.ReactNode => (
-              <MyOrdersDetails
-                key={`outcome-${index}`}
-                onClear={_onClearOutcome(index)}
-                outcome={outcome}
-              />
-            ))}
-            </div>
-        )}
-
         {outcomes.length > 0 && messageIndex===34 && (
             <div>
             {outcomes.map((outcome, index): React.ReactNode => (
@@ -950,7 +945,6 @@ function CallCard ({ className = '', contract, messageIndex, onCallResult, onCha
             ))}
             </div>
         )}
-
 
         {outcomes.length > 0 && messageIndex===35 && (
             <div>

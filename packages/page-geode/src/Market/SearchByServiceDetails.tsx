@@ -80,7 +80,7 @@ function SearchByServiceDetails ({ className = '', onClear, isAccount, outcome: 
     const microToGeode = (_num: number) => (_num>-1 ? _num/1000000000000: 0);
     const boolToHuman = (_bool: boolean) => (_bool? 'Yes': 'No');
     const numCheck = (_num: number) => (_num>-1 ? _num: 0);
-    const rateCheck = (_num: number) => ((_num>-1 && _num<6)? _num: 0);
+    const rateCheck = (_num: number) => ((_num>0 && _num<6)? _num: 1);
     const dateCheck = (_num: number) => (_num>0? timeStampToDate(_num): t('No Date'));
     const rating: string[] = ['','⭐️','⭐️⭐️','⭐️⭐️⭐️','⭐️⭐️⭐️⭐️','⭐️⭐️⭐️⭐️⭐️'];
     const numToPercent = (_num: number) => ((_num>-1 && _num<=100)? _num.toString(): '0')+ ' %';
@@ -321,7 +321,7 @@ function SearchByServiceDetails ({ className = '', onClear, isAccount, outcome: 
                                 (_filter==='in_stock' && _obj.inventory>0) ||
                                 (_filter==='none' && _obj.inventory>-1) ||
                                 (_filter==='physical' && _obj.online===false)) 
-                .sort((a, b) => b.price - a.price)               
+                .sort((a, b) => a.price - b.price)               
                 .map((_service)=> <>{ShowService(_service)}
               </>)} 
               </>: 

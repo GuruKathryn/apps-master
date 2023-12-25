@@ -50,7 +50,6 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
   const [recipientValue, setRecipientValue] = useAccountId(toAcct);
 
   const [messageValue, setMessageValue] = useState<string>('');
-  //const [fileLinkValue, setFileLinkValue] = useState<string>('');
   const [titleValue, setTitleValue] = useState<string>('');
   const [priceValue, setPriceValue] = useState<string>('');
   const [brandValue, setBrandValue] = useState<string>('');
@@ -63,7 +62,6 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
   const [moreInfoValue, setMoreInfoValue] = useState<string>('');
   const [deliveryInfoValue, setDeliveryInfoValue] = useState<string>('');
   const [locationValue, setLocationValue] = useState<string>('');
-  //const [digitalValue, setDigitalValue] = useState<boolean>(false);
 
   const [_isHide, toggleIsHide] = useToggle(false);
   const [_isDelivered, toggleIsDelivered] = useToggle(false);
@@ -74,18 +72,16 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
   const hexToHuman =(_string: string|undefined) => isHex(_string)? hexToString(_string): '';
   const boolToString = (_bool: boolean) => _bool? 'Yes': 'No';
   const geodeToZeo = (_string: string) => _string.length>0? (+_string * 1000000000000).toString(): '0';
-  //const BNtoGeode = (_num: number|undefined) => _num? _num/1000000000000: 0;
-  //const _item = (_index: number) => _index===1? 'Product': 'Service';
   const weight = useWeight();
   const dbValue = useDebounce(value);
   const dbParams = useDebounce(params);
   const refHeader: string[] = 
   ['Add an Item to Your Cart','Add a Product to a List','Add a Service to a List','Bookmark a Store','Remove Item from Cart.',
    'Update Item Quantity','Check out of Cart','Rate This Item','Rate the Seller','Report Problem Item Damaged',
-   'Report Problem Wrong Item','Report Problem Item Not Received','Message Seller','Update Buyer Account','',
-   'Rate a Buyer','','','','Update Tracking Information', 
-   '','Issue Refund','Issue Replacement','Deny Resolution Request','Message the Buyer', 
-   '','','Update a Product Details','','Update a Service Details',
+   'Report Problem Wrong Item','Report Problem Item Not Received','Message Seller','Update Buyer Account','Remove a Product from a List',
+   'Remove a Service from a List','Delete a Product List','Delete a Service List','','Update Tracking Information', 
+   'Refuse an Order','Issue Refund','Issue Replacement','Deny Resolution Request','Message the Buyer', 
+   'Rate a Buyer','','Update a Product Details','','Update a Service Details',
    '','','','','','','','','','Remove a Store Bookmark','spare'];
   // NOTE!:
   // for test set to true
@@ -280,8 +276,36 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             <strong>{t<string>('Instructions for Buyer Account: ')}</strong><br />
             {'(1) '}{t<string>('Select the From Account.')}<br /> 
             {'(2) '}{t<string>('Enter a Buyer Name.')}<br />
-            {'(3) '}{t<string>('Enter a Loaction.')}<br /> 
+            {'(3) '}{t<string>('Enter a Location.')}<br /> 
             {'(4) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+          </>)}
+          {messageIndex===14 && (<>
+          <h2><strong>{t<string>('Market - Remove an Item from a Product List: ')}</strong></h2><br />
+            <strong>{t<string>('Instructions to remove an Item from a Product List: ')}</strong><br />
+            {'(1) '}{t<string>('Select the From Account.')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+          </>)}
+          {messageIndex===15 && (<>
+          <h2><strong>{t<string>('Market - Remove an Item from a Service List: ')}</strong></h2><br />
+            <strong>{t<string>('Instructions to remove an Item from a Service List: ')}</strong><br />
+            {'(1) '}{t<string>('Select the From Account.')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+          </>)}
+          {messageIndex===16 && (<>
+          <h2><strong>{t<string>('Market - Delete Product List: ')}</strong></h2><br />
+            <strong>{t<string>('Instructions to delete a Product List: ')}</strong><br />
+            {'(1) '}{t<string>('Select the From Account.')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+          </>)}
+          {messageIndex===17 && (<>
+          <h2><strong>{t<string>('Market - Delete a Service List: ')}</strong></h2><br />
+            <strong>{t<string>('Instructions to delete a Service List: ')}</strong><br />
+            {'(1) '}{t<string>('Select the From Account.')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
           </>)}
           {messageIndex===19 && (<>
@@ -292,6 +316,13 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             {'(3) '}{t<string>('Click Shipped Yes/No.')}<br /> 
             {'(4) '}{t<string>('Click Delivered Yes/No.')}<br /> 
             {'(5) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            <br /><br />
+          </>)}
+          {messageIndex===20 && (<>
+          <h2><strong>{t<string>('Market - Refuse an Order: ')}</strong></h2><br />
+            <strong>{t<string>('Instructions for Refusing an Item Order: ')}</strong><br />
+            {'(1) '}{t<string>('Select the From Account.')}<br /> 
+            {'(2) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
           </>)}
           {messageIndex===21 && (<>
@@ -327,10 +358,10 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
           </>)}
           {messageIndex===25 && (<>
           <h2><strong>{t<string>('Market - Rate a Buyer: ')}</strong></h2><br />
-            <strong>{t<string>('Instructions for Rating a Buyer: ')}</strong><br />
+            <strong>{t<string>('Instructions for Reviewing a Buyer: ')}</strong><br />
             {'(1) '}{t<string>('Select the From Account.')}<br /> 
             {'(2) '}{t<string>('Select the Account for the Buyer to Rate.')}<br /> 
-            {'(3) '}{t<string>('Enter a Rating of (0 to 5) Stars.')}<br /> 
+            {'(3) '}{t<string>('Enter a Rating of (1 to 5) Stars.')}<br /> 
             {'(4) '}{t<string>('Enter a text rating or leave blank.')}<br /> 
             {'(5) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
@@ -781,8 +812,8 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
                 type='account'
                 value={recipientValue}
               />
-              <LabelHelp help={t<string>('Enter a Buyer Rating 0-5 Stars.')}/> {' '}         
-              <strong>{t<string>(' Buyer Rating 0-5 Stars: ')}</strong>
+              <LabelHelp help={t<string>('Enter a Buyer Review Rating 1-5 Stars.')}/> {' '}         
+              <strong>{t<string>(' Buyer Rating 1-5 Stars: ')}</strong>
               <Input 
                 label={locationValue? params[1]=locationValue: params[1]=''}
                 type="text"
@@ -893,6 +924,15 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
               </h2>
             </>)}       
 
+            {messageIndex===20 && (<>
+              <h2>
+              <LabelHelp help={t<string>('Refuse an Order.')}/>{' '}          
+                <strong>{t<string>('Item to Refuse Order: ')}{hexToHuman(username)}</strong><br /><br />
+                <strong>{t<string>('Order ID: ')}</strong>{params[0]=messageId}<br />
+                <br />                  
+              </h2>
+            </>)}       
+
             {messageIndex===19 && (<>
               <h2>
               <LabelHelp help={t<string>('Update Tracking Information.')}/>{' '}          
@@ -945,15 +985,32 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
               />
       </>)}       
 
-      {messageIndex===14 && (<>
+      {(messageIndex===17 || messageIndex===16) && (<>
               <h2>
-                <strong>{withHelp('Remove Item from Your List: ', 'Remove Item from Your List.')}</strong><br />
-                <strong>{t<string>('Product ID: ')}</strong>{params[0]=messageId}<br />
-                <strong>{t<string>('List ID: ')}</strong>{params[1]=username}<br />
+                <strong>{withHelp('Delete List: ', 'Remove List.')}</strong><br /><br />
+                <strong>{t<string>('List ID: ')}</strong>{params[0]=messageId}<br /><br />
+                <strong>{t<string>('List Name: ')}</strong>{hexToHuman(username)}<br />
                 <br />                  
               </h2>
       </>)}       
 
+      {messageIndex===14 && (<>
+              <h2>
+                <strong>{withHelp('Remove Product from Your List: ', 'Remove Product from Your List.')}</strong><br /><br />
+                <strong>{t<string>('Product ID: ')}</strong>{params[0]=messageId}<br /><br />
+                <strong>{t<string>('List ID: ')}</strong>{params[1]=username}<br /><br />
+                <br />                  
+              </h2>
+      </>)}       
+
+      {messageIndex===15 && (<>
+              <h2>
+                <strong>{withHelp('Remove Service Item from Your List: ', 'Remove Item from Your List.')}</strong><br /><br />
+                <strong>{t<string>('Service ID: ')}</strong>{params[0]=messageId}<br /><br />
+                <strong>{t<string>('List ID: ')}</strong>{params[1]=username}<br /><br />
+                <br />                  
+              </h2>
+      </>)}       
 
             {messageIndex===13 && (<>
               <h2>

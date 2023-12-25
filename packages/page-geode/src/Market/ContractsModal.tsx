@@ -165,8 +165,10 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
         messageIndex===9  || messageIndex===10 ||
         messageIndex===11 ||
         messageIndex===12 || messageIndex===13 ||
-        messageIndex===14 ||
-        messageIndex===19 || messageIndex===21 ||
+        messageIndex===14 || messageIndex===15 ||
+        messageIndex===16 || messageIndex===17 ||
+        messageIndex===19 || messageIndex===20 ||
+        messageIndex===21 ||
         messageIndex===22 || messageIndex===23 ||
         messageIndex===24 || messageIndex===25 ||
         messageIndex===27 || messageIndex===29 ||
@@ -183,7 +185,7 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
         onClose={_toggleCall}
       />
       )}
-      {(messageIndex===16) && isCallOpen && contract &&(
+      {(messageIndex===99) && isCallOpen && contract &&(
         <Container>
             <CallCard 
                 contract={contract}
