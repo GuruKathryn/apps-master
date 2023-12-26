@@ -1227,21 +1227,7 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
               <Label color={params[0]? 'blue': 'grey'}>
                     {params[0]? <>{t<string>('OK')}</>:<>{t<string>('Enter Value')}</>}</Label>
               </Input>
-              <LabelHelp help={t<string>('Select the delivery to Account.')}/>{' '}          
-              <strong>{t<string>('Deliver to Account: ')}</strong>{' '}
-              {params[1] = recipientValue}<br />
-              <InputAddress
-                defaultValue={paramToString(toAcct)}
-                label={t<string>('Deliver to Account')}
-                labelExtra={
-                <Available
-                    label={t<string>('transferrable')}
-                    params={recipientValue}
-                />}
-                onChange={setRecipientValue}
-                type='account'
-                value={recipientValue}
-              />
+             
               <LabelHelp help={t<string>('Enter the Total Price Amount of Items in Your Cart.')}/> {' '}         
               <strong>{t<string>(' Total Amount in Cart: ')}</strong>
       </>)}       

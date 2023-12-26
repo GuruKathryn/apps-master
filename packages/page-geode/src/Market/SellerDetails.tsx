@@ -713,6 +713,8 @@ function ShowOrders(_order: any): JSX.Element {
                                     <br />
                                     {t_strong('Order Date: ')}{_order.orderTimestamp>0? timeStampToDate(_order.orderTimestamp): t('No date available.')}<br />
                                     {t_strong('Delivery Date: ')}{_order.timeDelivered>0? timeStampToDate(_order.timeDelivered): t('No date available.')}<br />
+                                    {t_strong('Price Each: ')}{microToGeode(_order.priceEach)}{t(' Geode')}<br />
+                                    {t_strong('Total Price: ')}{microToGeode(_order.totalOrderPrice)}{t(' Geode')}<br />
                                     {_order.discussion.length>0 && <>
                                       {t_strong('Messages: ')}{numBadge(_order.discussion.length)}
                                         <Expander 
@@ -739,8 +741,6 @@ function ShowOrders(_order: any): JSX.Element {
                                           {t_strong('Order Id: ')}{idNumberShort(_order.orderId)}<br />                                      
                                           {t_strong('Item ID: ')}{idNumberShort(_order.itemId)}<br />
                                           {t_strong('Tracking Info: ')}{hextoHuman(_order.trackingInfo)}<br />
-                                          {t_strong('Price Each: ')}{microToGeode(_order.priceEach)}{t(' Geode')}<br />
-                                          {t_strong('Total Price: ')}{microToGeode(_order.totalOrderPrice)}{t(' Geode')}<br />
                                           {t_strong('Zeno Total: ')}{microToGeode(_order.zenoTotal)}{t(' Geode')}<br />                                         
                                         </Grid.Column>
                                         <Grid.Column>
