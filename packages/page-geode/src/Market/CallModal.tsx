@@ -793,8 +793,9 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             {messageIndex===25 && (<>
               <h2>
               <LabelHelp help={t<string>('Rate a Buyer.')}/>{' '}          
-                <strong>{t<string>('Buyer Name: ')}{hexToHuman(username)}</strong><br /><br />
-                <strong>{t<string>('Ship to Account: ')}</strong>{messageId}<br />
+                <strong>{t<string>('Rate a Buyer: ')}{hexToHuman(username)}</strong><br /><br />
+                <LabelHelp help={t<string>('Account of the Buyer.')}/>{' '}
+                <strong>{t<string>('Buyer Account: ')}</strong>{messageId}<br />
                 <br />                  
               </h2>
               <LabelHelp help={t<string>('Select Buyer Account to Rate.')}/>{' '}          
