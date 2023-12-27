@@ -211,10 +211,10 @@ function CallModal ({ className = '', messageId, fromAcct, toAcct, username, con
             <strong>{t<string>('Instructions for Checking out of Cart: ')}</strong><br />
             {'(1) '}{t<string>('Select the From Account.')}<br /> 
             {'(2) '}{t<string>('Enter the Address of the Item Delivery.')}<br /> 
-            {'(3) '}{t<string>('Select the Seller Account to be Paid.')}<br /> 
-            {'(4) '}{t<string>('Enter the Total Amount to be Paid to the Seller.')}<br /> 
-            {'(5) '}{t<string>('Click Submit button to sign and submit this transaction')}
+            {'(3) '}{t<string>('Enter the Total Amount to be Paid to the Seller.')}<br /> 
+            {'(4) '}{t<string>('Click Submit button to sign and submit this transaction')}
             <br /><br />
+            {t<string>('NOTE: If you enter less than the total amount in your cart the transaction will be rejected.')}<br /><br />
           </>)}
           {messageIndex===7 && (<>
           <h2><strong>{t<string>('Market - Rate this Item: ')}</strong></h2><br />

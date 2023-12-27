@@ -708,8 +708,8 @@ function ShowOrders(_order: any): JSX.Element {
                                     {t_strong('Ship To Address: ')}{withCopy(hextoHuman(_order.deliverToAddress))}<br />
                                     {t_strong('Buyer Rating: ')}{rating[rateCheck(_order.buyerRating)]}<br />
                                     {t_strong('Reviews: ')}{numBadge(_order.buyerRatingCount)}<br />
-                                    {t_strong('Status: ')}{numToStatus[numCheck(_order.orderStatus)]}
-                                    {_order.problem>0 && <>{t_strong(' | Problem Type: ')}{numToProblem[numCheck(_order.problem)]}{t_strong(' | Resolution: ')}{numToResolution[numCheck(_order.resolution)]}</>}
+                                    {t_strong('Status: ')}{t(numToStatus[numCheck(_order.orderStatus)])}
+                                    {_order.problem>0 && <>{t_strong(' | Problem Type: ')}{t(numToProblem[numCheck(_order.problem)])}{t_strong(' | Resolution: ')}{t(numToResolution[numCheck(_order.resolution)])}</>}
                                     <br />
                                     {t_strong('Order Date: ')}{_order.orderTimestamp>0? timeStampToDate(_order.orderTimestamp): t('No date available.')}<br />
                                     {t_strong('Delivery Date: ')}{_order.timeDelivered>0? timeStampToDate(_order.timeDelivered): t('No date available.')}<br />

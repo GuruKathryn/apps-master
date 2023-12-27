@@ -86,6 +86,7 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
     const microToGeode = (_num: number) => (_num>-1 ? _num/1000000000000: 0);
     const boolToHuman = (_bool: boolean) => (_bool? 'Yes': 'No');
     const numToPercent = (_num: number) => ((_num>-1 && _num<=100)? _num.toString(): '0')+ ' %';
+    const numCheck = (_num: number) => (_num>-1 ? _num: 0);
 
     const _reset = useCallback(
       () => {setUpdateQty(false);
@@ -170,6 +171,14 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
       )
     }
     
+    function numBadge(_num: number): JSX.Element {
+      return(<>
+        <Label circular size='small' color='blue'>
+          {numCheck(_num)}
+        </Label>
+      </>)
+    }
+  
     function accountInfo(_acct: string): JSX.Element {
       return(<>
           <IdentityIcon value={_acct}/>{' | '}
@@ -229,6 +238,7 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
                                           <h3>{t_strong('Description: ')}<strong>{hextoHuman(_product.title)}</strong></h3>
                                       </Item.Meta>
                                       <Item.Description>
+                                        {t_strong('Quantity: ')}{numBadge(_product.quantity)}<br />
                                         {t_strong('Price: ')}{microToGeode(_product.price)}{' Geode'}<br />
                                         {t_strong('Inventory: ')}{_product.inventory}<br />
                                         <strong>{withCopy('Product ID: ')}</strong>{acctToShort(_product.productId)}<br />
@@ -247,6 +257,7 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
                                               {t_strong('Delivery Info: ')}{hextoHuman(_product.deliveryInfo)}<br />
                                               {t_strong('Digital Product: ')}{boolToHuman(_product.digital)}<br />
                                               {t_strong('Zeno Percent: ')}{numToPercent(_product.zenoPercent)}<br />
+                                              {t_strong('Number of Zeno Buyers: ')}{_product.zenoBuyers}<br />
                                               </Grid.Column>
                                               <Grid.Column>
                                               {renderLink(_product.photoOrYoutubeLink1)}
@@ -297,9 +308,9 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
                                     </Item.Header>
                                     <Item.Meta><h3><strong>{t('Description: ')}{hextoHuman(_service.title)}</strong></h3></Item.Meta>
                                     <Item.Description>
+                                        {t_strong('Quantity: ')}{numBadge(_service.quantity)}<br />
                                         {t_strong('Price: ')}{microToGeode(_service.price)}{' Geode'}<br />
                                         {t_strong('Inventory: ')}{_service.inventory}<br />
-                                        {t_strong('Location: ')}{hextoHuman(_service.serviceLocation)}<br />
                                         <strong>{withCopy('Service ID: ')}</strong>{acctToShort(_service.serviceId)}<br />
                                     </Item.Description>
                                     <Item.Extra>
@@ -309,8 +320,10 @@ function MyCartDetails ({ className = '', onClear, isAccount, outcome: { from, m
                                             <Grid.Column>
                                             {t_strong('Seller Account: ')}{accountInfo(_service.sellerAccount)}<br />
                                             {t_strong('Seller Name: ')}{hextoHuman(_service.sellerName)}<br />
+                                            {t_strong('Location: ')}{hextoHuman(_service.serviceLocation)}<br />
                                             {t_strong('Online: ')}{boolToHuman(_service.online)}<br />
                                             {t_strong('Zeno Percentage: ')}{numToPercent(_service.zenoPercent)}<br />
+                                            {t_strong('Number of Zeno Buyers: ')}{_service.zenoBuyers}<br />                                           
                                             </Grid.Column>
                                             <Grid.Column>
                                             {renderLink(_service.photoOrYoutubeLink1)}

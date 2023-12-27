@@ -19,9 +19,9 @@ import CallCard from './CallCard';
 import Contract from './Contract';
 import { getContractForAddress } from './util';
 // uncomment for test configuration - - - - >
-import JSONContractAddress from '../shared/geode_contracts_test.json';
+// import JSONContractAddress from '../shared/geode_contracts_test.json';
 // uncomment for production chain - - - - >
-//import JSONContractAddress from '../shared/geode_contracts.json';
+import JSONContractAddress from '../shared/geode_contracts.json';
 
 export interface Props {
   contracts: string[];
@@ -56,14 +56,7 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
   // set to true to test contracts functionality
   const isTest: boolean = false;
   // set default after contract load to chain
-  const contractAddress: string = (JSONContractAddress[4])? JSONContractAddress[4] :'5HMMhFYkJe8mmMNwXVjF9W4XbzqhRk88vX49cRx8P5XgFDB7';
-
-  // const headerRef = useRef<[string?, string?, number?][]>([
-  //   [t('Add claims for Geode Profile'), 'start'],
-  //   [undefined, undefined, 3],
-  //   [t('status'), 'start'],
-  //   []
-  // ]);
+  const contractAddress: string = (JSONContractAddress[4])? JSONContractAddress[4] :'5Cw4X12ZVo1tpxp1mFkAVgmacDJJfcUrdZjTj6tCryXBHLee';
 
   useEffect((): void => {
     if (newBlock) {
@@ -179,7 +172,6 @@ function ContractsTable ({ contracts: keyringContracts, initMessageIndex }: Prop
 
       {isTableOpen && <Table
         empty={t<string>('No contracts available')}
-        //header={headerRef.current}
       >
         {contracts.map((contract, index): React.ReactNode => (
           <Contract

@@ -680,7 +680,7 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                                     >{t('Not Received')}</Label>
                                   </Item.Header>
                                   <Item.Meta>
-                                      <h3><strong>{'Status: '}<i>{numToStatus[numCheck(_cart.orderStatus)]}</i></strong></h3>
+                                      <h3><strong>{'Status: '}<i>{t(numToStatus[numCheck(_cart.orderStatus)])}</i></strong></h3>
                                   </Item.Meta>
                                   <Item.Description>
                                       {t_strong('Quantity: ')}
@@ -719,8 +719,8 @@ function MyAccountDetails ({ className = '', onClear, isAccount, outcome: { from
                                       {t_strong('Product Id: ')}{idNumberShort(_cart.itemId)}<br />
                                       {t_strong('Delivery To Account: ')}{accountInfo(_cart.deliverToAccount)}<br />
                                       {t_strong('Deliver To Address: ')}{hextoHuman(_cart.deliverToAddress)}<br />
-                                      {t_strong('Problems Identified: ')}{numToProblem[numCheck(_cart.problem)]}<br />
-                                      {t_strong('Resolution: ')}{numToResolution[numCheck(_cart.resolution)]}<br />
+                                      {t_strong('Problems Identified: ')}{t(numToProblem[numCheck(_cart.problem)])}<br />
+                                      {t_strong('Resolution: ')}{t(numToResolution[numCheck(_cart.resolution)])}<br />
                                       {t_strong('Tracking Info: ')}{hextoHuman(_cart.trackingInfo)}<br />
                                       {t_strong('Delivery Date: ')}{_cart.timeDelivered>0? timeStampToDate(_cart.timeDelivered): t('Not Delivered Yet')}<br />
                                       {t_strong('Zeno Total: ')}{microToGeode(_cart.zenoTotal)}{t(' Geode')}<br />

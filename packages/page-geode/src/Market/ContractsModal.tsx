@@ -23,9 +23,9 @@ import { getContractForAddress } from '../shared/util';
 
 // * * * * * * * * * * * * * * * * * * * * * * * *
 // * uncomment for test configuration - - - - >  *
-import JSONContractAddress from '../shared/geode_contracts_test.json';
+// import JSONContractAddress from '../shared/geode_contracts_test.json';
 // * uncomment for production chain - - - - - >  *
-// import JSONContractAddress from '../shared/geode_contracts.json';
+ import JSONContractAddress from '../shared/geode_contracts.json';
 // * * * * * * * * * * * * * * * * * * * * * * * *
 
 export interface Props {
@@ -66,7 +66,7 @@ function ContractsModal ({ contracts: keyringContracts, initMessageIndex, toAcct
   const isTest: boolean = false;
   // set default after contract load to chain
   // for Private Messaging index === 3
-  const contractAddress: string = (JSONContractAddress[4])? JSONContractAddress[4] :'5HJjHKgw4hupcKizpwyLm5VAK23nm6qEGEaaRrHK9FGsMxj9';
+  const contractAddress: string = (JSONContractAddress[4])? JSONContractAddress[4] :'5Cw4X12ZVo1tpxp1mFkAVgmacDJJfcUrdZjTj6tCryXBHLee';
 
   const headerRef = useRef<[string?, string?, number?][]>([
     [t('Add claims for Geode Market'), 'start'],

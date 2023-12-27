@@ -35,12 +35,12 @@ function Summary (): React.ReactElement {
     <div>
     <SummaryBox>        
       <CardSummary label={''}>
-        {t<string>('Geode Market Place')} 
+        {t<string>('Geode Market')} 
       </CardSummary> 
     </SummaryBox>
     <Card> 
     <Badge icon={'info'} color={'blue'}/> 
-      <strong> {t<string>('Info for Geode Market Place')} </strong>
+      <strong> {t<string>('Info for Geode Market')} </strong>
         {': '}{t<string>(info[0]+info[1])}       
       <br /><br />
 

@@ -142,7 +142,6 @@ function SearchByStoreDetails ({ className = '', onClear, isAccount, outcome: { 
     const [isAddToServiceList, setAddToServiceList] = useState(false);
     const [_sort, setSort] = useState('none');
 
-
     const _reset = useCallback(
       () => {   setBookmark(false);
                 setAddToCart(false);
